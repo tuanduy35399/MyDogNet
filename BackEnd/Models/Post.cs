@@ -8,20 +8,23 @@ namespace BackEnd.Models
     {
         [Key]
         [Required]
-        private int Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Title { get; set; }
         [Required]
         public string Content { get; set; }
-        public List<string> ImageUrls { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public string? Thumbnail { get; set; }
+        public DateTime CreatedAt { get; set; }= DateTime.UtcNow; //ban đầu thiếu giá trị mặc định
+        public DateTime UpdatedAt { get; set; }= DateTime.UtcNow;//ban đầu thiếu giá trị mặc định
         [Required]
-        private bool IsPublish { get; set; } = false;
+        public bool IsPublished { get; private set; } = false;
         public int ViewCount { get; set; }
 
-        protected void IncreaseView() { ViewCount++; }
-        protected bool Publish() => IsPublish = true;
+        public void IncreaseView() { ViewCount++; }
+        public void Publish() => IsPublished = true; //không nên trả về cái gì
+        public int AuthorId { get; set; } //[NavigationPropertyName]+Id  thì EF core sẽ auto hiểu là FK và nối với AdminId
+        public Admin? Author { get; set; } //navigation property
+        //Quan trọng chỗ tên [NavigationPropertyName] phải giống với navigation property ở dưới
 
     }
 }
