@@ -10,6 +10,7 @@ namespace BackEnd.DTOs.PostDTOs
         public string Content { get; set; }
 
         public string? Thumbnail { get; set; }
-     
+        public bool IsPublished { get; set; } = false;
+
     }
 }

@@ -43,11 +43,12 @@ namespace BackEnd.Repositories
             if (!result.Succeeded) return string.Empty;
             //Neu dung thi tao token
             //Claim dung de nhét thông tin user vào JWT token
-
+            var user = await _userManager.FindByNameAsync(modelDTO.UserName);
             var authClaims = new List<Claim>
             {
                 //tạo các cặp key-value thông tin user
                 new Claim(ClaimTypes.Name, modelDTO.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 //ID duy nhất cho mỗi JWT token
                 //Jti là JWT ID
                 //Guid chuỗi random duy nhất

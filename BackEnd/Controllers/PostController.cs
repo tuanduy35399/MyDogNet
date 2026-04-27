@@ -1,9 +1,12 @@
 ﻿using BackEnd.Data;
 using BackEnd.DTOs.PostDTOs;
+using BackEnd.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
+using System.Security.Claims;
 
 namespace BackEnd.Controllers
 {
@@ -21,11 +24,9 @@ namespace BackEnd.Controllers
             
             var allPost = await _context.Posts
                 .Where(post => post.IsPublished == true)
-                .Select(post => new ReadPostDTO
+                .Select(post => new GetAllPost
                 {
-                    Id= post.Id,
                     Title = post.Title,
-                    Content = post.Content,
                     Thumbnail = post.Thumbnail,
                     AuthorName = post.Author.UserName,
                     CreatedAt = post.CreatedAt,
@@ -38,6 +39,7 @@ namespace BackEnd.Controllers
         }
         [HttpGet("{id}", Name = "getDetailPost")]
         [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 100)]
+        
         public async Task<IActionResult> GetDetail(int id)
         {
             //Author có thể null
@@ -55,10 +57,29 @@ namespace BackEnd.Controllers
             };
             return Ok(postDTO);
         }
-        //[HttpPost]
-        //public async Task<IActionResult> CreatePost(CreatePostDTO createPostDTO)
-        //{
-        //   if()
-        //}
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreatePost(CreatePostDTO createPostDTO)
+        {
+            if (createPostDTO==null) return BadRequest("Invalid data");
+            //Lấy userId hiện đang login từ JWT
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var post = new Post
+            {
+                Title = createPostDTO.Title,
+                Content = createPostDTO.Content,
+                AuthorId = userId,
+                IsPublished = createPostDTO.IsPublished,
+                Thumbnail = createPostDTO.Thumbnail,
+                
+            };
+            _context.Posts.Add(post);
+            await _context.SaveChangesAsync();
+            return Ok(new
+            {
+                message = "Create success",
+                post.AuthorId,
+            });
+        }
     }
 }

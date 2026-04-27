@@ -17,12 +17,13 @@ namespace BackEnd.Models
         public DateTime CreatedAt { get; set; }= DateTime.UtcNow; //ban đầu thiếu giá trị mặc định
         public DateTime UpdatedAt { get; set; }= DateTime.UtcNow;//ban đầu thiếu giá trị mặc định
         [Required]
-        public bool IsPublished { get; private set; } = false;
+        public bool IsPublished { get; set; } = false;
         public int ViewCount { get; set; }
 
         public void IncreaseView() { ViewCount++; }
         public void Publish() => IsPublished = true; //không nên trả về cái gì
-        public int AuthorId { get; set; } //[NavigationPropertyName]+Id  thì EF core sẽ auto hiểu là FK và nối với AdminId
+        [ForeignKey("Admin")]
+        public string AuthorId { get; set; } //[NavigationPropertyName]+Id  thì EF core sẽ auto hiểu là FK và nối với AdminId
         public Admin? Author { get; set; } //navigation property
         //Quan trọng chỗ tên [NavigationPropertyName] phải giống với navigation property ở dưới
 

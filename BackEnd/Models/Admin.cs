@@ -4,8 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BackEnd.Models
 {
-    [Table("Admins")]
-    public class Admin : IdentityUser<int>
+    public class Admin : IdentityUser
     {
 
         public string? Describe { get; set; }

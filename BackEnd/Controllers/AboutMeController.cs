@@ -40,7 +40,7 @@ namespace BackEnd.Controllers
         //Để cập nhật thì cần đăng nhập
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> Update(int id, Admin newAdmin)
+        public async Task<IActionResult> Update(string id, Admin newAdmin)
         {
             if(newAdmin==null)
             {
@@ -52,7 +52,7 @@ namespace BackEnd.Controllers
             oldAdmin.Avatar = newAdmin.Avatar;
             oldAdmin.Describe = newAdmin.Describe;
             oldAdmin.BackGroundImg = newAdmin.BackGroundImg;
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 

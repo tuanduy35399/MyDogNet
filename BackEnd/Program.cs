@@ -15,14 +15,40 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Nhập: Bearer {your token}"
+    });
+
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 builder.Services.AddScoped<CloudinaryService>(); //<> generic khai báo muốn đk cái gì () dùng để thực thi AddScope ngay
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddDbContext<ApplicationDbContext>(opts => //dang ky cho ApplicationDbContext
 {
     opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddIdentity<Admin, IdentityRole<int>>()  //dùng class Admin làm User, Role kiểu int để quản lý
+builder.Services.AddIdentity<Admin, IdentityRole>()  //dùng class Admin làm User, Role kiểu int để quản lý
     .AddEntityFrameworkStores<ApplicationDbContext>() //cho biết data User và Role lưu bằng EF core trong DB
     .AddDefaultTokenProviders(); // bật các chức năng reset pass, email confirm, gen token
 builder.Services.AddAuthentication(opts => //Cấu hình xác thực người dùng bằng JWT
