@@ -1,5 +1,6 @@
 using BackEnd.Data;
 using BackEnd.Models;
+using BackEnd.Repositories;
 using BackEnd.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +17,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<CloudinaryService>(); //<> generic khai báo muốn đk cái gì () dùng để thực thi AddScope ngay
-builder.Services.AddDbContext<ApplicationDbContext>(opts =>
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddDbContext<ApplicationDbContext>(opts => //dang ky cho ApplicationDbContext
 {
     opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
@@ -44,6 +46,19 @@ builder.Services.AddAuthentication(opts => //Cấu hình xác thực người d�
             ))
     };
 });
+//var originList = builder.Configuration["Cors:AllowedOrigins"].Get<string[]>(); 
+//dùng GetSection là vì AllowedOrigins là array
+//Còn ValidAudience và ValidIssuer là string nên gọi Configuration["key"] trả về giá trị đơn được
+var originList = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+//.Get<T>(); đọc dữ liệu từ config map sang kiểu T
+builder.Services.AddCors(opts=> 
+opts.AddPolicy("AllowedHost", policy=>
+{
+    policy.WithOrigins(originList)
+    .AllowAnyHeader()
+    .AllowAnyMethod();
+})
+);
 var app = builder.Build();
 
 
@@ -55,9 +70,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseCors("AlowedHost");
 app.Run();

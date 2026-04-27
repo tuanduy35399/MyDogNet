@@ -1,6 +1,7 @@
 ﻿using BackEnd.Data;
 using BackEnd.DTOs.AdminDTOs;
 using BackEnd.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,7 @@ namespace BackEnd.Controllers
             var detail = await _context.Admins.Select(
                 admin => new ReadAdminDTO
                 {
-                    Name = admin.Name,
+                    UserName = admin.UserName,
                     Avatar = admin.Avatar,
                     Describe = admin.Describe,
                     BackGroundImg = admin.BackGroundImg,
@@ -36,7 +37,9 @@ namespace BackEnd.Controllers
         }
         //[HttpPost]
         //public async Task { get; set; }
+        //Để cập nhật thì cần đăng nhập
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> Update(int id, Admin newAdmin)
         {
             if(newAdmin==null)
@@ -45,7 +48,7 @@ namespace BackEnd.Controllers
             }
             var oldAdmin = await _context.Admins.FirstOrDefaultAsync(admin => admin.Id == id);
             if (oldAdmin == null) return NotFound();
-            oldAdmin.Name = newAdmin.Name;
+            oldAdmin.UserName = newAdmin.UserName;
             oldAdmin.Avatar = newAdmin.Avatar;
             oldAdmin.Describe = newAdmin.Describe;
             oldAdmin.BackGroundImg = newAdmin.BackGroundImg;

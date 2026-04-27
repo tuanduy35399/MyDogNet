@@ -5,12 +5,14 @@ namespace BackEnd.DTOs.AdminDTOs
     public class SignUpDTO
     {
         [Required]
-        public string Name { get; set; }
-        [Required]
-        public string Describe { get; set; }
+        public string UserName { get; set; }= null!;
+        public string? Describe { get; set; }
         public string Avatar { get; set; } = "./imgs/default_avatar.jpg";
         public string BackGroundImg { get; set; } = "./imgs/default_background.jpg";
-        public string Password { get; set; }
-        public string ConfirmPassword { get; set; }
+        [Required]
+        public string Password { get; set; } = null!;
+        [Required]
+        [Compare("Password")]
+        public string ConfirmPassword { get; set; }=null!;
     }
 }
