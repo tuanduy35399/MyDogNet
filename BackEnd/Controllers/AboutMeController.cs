@@ -34,8 +34,8 @@ namespace BackEnd.Controllers
 
             return Ok(detail);
         }
-        [HttpPost]
-        public async Task { get; set; }
+        //[HttpPost]
+        //public async Task { get; set; }
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Admin newAdmin)
         {
@@ -43,7 +43,7 @@ namespace BackEnd.Controllers
             {
                 return BadRequest();
             }
-            var oldAdmin = await _context.Admins.FindAsync(id);
+            var oldAdmin = await _context.Admins.FirstOrDefaultAsync(admin => admin.Id == id);
             if (oldAdmin == null) return NotFound();
             oldAdmin.Name = newAdmin.Name;
             oldAdmin.Avatar = newAdmin.Avatar;

@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BackEnd.Models
 {
     [Table("Admins")]
-    public class Admin
+    public class Admin : IdentityUser<int>
     {
         [Key]
         [Required]
