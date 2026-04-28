@@ -62,15 +62,24 @@ namespace BackEnd.Controllers
             };
             patchDocument.ApplyTo(adminToPatch, ModelState);
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            if(user)
-            oldAdmin.UserName = adminToPatch.UserName;
+            //Kiem tra nguoi dung co doi username khong
+            if(oldAdmin.UserName!= adminToPatch.UserName)
+            {
+                var setUserNameResult = await _userManager.SetUserNameAsync(oldAdmin, adminToPatch.UserName);
+                if(!setUserNameResult.Succeeded)
+                {
+                    return BadRequest(setUserNameResult.Errors);
+                }
+            }
             oldAdmin.Avatar = adminToPatch.Avatar;
             oldAdmin.Describe = adminToPatch.Describe;
             oldAdmin.BackGroundImg = adminToPatch.BackGroundImg;
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
+            var updateResult = await _userManager.UpdateAsync(oldAdmin);
+            if (!updateResult.Succeeded) return BadRequest(updateResult.Errors);
             return Ok(new
             {
-                message = "Update post success",
+                message = "Update profile success",
             });
         }
 
