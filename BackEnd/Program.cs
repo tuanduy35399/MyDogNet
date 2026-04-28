@@ -85,6 +85,8 @@ opts.AddPolicy("AllowedHost", policy=>
     .AllowAnyMethod();
 })
 );
+
+builder.Services.AddControllers().AddNewtonsoftJson(); //them dong nay de su dung NewtonsoftJson
 var app = builder.Build();
 
 

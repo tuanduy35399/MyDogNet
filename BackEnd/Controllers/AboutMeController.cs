@@ -3,9 +3,12 @@ using BackEnd.DTOs.AdminDTOs;
 using BackEnd.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 namespace BackEnd.Controllers
 {
     [Route("[controller]")]
@@ -14,9 +17,11 @@ namespace BackEnd.Controllers
     {
         private readonly ApplicationDbContext _context;
         //Dependency Injection
-        public AboutMeController(ApplicationDbContext context)
+        private readonly UserManager<Admin> _userManager;
+        public AboutMeController(ApplicationDbContext context, UserManager<Admin> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         //Tạo các endpoint
@@ -38,22 +43,35 @@ namespace BackEnd.Controllers
         //[HttpPost]
         //public async Task { get; set; }
         //Để cập nhật thì cần đăng nhập
-        [HttpPut("{id}")]
+        [HttpPut]
         [Authorize]
-        public async Task<IActionResult> Update(string id, Admin newAdmin)
+        public async Task<IActionResult> Update([FromBody] JsonPatchDocument<UpdateAdminDTO> patchDocument)
         {
-            if(newAdmin==null)
+            if(patchDocument == null)
             {
                 return BadRequest();
             }
-            var oldAdmin = await _context.Admins.FirstOrDefaultAsync(admin => admin.Id == id);
+            var oldAdmin = await _userManager.GetUserAsync(User);
             if (oldAdmin == null) return NotFound();
-            oldAdmin.UserName = newAdmin.UserName;
-            oldAdmin.Avatar = newAdmin.Avatar;
-            oldAdmin.Describe = newAdmin.Describe;
-            oldAdmin.BackGroundImg = newAdmin.BackGroundImg;
+            var adminToPatch = new UpdateAdminDTO
+            {
+                UserName = oldAdmin.UserName,
+                Describe = oldAdmin.Describe,
+                Avatar = oldAdmin.Avatar,
+                BackGroundImg = oldAdmin.BackGroundImg,
+            };
+            patchDocument.ApplyTo(adminToPatch, ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if(user)
+            oldAdmin.UserName = adminToPatch.UserName;
+            oldAdmin.Avatar = adminToPatch.Avatar;
+            oldAdmin.Describe = adminToPatch.Describe;
+            oldAdmin.BackGroundImg = adminToPatch.BackGroundImg;
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok(new
+            {
+                message = "Update post success",
+            });
         }
 
     }
