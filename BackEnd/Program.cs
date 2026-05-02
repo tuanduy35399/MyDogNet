@@ -87,6 +87,7 @@ opts.AddPolicy("AllowedHost", policy=>
 );
 
 builder.Services.AddControllers().AddNewtonsoftJson(); //them dong nay de su dung NewtonsoftJson
+builder.Services.AddScoped<ICloudinaryServices, CloudinaryService>();
 var app = builder.Build();
 
 

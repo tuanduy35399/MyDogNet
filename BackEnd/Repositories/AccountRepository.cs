@@ -28,9 +28,6 @@ namespace BackEnd.Repositories
             var user = new Admin
             {
                 UserName = modelDTO.UserName,
-                //Avatar = modelDTO.Avatar,
-                //BackGroundImg = modelDTO.BackGroundImg,
-                //PasswordHash = modelDTO.Password,
                 
             };
             return await _userManager.CreateAsync(user, modelDTO.Password); 

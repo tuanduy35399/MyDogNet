@@ -33,7 +33,8 @@ namespace BackEnd.Services
             //Hàm này chứa trong SDK của cloudinary 
             var uploadParams = new ImageUploadParams
             {
-                File = new FileDescription(file.FileName, stream)
+                File = new FileDescription(file.FileName, stream),
+                Folder = "temp"
             };
 
             var result = await _cloudinary.UploadAsync(uploadParams);
