@@ -33,6 +33,7 @@ namespace BackEnd.Controllers
                 .Where(post => post.IsPublished == true)
                 .Select(post => new GetAllPost
                 {
+                    Id = post.Id,
                     Title = post.Title,
                     Thumbnail = post.Thumbnail,
                     AuthorName = post.Author.UserName,

@@ -37,7 +37,6 @@ namespace BackEnd.Controllers
                     Describe = admin.Describe,
                     BackGroundImg = admin.BackGroundImg,
                 }).ToArrayAsync();
-
             return Ok(detail);
         }
         //[HttpPost]
