@@ -10,7 +10,8 @@ export default function ListPost() {
     const fetchData = async () => {
       try {
         var res = await axios.get("https://localhost:7085/post");
-        setPosts(res.data);
+        var reverseData = [...res.data].reverse()
+        setPosts(reverseData);
       } catch (err) {
         console.log(err);
       }

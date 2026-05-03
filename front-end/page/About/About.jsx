@@ -7,7 +7,7 @@ function About() {
   const { user } = useUser();
   return (
     <section>
-      <Header bgURL={user?.backGroundImg}/>
+      <Header bgURL={user?.backGroundImg} />
       <div className={styles.contentArea}>
         <div className={styles.avatarWrapper}>
           <img src={user?.avatar} className={styles.avatar} alt="Avatar" />
