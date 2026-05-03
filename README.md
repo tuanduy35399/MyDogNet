@@ -105,3 +105,11 @@ xóa ảnh trong temp > 24h
 👉 có:
 
 await _cloudinary.DestroyAsync(new DeletionParams(publicId));
+
+
+Còn về phía FrontEnd thì tôi đã học được
+
+Sử dụng template, source css từ bootstrap
+Tạo trang 404 not found
+Dùng React Context để duy trì data sau khi đã đăng nhập
+Dùng ProtectRoute để ẩn trang admin
