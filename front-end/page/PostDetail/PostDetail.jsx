@@ -9,7 +9,7 @@ export default function PostDetail() {
   useEffect( () => {
     const fetchData = async () => {
       try {
-        var res = await axios.get(`https://localhost:7085/post/${id}`) //lấy id từ path truyền vô đây
+        var res = await axios.get(`http://dognet.runasp.net/post/${id}`); //lấy id từ path truyền vô đây
         setPost(res.data)
       } catch (err) {
         console.log(err)

@@ -9,7 +9,7 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("https://localhost:7085/AboutMe");
+        const res = await axios.get("http://dognet.runasp.net/AboutMe");
         setUser(res.data[0]);
         console.log(res);
       } catch (error) {

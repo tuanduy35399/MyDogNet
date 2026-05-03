@@ -1,8 +1,6 @@
 import Header from "../../components/Header/Header";
 
 function Search() {
-  return (
-      <Header />
-  );
+  return <Header />;
 }
 export default Search;

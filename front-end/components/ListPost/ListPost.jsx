@@ -9,8 +9,8 @@ export default function ListPost() {
     let isMounted = true;
     const fetchData = async () => {
       try {
-        var res = await axios.get("https://localhost:7085/post");
-        var reverseData = [...res.data].reverse()
+        var res = await axios.get("http://dognet.runasp.net/post");
+        var reverseData = [...res.data].reverse();
         setPosts(reverseData);
       } catch (err) {
         console.log(err);
