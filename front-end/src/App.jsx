@@ -2,9 +2,11 @@ import "./App.css";
 import Home from "../page/Home/Home";
 import About from "../page/About/About";
 import Search from "../page/Search/Search";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NotFound from "../page/NotFound";
 import { UserProvider } from "../context/UserContext";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import PostDetail from "../page/PostDetail/PostDetail";
 function App() {
   return (
     <UserProvider>
@@ -14,6 +16,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/search" element={<Search />} />
           <Route path="*" element={<NotFound />} /> //dấu * là trang sẽ trả về
+          <Route path="/post/:id" element={<PostDetail/>}/>
           cho bất kì đường dẫn nào không được định nghĩa //trang cho Admin được
           bảo vệ
           {/* <Route path='/admin-dashboard'

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function ListPost() {
   const [posts, setPosts] = useState([]);
@@ -26,23 +27,23 @@ export default function ListPost() {
       {posts.map((item) => (
         <div
           className="container d-flex justify-content-center mt-5"
-          key={item.id}
+          key={item?.id}
         >
           <div className="card" style={{ width: "50rem", overflow: "hidden" }}>
             <img
               className="card-img-top"
-              src={item.thumbnail}
+              src={item?.thumbnail}
               alt="Card image cap"
               style={{ height: "250px", objectFit: "cover" }}
             />
             <div className="card-body text-start">
-              <h3 className="card-text">{item.title}</h3>
-              <p className="card-text">Author: {item.authorName}</p>
-              <p className="card-text">Created at: {item.createdAt}</p>
-              <p className="card-text">Last Update: {item.updatedAt}</p>
-              <a href="/" class="btn btn-primary">
+              <h3 className="card-text">{item?.title}</h3>
+              <p className="card-text">Author: {item?.authorName}</p>
+              <p className="card-text">Created at: {item?.createdAt}</p>
+              <p className="card-text">Last Update: {item?.updatedAt}</p>
+              <Link to={`/post/${item?.id}`} class="btn btn-primary">
                 READ MORE
-              </a>
+              </Link>
             </div>
           </div>
         </div>

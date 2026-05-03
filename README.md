@@ -113,3 +113,4 @@ Sử dụng template, source css từ bootstrap
 Tạo trang 404 not found
 Dùng React Context để duy trì data sau khi đã đăng nhập
 Dùng ProtectRoute để ẩn trang admin
+Học cách truyền dữ liệu id từ route vào component từ đó gọi API 

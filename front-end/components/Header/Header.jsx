@@ -1,16 +1,17 @@
 import { Link } from "react-router-dom";
 import styles from "./Header.module.css";
-
-export default function Header({ bgURL, avatarURL }) {
+import { useUser } from "../../context/UserContext"; //dung context de duy tri Avatar
+export default function Header({bgURL}) {//lay background linh hoat cho tung bai dang
+  const { user } = useUser();// lấy dữ liệu từ kho chung (context) 
   return (
     <header>
-      <div className={styles.background} style={{backgroundImage: `url(${bgURL})`}}>
+      <div
+        className={styles.background}
+        style={{ backgroundImage: `url(${bgURL})` }}
+      >
         <div className={styles["header-container"]}>
           <Link to="/about">
-                      <img
-                          src={ avatarURL}
-              className={styles.avatar1}
-            />
+            <img src={user?.avatar} className={styles.avatar1} />
           </Link>
           <div className="dropdown">
             <button
