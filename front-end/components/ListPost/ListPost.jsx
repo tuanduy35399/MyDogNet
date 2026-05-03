@@ -1,18 +1,24 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-function ListPost() {
+export default function ListPost() {
   const [posts, setPosts] = useState([]);
-  const fetchData = async () => {
-    try {
-      var res = await axios.get("https://localhost:7085/post");
-      setPosts(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+
   useEffect(() => {
+    let isMounted = true;
+    const fetchData = async () => {
+      try {
+        var res = await axios.get("https://localhost:7085/post");
+        setPosts(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
     fetchData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -34,6 +40,9 @@ function ListPost() {
               <p className="card-text">Author: {item.authorName}</p>
               <p className="card-text">Created at: {item.createdAt}</p>
               <p className="card-text">Last Update: {item.updatedAt}</p>
+              <a href="/" class="btn btn-primary">
+                READ MORE
+              </a>
             </div>
           </div>
         </div>
@@ -41,4 +50,3 @@ function ListPost() {
     </>
   );
 }
-export default ListPost;
