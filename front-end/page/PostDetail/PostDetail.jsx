@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header/Header";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import axiosClient from "../../api";
 export default function PostDetail() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   useEffect( () => {
     const fetchData = async () => {
       try {
-        var res = await axios.get(`http://dognet.runasp.net/post/${id}`); //lấy id từ path truyền vô đây
+        var res = await axiosClient.get(`/post/${id}`); //lấy id từ path truyền vô đây
         setPost(res.data)
       } catch (err) {
         console.log(err)

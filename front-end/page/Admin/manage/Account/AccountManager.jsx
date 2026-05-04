@@ -1,13 +1,14 @@
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axiosClient from "../../../../api";
 
 export default function AccountManager() {
   const [acc, setAcc] = useState(null);
   useEffect(() => {
     const fetchAcc = async () => {
       try {
-        var res = await axios.get("http://dognet.runasp.net/account");
+        var res = await axiosClient.get("/account");
         setAcc(res.data);
       } catch (err) {
         console.log("Khong the lay danh sach cac acc", err);

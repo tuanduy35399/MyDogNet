@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axiosClient from "../../api";
 
 export default function SignIn() {
   // 1. Quản lý dữ liệu người dùng nhập vào
@@ -15,8 +15,8 @@ export default function SignIn() {
 
     try {
       // 2. Gọi API đăng nhập (Thay URL bằng API thật của bạn)
-      const res = await axios.post(
-        "http://dognet.runasp.net/account/signin",
+      const res = await axiosClient.post(
+        "/account/signin",
         {
           userName: username,
           password: password,

@@ -1,5 +1,6 @@
-import axios from "axios";
+
 import { createContext, useState, useContext, useEffect } from "react";
+import axiosClient from "../api";
 
 const UserContext = createContext();
 
@@ -9,7 +10,7 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://dognet.runasp.net/AboutMe");
+        const res = await axiosClient.get("/AboutMe");
         setUser(res.data[0]);
         console.log(res);
       } catch (error) {

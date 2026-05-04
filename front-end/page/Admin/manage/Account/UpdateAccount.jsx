@@ -1,13 +1,14 @@
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axiosClient from "../../../../api";
 
 export default function UpdateAccount() {
   const [acc, setAcc] = useState(null);
   useEffect(() => {
     const fetchAcc = async () => {
       try {
-        var res = await axios.patch("http://dognet.runasp.net/account");
+        var res = await axiosClient.patch("/account");
         setAcc(res.data);
       } catch (err) {
         console.log("Khong the lay danh sach cac acc", err);
