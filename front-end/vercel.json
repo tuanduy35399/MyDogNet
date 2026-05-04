@@ -3,6 +3,10 @@
     {
       "source": "/api/:path*",
       "destination": "http://dognet.runasp.net/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
