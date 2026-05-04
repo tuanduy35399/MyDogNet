@@ -1,6 +1,7 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, useOutlet } from "react-router-dom";
 
 export default function Admin() {
+  const outlet = useOutlet();
   return (
     <section>
       <nav className="navbar navbar-expand-lg navbar-light bg-light gap-100">
@@ -40,8 +41,17 @@ export default function Admin() {
           </div>
         </div>
       </nav>
-      <h1>Chào mừng Admin</h1>
-      <Outlet /> {/*Hiển thị nội dung các route con*/}
+      <div className="container mt-4">
+        {outlet || (
+          <div className="text-center">
+            <h3 className="display-6">Chào mừng Admin!</h3>
+            <img
+              src="/dognet-logo.png"
+              className="w-25 mt-5"
+            />
+          </div>
+        )}
+      </div>
     </section>
   );
 }

@@ -17,6 +17,7 @@ export default function AccountManager() {
   });
   return (
     <div>
+      <h1 className="mb-4">Account Manager</h1>
       <table class="table">
         <thead>
           <tr>
@@ -30,16 +31,21 @@ export default function AccountManager() {
             <tr>
               <th scope="row">{index + 1}</th>
               <td>{item?.userName}</td>
-              <td className="d-flex gap-2 justify-content-center">
+              <td className="d-flex gap-2 ">
                 <button type="button" class="btn btn-primary">
                   <Link
                     to={`/admin-dashboard-80820508/edit-post-80820508/${item?.id}`}
                   >
-                    <span className="cl-white">Edit</span>
+                    <span className="text-white text-decoration-none">
+                      Edit
+                    </span>
                   </Link>
                 </button>
                 <button type="button" class="btn btn-danger">
-                  Delete
+                  {/* <Link
+                    to={`/admin-dashboard-80820508/edit-post-80820508/${item?.id}`}
+                  ></Link> */}
+                  <span className="text-white text-decoration-none">Delete</span>
                 </button>
               </td>
             </tr>
