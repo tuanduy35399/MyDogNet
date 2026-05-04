@@ -12,7 +12,7 @@ function About() {
         <div className={styles.avatarWrapper}>
           <img src={user?.avatar} className={styles.avatar} alt="Avatar" />
         </div>
-        <div className="text-center mt-5 text-white">
+        <div className="text-center mt-5 text-black">
           <h1 className={styles.title}>{user?.userName}</h1>
           <p className="text-secondary">{user?.describe}</p>
         </div>
