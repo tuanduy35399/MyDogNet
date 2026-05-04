@@ -1,5 +1,7 @@
 # MyDogNet
 Just a web portfolio to get know more about me LOL
+Try it here
+https://my-dog-net.vercel.app/
 
 Qua project này tôi học được gì?
 
