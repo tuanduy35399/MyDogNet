@@ -35,7 +35,14 @@ export default function Header({bgURL}) {//lay background linh hoat cho tung bai
             </ul>
           </div>
         </div>
-        <h1 className={styles.title}>My DogNet</h1>
+        <div className="container text-center">
+          <img
+            src="/dognet-favicon-light-nobg.png"
+            style={{ width: "150px" }}
+          />
+        </div>
+
+        {/* <h1 className={styles.title}>My DogNet</h1> */}
       </div>
     </header>
   );

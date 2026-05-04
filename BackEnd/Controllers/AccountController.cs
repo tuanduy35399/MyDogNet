@@ -16,6 +16,14 @@ namespace BackEnd.Controllers
         {
             _repo = repo;
         }
+        [HttpGet]
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
+        public async Task<IActionResult> GetAllAccount()
+        {
+            var result = await _repo.GetAllAccountsAsync();
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
         [HttpPost("signUp")]
         //[AllowAnonymous]
         public async Task<IActionResult> SignUp(SignUpDTO signUpModel)

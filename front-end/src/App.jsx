@@ -1,12 +1,16 @@
+import { UserProvider } from "../context/UserContext";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "../page/Home/Home";
 import About from "../page/About/About";
 import Search from "../page/Search/Search";
-import Admin from "../page/Admin/main/Admin";
 import NotFound from "../page/NotFound";
-import { UserProvider } from "../context/UserContext";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import PostDetail from "../page/PostDetail/PostDetail";
+
+import Admin from "../page/Admin/main/Admin";
+import CreatePost from "../page/Admin/manage/Post/CreatePost";
+import UpdatePost from "../page/Admin/manage/Post/UpdatePost";
+import AccountManager from "../page/Admin/manage/Account/AccountManager";
+import PostManager from "../page/Admin/manage/Post/PostManager";
 import SignIn from "../page/Admin/SignIn";
 import SignUp from "../page/Admin/SignUp";
 import ProtectedRoute from "../components/ReactRouter";
@@ -32,9 +36,23 @@ function App() {
               <ProtectedRoute>
                 <Admin />
               </ProtectedRoute>
-            }
-          />
-        </Routes>
+                          }
+          >
+                    //NestRoute- đường dẫn nội bộ sẽ không có dấu "/" phía trước
+                    <Route
+                      path="create-post-80820508"
+                      element={<CreatePost />}
+                    />
+                    <Route path="edit-post-80820508" element={<UpdatePost />} />
+                    <Route
+                      path="post-manager-80820508"
+                      element={<PostManager />}
+                    />
+                    <Route
+                      path="account-manager-80820508"
+              element={<AccountManager />}/>
+          </Route>
+          </Routes>
       </BrowserRouter>
     </UserProvider>
   );

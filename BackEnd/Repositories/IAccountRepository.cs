@@ -6,7 +6,8 @@ namespace BackEnd.Repositories
 {
     public interface IAccountRepository
     {
-         Task<IdentityResult> SignUpAsync(SignUpDTO modelDTO);
+        Task<IEnumerable<AllAccounts>> GetAllAccountsAsync();
+        Task<IdentityResult> SignUpAsync(SignUpDTO modelDTO);
          Task<string> SignInAsync(SignInDTO modelDTO); //dùng string trả về chuỗi token
     }
 }

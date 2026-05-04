@@ -1,7 +1,10 @@
-﻿namespace BackEnd.DTOs.PostDTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BackEnd.DTOs.PostDTOs
 {
     public class GetAllPost
     {
+        [Required]
         public int Id { get; set; }
         public string Title { get; set; }
         public string? Thumbnail { get; set; }

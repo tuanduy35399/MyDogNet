@@ -7,6 +7,8 @@ using Newtonsoft.Json.Linq;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using BackEnd.Data;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace BackEnd.Repositories
@@ -16,12 +18,25 @@ namespace BackEnd.Repositories
         private readonly UserManager<Admin> _userManager;
         private readonly SignInManager<Admin> _signInManager;
         private readonly IConfiguration _configuration;
-
-        public AccountRepository(UserManager<Admin> userManager, SignInManager<Admin> signInManager, IConfiguration configuration)
+        private readonly ApplicationDbContext _context;
+        public AccountRepository(UserManager<Admin> userManager, SignInManager<Admin> signInManager, IConfiguration configuration, ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration; //lấy từ appconfig.jspon
+            _context = context;
+        }
+        //Dùng Task<IEnumerable<AllAccounts>> để chỉ đọc, chặn việc sửa đổi như List<>
+        public async Task<IEnumerable<AllAccounts>> GetAllAccountsAsync()
+        {
+            var listAccount = await _context.Admins.Select(
+                acc => new AllAccounts
+                {
+                    Id = acc.Id,
+                    UserName= acc.UserName,
+                    
+                }).ToArrayAsync();
+            return listAccount;
         }
         public async Task<IdentityResult> SignUpAsync(SignUpDTO modelDTO)
         {

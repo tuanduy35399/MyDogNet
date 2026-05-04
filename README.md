@@ -110,7 +110,19 @@ await _cloudinary.DestroyAsync(new DeletionParams(publicId));
 Còn về phía FrontEnd thì tôi đã học được
 
 Sử dụng template, source css từ bootstrap
+
 Tạo trang 404 not found
+
 Dùng React Context để duy trì data sau khi đã đăng nhập
+
 Dùng ProtectRoute để ẩn trang admin
+
 Học cách truyền dữ liệu id từ route vào component từ đó gọi API 
+
+Học cách nest route để dấu route nội bộ chỉ từ trang admin mới link qua được
+
+Biết dùng thư viện quill để tạo text-editor như word
+
+Dùng JWT nhưng lưu localhost dễ bị tấn công XSS, tuy nhiên do tôi mới học nên thôi thì để tạm như vậy (4/5/2026)
+
+Mục tiêu sau khi học thêm về authen với cookie tôi có thể thành thạo dùng cả jwt và cookie 
