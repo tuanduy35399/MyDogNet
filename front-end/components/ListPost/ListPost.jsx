@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axiosClient from "../../api";
 
 export default function ListPost() {
   const [posts, setPosts] = useState([]);
@@ -9,7 +10,7 @@ export default function ListPost() {
     let isMounted = true;
     const fetchData = async () => {
       try {
-        var res = await axios.get("http://dognet.runasp.net/post");
+        var res = await axiosClient.get("/post");
         var reverseData = [...res.data].reverse();
         setPosts(reverseData);
       } catch (err) {
