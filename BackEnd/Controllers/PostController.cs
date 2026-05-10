@@ -24,51 +24,76 @@ namespace BackEnd.Controllers
             _context = context;
             //_mapper = mapper;
             }
-        [HttpGet(Name = "getPostPublish")]
+        //[HttpGet(Name = "getPostPublish")]
         
-        [ResponseCache(Location = ResponseCacheLocation.Client, Duration =100)]
-        public async Task<IActionResult> GetPosts(int pageNumber = 1, int pageSize = 5)
-        {
-            if (pageNumber < 1) pageNumber = 1;
-            var totalRecords = await _context.Posts.CountAsync();
-            var posts = await _context.Posts
-        .OrderByDescending(p => p.CreatedAt) // Hiện bài mới nhất trước
-        .Skip((pageNumber - 1) * pageSize)   // Công thức tính số bản ghi cần bỏ qua
-        .Take(pageSize)                      // Lấy đúng số lượng pageSize
-        .Select(post=> new GetAllPost
-        {
-            Id = post.Id,
-            Title = post.Title,
-            Thumbnail = post.Thumbnail,
-            AuthorName = post.Author.UserName,
-            CreatedAt = post.CreatedAt,
-            UpdatedAt = post.UpdatedAt,
-            ViewCount = post.ViewCount,
+        //[ResponseCache(Location = ResponseCacheLocation.Client, Duration =100)]
+        //public async Task<IActionResult> GetPosts(int pageNumber = 1, int pageSize = 5)
+        //{
+        //    if (pageNumber < 1) pageNumber = 1;
+        //    var totalRecords = await _context.Posts.CountAsync();
+        //    var posts = await _context.Posts
+        //.OrderByDescending(p => p.CreatedAt) // Hiện bài mới nhất trước
+        //.Skip((pageNumber - 1) * pageSize)   // Công thức tính số bản ghi cần bỏ qua
+        //.Take(pageSize)                      // Lấy đúng số lượng pageSize
+        //.Select(post=> new GetAllPost
+        //{
+        //    Id = post.Id,
+        //    Title = post.Title,
+        //    Thumbnail = post.Thumbnail,
+        //    AuthorName = post.Author.UserName,
+        //    CreatedAt = post.CreatedAt,
+        //    UpdatedAt = post.UpdatedAt,
+        //    ViewCount = post.ViewCount,
 
-        })
-        .ToListAsync();
-            //var allPost = await _context.Posts
-            //    .Where(post => post.IsPublished == true)
-            //    .Select(post => new GetAllPost
-            //    {
-            //        Id = post.Id,
-            //        Title = post.Title,
-            //        Thumbnail = post.Thumbnail,
-            //        AuthorName = post.Author.UserName,
-            //        CreatedAt = post.CreatedAt,
-            //        UpdatedAt = post.UpdatedAt,
-            //        ViewCount = post.ViewCount,
+        //})
+        //.ToListAsync();
+        //    var response = new PagedResponse<GetAllPost>
+        //    {
+        //        Data = posts,
+        //        TotalRecords = totalRecords,
+        //        PageNumber = pageNumber,
+        //        PageSize = pageSize
+        //    };
+        //    return Ok(response);
+        //}
 
-            //    })
-            //    .ToListAsync();
-            var response = new PagedResponse<GetAllPost>
+        [HttpGet(Name ="SearchPost")]
+        [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 100)]
+        public async Task<IActionResult> GetPosts(int pageNumber = 1, int pageSize = 5, string? searchTerm = null)
+        {
+            // Tạo truy vấn cơ bản
+            var query = _context.Posts.AsQueryable();
+
+            // Nếu có từ khóa tìm kiếm, lọc theo tiêu đề
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(p => p.Title.Contains(searchTerm));
+            }
+
+            var totalRecords = await query.CountAsync();
+            var posts = await query
+                .OrderByDescending(p => p.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(post => new GetAllPost
+                {
+                    Id = post.Id,
+                    Title = post.Title,
+                    Thumbnail = post.Thumbnail,
+                    AuthorName = post.Author.UserName,
+                    CreatedAt = post.CreatedAt,
+                    UpdatedAt = post.UpdatedAt,
+                    ViewCount = post.ViewCount,
+                })
+                .ToListAsync();
+
+            return Ok(new PagedResponse<GetAllPost>
             {
                 Data = posts,
                 TotalRecords = totalRecords,
                 PageNumber = pageNumber,
                 PageSize = pageSize
-            };
-            return Ok(response);
+            });
         }
         [HttpGet("{id}", Name = "getDetailPost")]
         [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 100)]

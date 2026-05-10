@@ -7,6 +7,10 @@ export default function ListPost({ onDataLoaded }) {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const pageSize = 5; // Số lượng bài mỗi trang
+
+const [searchInput, setSearchInput] = useState("");
+const [searchTerm, setSearchTerm] = useState("");
+
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -18,6 +22,10 @@ export default function ListPost({ onDataLoaded }) {
       minute: "2-digit",
     });
   };
+  const handleFind = () => {
+    setPage(1); // Reset về trang 1 khi tìm kiếm mới
+    setSearchTerm(searchInput); // Gán giá trị gõ được vào searchTerm để useEffect chạy
+  };
   useEffect(() => {
     window.scrollTo(0, 0);
     let isMounted = true;
@@ -26,7 +34,7 @@ export default function ListPost({ onDataLoaded }) {
       try {
         // Gửi tham số phân trang lên server
         const res = await axiosClient.get(
-          `/post?pageNumber=${page}&pageSize=${pageSize}`,
+          `/post?pageNumber=${page}&pageSize=${pageSize}&searchTerm=${searchTerm}`,
         );
 
         if (isMounted) {
@@ -47,11 +55,29 @@ export default function ListPost({ onDataLoaded }) {
     return () => {
       isMounted = false;
     };
-  }, [page]); // useEffect sẽ chạy lại mỗi khi 'page' thay đổi
+  }, [page, searchTerm]); // useEffect sẽ chạy lại mỗi khi 'page' thay đổi
 
   return (
     <>
       {/* Danh sách bài viết */}
+      <div class="container mt-5">
+        <div class="d-flex flex-row justify-content-center gap-3">
+          <div class="col-md-6">
+            <div class="search-container">
+              <input
+                type="text"
+                class="form-control search-input"
+                placeholder="Type something..."
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={(e) => e.key=="Enter" && handleFind()}
+              />
+              <i class="fas fa-search search-icon"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {posts.map((item) => (
         <div
           className="container d-flex justify-content-center mt-5"

@@ -26,9 +26,6 @@ export default function Header({bgURL}) {//lay background linh hoat cho tung bai
               <Link className="dropdown-item" to="/">
                 <i className="bi bi-house"></i> Home
               </Link>
-              <Link className="dropdown-item" to="/search">
-                <i className="bi bi-search"></i> Search
-              </Link>
               <Link className="dropdown-item" to="/about">
                 <i className="bi bi-person-circle"></i> About
               </Link>
