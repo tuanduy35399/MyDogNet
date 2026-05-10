@@ -35,7 +35,7 @@ export default function AccountManager() {
               <td className="d-flex gap-2 ">
                 <button type="button" class="btn btn-primary">
                   <Link
-                    to={`/admin-dashboard-80820508/edit-post-80820508/${item?.id}`}
+                    to={`/admin-dashboard-80820508/edit-account-80820508/${item?.id}`}
                   >
                     <span className="text-white text-decoration-none">
                       Edit

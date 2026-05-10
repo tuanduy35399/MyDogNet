@@ -38,6 +38,19 @@ namespace BackEnd.Repositories
                 }).ToArrayAsync();
             return listAccount;
         }
+        public async Task<ReadAdminDTO?> GetMoreDetail(string id)
+        {
+            return await _context.Admins
+                .Where(admin => admin.Id == id)
+                .Select(admin => new ReadAdminDTO
+                {
+                    UserName = admin.UserName,
+                    Avatar = admin.Avatar,
+                    Describe = admin.Describe,
+                    BackGroundImg = admin.BackGroundImg
+                })
+                .FirstOrDefaultAsync();
+        }
         public async Task<IdentityResult> SignUpAsync(SignUpDTO modelDTO)
         {
             var user = new Admin

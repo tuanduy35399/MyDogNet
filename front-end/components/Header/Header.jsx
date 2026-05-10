@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import styles from "./Header.module.css";
 import { useUser } from "../../context/UserContext"; //dung context de duy tri Avatar
-export default function Header({bgURL}) {//lay background linh hoat cho tung bai dang
-  const { user } = useUser();// lấy dữ liệu từ kho chung (context) 
+export default function Header({ bgURL }) {
+  //lay background linh hoat cho tung bai dang
+  const { user } = useUser(); // lấy dữ liệu từ kho chung (context)
+
   return (
     <header>
       <div

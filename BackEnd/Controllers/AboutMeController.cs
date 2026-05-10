@@ -17,14 +17,15 @@ namespace BackEnd.Controllers
     {
         private readonly ApplicationDbContext _context;
         //Dependency Injection
-        private readonly UserManager<Admin> _userManager;
-        public AboutMeController(ApplicationDbContext context, UserManager<Admin> userManager)
+        
+        public AboutMeController(ApplicationDbContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         //Tạo các endpoint
+        //Cái này nó sẽ trả về 1 list các thông tin chi tiết của các tài khoản admin
+        //Bí quá nên thôi tạm để vậy, bên FE xử lý hiển thị cái tài khoản đầu tiên thôi
         [HttpGet]
         [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 60)]
         public async Task<IActionResult> GetDetailAboutMe()
@@ -39,48 +40,5 @@ namespace BackEnd.Controllers
                 }).ToArrayAsync();
             return Ok(detail);
         }
-        //[HttpPost]
-        //public async Task { get; set; }
-        //Để cập nhật thì cần đăng nhập
-        [HttpPut]
-        [Authorize]
-        public async Task<IActionResult> Update([FromBody] JsonPatchDocument<UpdateAdminDTO> patchDocument)
-        {
-            if(patchDocument == null)
-            {
-                return BadRequest();
-            }
-            var oldAdmin = await _userManager.GetUserAsync(User);
-            if (oldAdmin == null) return NotFound();
-            var adminToPatch = new UpdateAdminDTO
-            {
-                UserName = oldAdmin.UserName,
-                Describe = oldAdmin.Describe,
-                Avatar = oldAdmin.Avatar,
-                BackGroundImg = oldAdmin.BackGroundImg,
-            };
-            patchDocument.ApplyTo(adminToPatch, ModelState);
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            //Kiem tra nguoi dung co doi username khong
-            if(oldAdmin.UserName!= adminToPatch.UserName)
-            {
-                var setUserNameResult = await _userManager.SetUserNameAsync(oldAdmin, adminToPatch.UserName);
-                if(!setUserNameResult.Succeeded)
-                {
-                    return BadRequest(setUserNameResult.Errors);
-                }
-            }
-            oldAdmin.Avatar = adminToPatch.Avatar;
-            oldAdmin.Describe = adminToPatch.Describe;
-            oldAdmin.BackGroundImg = adminToPatch.BackGroundImg;
-            //await _context.SaveChangesAsync();
-            var updateResult = await _userManager.UpdateAsync(oldAdmin);
-            if (!updateResult.Succeeded) return BadRequest(updateResult.Errors);
-            return Ok(new
-            {
-                message = "Update profile success",
-            });
-        }
-
     }
 }

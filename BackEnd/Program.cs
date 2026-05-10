@@ -40,7 +40,7 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-builder.Services.AddScoped<CloudinaryService>(); //<> generic khai báo muốn đk cái gì () dùng để thực thi AddScope ngay
+
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddDbContext<ApplicationDbContext>(opts => //dang ky cho ApplicationDbContext
 {
@@ -101,7 +101,7 @@ app.UseCors("AllowedHost");
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseDeveloperExceptionPage();
 app.MapControllers();
 
 app.Run();
