@@ -7,7 +7,17 @@ export default function ListPost({ onDataLoaded }) {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const pageSize = 5; // Số lượng bài mỗi trang
-
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
   useEffect(() => {
     window.scrollTo(0, 0);
     let isMounted = true;
@@ -47,8 +57,7 @@ export default function ListPost({ onDataLoaded }) {
           className="container d-flex justify-content-center mt-5"
           key={item?.id}
         >
-          
-         <div className="card" style={{ width: "50rem", overflow: "hidden" }}>
+          <div className="card" style={{ width: "50rem", overflow: "hidden" }}>
             <img
               className="card-img-top"
               src={item?.thumbnail}
@@ -62,7 +71,7 @@ export default function ListPost({ onDataLoaded }) {
               </p>
               <p className="card-text mb-1">
                 <small className="text-muted">
-                  Created at: {item?.createdAt}
+                  {formatDate(item?.createdAt)}
                 </small>
               </p>
               <Link to={`/post/${item?.id}`} className="btn btn-primary">
