@@ -6,6 +6,7 @@ export default function ListPost({ onDataLoaded }) {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     let isMounted = true;
     const fetchData = async () => {
       try {

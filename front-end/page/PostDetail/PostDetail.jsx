@@ -8,6 +8,7 @@ export default function PostDetail() {
   const [post, setPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
+    window.scrollTo(0, 0);
     var isMounted = true
     const fetchData = async () => {
       try {
