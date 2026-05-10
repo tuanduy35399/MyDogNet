@@ -174,5 +174,19 @@ namespace BackEnd.Controllers
             })
             ;
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePost(int id)
+        {
+            var post = await _context.Posts
+                .Where(post => post.Id == id)
+                .FirstOrDefaultAsync();
+            if (post == null)
+            {
+                return NotFound(new { message = $"Không tìm thấy bài đăng với ID = {id}" });
+            }
+            _context.Remove(post);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }
