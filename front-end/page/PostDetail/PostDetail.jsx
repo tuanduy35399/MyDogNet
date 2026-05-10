@@ -6,6 +6,7 @@ import axiosClient from "../../api";
 export default function PostDetail() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
+  // const [isLoading, setIsLoading] = useState(null);
   useEffect( () => {
     const fetchData = async () => {
       try {

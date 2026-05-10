@@ -1,28 +1,38 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../../api";
+import { useEffect, useState } from "react";
 
-export default function ListPost() {
+export default function ListPost({ onDataLoaded }) {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     let isMounted = true;
     const fetchData = async () => {
       try {
-        var res = await axiosClient.get("/post");
-        var reverseData = [...res.data].reverse();
-        setPosts(reverseData);
+        const res = await axiosClient.get("/post");
+        if (isMounted) {
+          const data = res.data || [];
+          setPosts([...data].reverse());
+        }
       } catch (err) {
-        console.log(err);
+        console.error("Fetch error:", err);
+      } finally {
+        if (isMounted) {
+          // Báo cho Home biết là đã load xong (dù thành công hay lỗi)
+          onDataLoaded();
+        }
       }
     };
-    fetchData();
 
+    fetchData();
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [onDataLoaded]);
+
+  if (posts.length === 0) {
+    return <div className="text-center mt-5">Không có bài viết nào</div>;
+  }
 
   return (
     <>
@@ -35,15 +45,20 @@ export default function ListPost() {
             <img
               className="card-img-top"
               src={item?.thumbnail}
-              alt="Card image cap"
+              alt={item?.title}
               style={{ height: "250px", objectFit: "cover" }}
             />
             <div className="card-body text-start">
-              <h3 className="card-text">{item?.title}</h3>
-              <p className="card-text">Author: {item?.authorName}</p>
-              <p className="card-text">Created at: {item?.createdAt}</p>
-              <p className="card-text">Last Update: {item?.updatedAt}</p>
-              <Link to={`/post/${item?.id}`} class="btn btn-primary">
+              <h3 className="card-title">{item?.title}</h3>
+              <p className="card-text mb-1">
+                <strong>Author:</strong> {item?.authorName}
+              </p>
+              <p className="card-text mb-1">
+                <small className="text-muted">
+                  Created at: {item?.createdAt}
+                </small>
+              </p>
+              <Link to={`/post/${item?.id}`} className="btn btn-primary">
                 READ MORE
               </Link>
             </div>
