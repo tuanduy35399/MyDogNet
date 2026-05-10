@@ -6,41 +6,76 @@ import axiosClient from "../../api";
 export default function PostDetail() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
-  // const [isLoading, setIsLoading] = useState(null);
-  useEffect( () => {
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    var isMounted = true
     const fetchData = async () => {
       try {
         var res = await axiosClient.get(`/post/${id}`); //lấy id từ path truyền vô đây
-        setPost(res.data)
+        setTimeout(() => {
+          if (isMounted) {
+            setPost(res.data);
+            setIsLoading(false);
+          }
+        }, 800);
       } catch (err) {
         console.log(err)
       }
     }    
-    fetchData();
+    fetchData()
+    return () => {
+      isMounted=false
+    }
   }, [id]) //chay lai neu id thay doi
-    return (
+  return (
+    <>
       <section>
-        <Header bgURL={post?.thumbnail} />
-        {/* <span class="badge rounded-pill bg-secondary">zappos</span> */}
+        {isLoading ? (
+          <div class="placeholder-glow">
+            <div class="placeholder col-12" style={{ height: "330px" }}></div>
+          </div>
+        ) : (
+          <Header bgURL={post?.thumbnail} />
+        )}
         <div class="container my-5">
           <div class="row justify-content-center">
             <div class="col-lg-8">
               <div class="post-preview mb-5">
-                  <h2 class="fw-bold mb-2 text-decoration-none text-dark">
-                    {post?.title}
-                  </h2>
-                  <br />
-                  <h3 class="fw-light text-muted mb-3">{post?.content}</h3>
-                <hr class="my-4" />
-                <p class="text-muted small">
-                  Posted by <strong>{post?.authorName}</strong> on{" "}
-                  {post?.createdAt}
-                </p>
+                {isLoading ? (
+                  <div>
+                    <p className="placeholder-glow ">
+                      <span class="placeholder col-6"></span>
+                    </p>
+                    <p className="placeholder-glow ">
+                      <span class="placeholder col-12"></span>
+                    </p>
+                    <p className="placeholder-glow ">
+                      <span class="placeholder col-12"></span>
+                    </p>
+                    <p className="placeholder-glow ">
+                      <span class="placeholder col-12"></span>
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <h2 class="fw-bold mb-2 text-decoration-none text-dark">
+                      {post?.title}
+                    </h2>
+                    <br />
+                    <h3 class="fw-light text-muted mb-3">{post?.content}</h3>
+                    <hr class="my-4" />
+                    <p class="text-muted small">
+                      Posted by <strong>{post?.authorName}</strong> on{" "}
+                      {post?.createdAt}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
         <Footer />
       </section>
-    );
+    </>
+  );
 }
