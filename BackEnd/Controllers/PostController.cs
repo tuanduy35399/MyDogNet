@@ -1,6 +1,7 @@
 ﻿
 
 using BackEnd.Data;
+using BackEnd.DTOs;
 using BackEnd.DTOs.PostDTOs;
 using BackEnd.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -26,24 +27,48 @@ namespace BackEnd.Controllers
         [HttpGet(Name = "getPostPublish")]
         
         [ResponseCache(Location = ResponseCacheLocation.Client, Duration =100)]
-        public async Task<IActionResult> GetAllPost()
+        public async Task<IActionResult> GetPosts(int pageNumber = 1, int pageSize = 5)
         {
-            
-            var allPost = await _context.Posts
-                .Where(post => post.IsPublished == true)
-                .Select(post => new GetAllPost
-                {
-                    Id = post.Id,
-                    Title = post.Title,
-                    Thumbnail = post.Thumbnail,
-                    AuthorName = post.Author.UserName,
-                    CreatedAt = post.CreatedAt,
-                    UpdatedAt = post.UpdatedAt,
-                    ViewCount = post.ViewCount,
+            if (pageNumber < 1) pageNumber = 1;
+            var totalRecords = await _context.Posts.CountAsync();
+            var posts = await _context.Posts
+        .OrderByDescending(p => p.CreatedAt) // Hiện bài mới nhất trước
+        .Skip((pageNumber - 1) * pageSize)   // Công thức tính số bản ghi cần bỏ qua
+        .Take(pageSize)                      // Lấy đúng số lượng pageSize
+        .Select(post=> new GetAllPost
+        {
+            Id = post.Id,
+            Title = post.Title,
+            Thumbnail = post.Thumbnail,
+            AuthorName = post.Author.UserName,
+            CreatedAt = post.CreatedAt,
+            UpdatedAt = post.UpdatedAt,
+            ViewCount = post.ViewCount,
 
-                })
-                .ToListAsync();
-            return Ok(allPost);
+        })
+        .ToListAsync();
+            //var allPost = await _context.Posts
+            //    .Where(post => post.IsPublished == true)
+            //    .Select(post => new GetAllPost
+            //    {
+            //        Id = post.Id,
+            //        Title = post.Title,
+            //        Thumbnail = post.Thumbnail,
+            //        AuthorName = post.Author.UserName,
+            //        CreatedAt = post.CreatedAt,
+            //        UpdatedAt = post.UpdatedAt,
+            //        ViewCount = post.ViewCount,
+
+            //    })
+            //    .ToListAsync();
+            var response = new PagedResponse<GetAllPost>
+            {
+                Data = posts,
+                TotalRecords = totalRecords,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+            return Ok(response);
         }
         [HttpGet("{id}", Name = "getDetailPost")]
         [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 100)]

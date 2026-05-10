@@ -4,22 +4,30 @@ import { useEffect, useState } from "react";
 
 export default function ListPost({ onDataLoaded }) {
   const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 5; // Số lượng bài mỗi trang
 
   useEffect(() => {
     window.scrollTo(0, 0);
     let isMounted = true;
+
     const fetchData = async () => {
       try {
-        const res = await axiosClient.get("/post");
+        // Gửi tham số phân trang lên server
+        const res = await axiosClient.get(
+          `/post?pageNumber=${page}&pageSize=${pageSize}`,
+        );
+
         if (isMounted) {
-          const data = res.data || [];
-          setPosts([...data].reverse());
+          // res.data.data là mảng bài viết, res.data.totalPages là tổng số trang
+          setPosts(res.data.data || []);
+          setTotalPages(res.data.totalPages || 1);
         }
       } catch (err) {
         console.error("Fetch error:", err);
       } finally {
         if (isMounted) {
-          // Báo cho Home biết là đã load xong (dù thành công hay lỗi)
           onDataLoaded();
         }
       }
@@ -29,20 +37,18 @@ export default function ListPost({ onDataLoaded }) {
     return () => {
       isMounted = false;
     };
-  }, [onDataLoaded]);
-
-  if (posts.length === 0) {
-    return <div className="text-center mt-5">Không có bài viết nào</div>;
-  }
+  }, [page]); // useEffect sẽ chạy lại mỗi khi 'page' thay đổi
 
   return (
     <>
+      {/* Danh sách bài viết */}
       {posts.map((item) => (
         <div
           className="container d-flex justify-content-center mt-5"
           key={item?.id}
         >
-          <div className="card" style={{ width: "50rem", overflow: "hidden" }}>
+          
+         <div className="card" style={{ width: "50rem", overflow: "hidden" }}>
             <img
               className="card-img-top"
               src={item?.thumbnail}
@@ -66,6 +72,34 @@ export default function ListPost({ onDataLoaded }) {
           </div>
         </div>
       ))}
+
+      {/* Chỗ này là cái thanh điều hướng phân trang lấy từ Bootstrap */}
+      <nav className="mt-5 d-flex justify-content-center">
+        <ul className="pagination">
+          <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
+            <button className="page-link" onClick={() => setPage(page - 1)}>
+              Previous
+            </button>
+          </li>
+
+          {[...Array(totalPages)].map((_, i) => (
+            <li
+              key={i}
+              className={`page-item ${page === i + 1 ? "active" : ""}`}
+            >
+              <button className="page-link" onClick={() => setPage(i + 1)}>
+                {i + 1}
+              </button>
+            </li>
+          ))}
+
+          <li className={`page-item ${page === totalPages ? "disabled" : ""}`}>
+            <button className="page-link" onClick={() => setPage(page + 1)}>
+              Next
+            </button>
+          </li>
+        </ul>
+      </nav>
     </>
   );
 }
