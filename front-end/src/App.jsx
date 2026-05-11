@@ -39,7 +39,7 @@ function App() {
           >
             //NestRoute- đường dẫn nội bộ sẽ không có dấu "/" phía trước
             <Route path="create-post-80820508" element={<CreatePost />} />
-            <Route path="edit-post-80820508" element={<UpdatePost />} />
+            <Route path="edit-post-80820508/:id" element={<UpdatePost />} />
             <Route path="post-manager-80820508" element={<PostManager />} />
             <Route
               path="account-manager-80820508"

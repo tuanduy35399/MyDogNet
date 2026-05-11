@@ -11,7 +11,7 @@ export default function UpdateAccount() {
     backGroundImg: "",
   });
   const { id } = useParams();
-
+  let isUploading = false //luc dau thi cai nay chua co upload nen chua bat
   useEffect(() => {
     const fetchAcc = async () => {
       try {
@@ -43,6 +43,7 @@ export default function UpdateAccount() {
           Authorization: `Bearer ${token}`,
         },
       });
+      isUploading = false;
       return res.data.url; // Trả về URL từ Cloudinary
     } catch (err) {
       console.error("Lỗi upload:", err.response?.status);

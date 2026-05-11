@@ -42,12 +42,6 @@ export default function AccountManager() {
                     </span>
                   </Link>
                 </button>
-                <button type="button" class="btn btn-danger">
-                  {/* <Link
-                    to={`/admin-dashboard-80820508/edit-post-80820508/${item?.id}`}
-                  ></Link> */}
-                  <span className="text-white text-decoration-none">Delete</span>
-                </button>
               </td>
             </tr>
           ))}

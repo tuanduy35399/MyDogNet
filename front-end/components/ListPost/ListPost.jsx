@@ -72,7 +72,6 @@ const [searchTerm, setSearchTerm] = useState("");
                 onChange={(e) => setSearchInput(e.target.value)}
                 onKeyDown={(e) => e.key=="Enter" && handleFind()}
               />
-              <i class="fas fa-search search-icon"></i>
             </div>
           </div>
         </div>
