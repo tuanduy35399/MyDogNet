@@ -5,7 +5,6 @@ import axiosClient from "../../../../api";
 import { useParams } from "react-router-dom";
 export default function UpdatePost() {
   const [data, setData] = useState({ title: "", content: "" });
-  const [formData, setFormData]
   const { id } = useParams();
   
   useEffect(() => {
