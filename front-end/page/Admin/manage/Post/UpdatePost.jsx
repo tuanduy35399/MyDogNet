@@ -73,7 +73,7 @@ export default function UpdatePost() {
           aria-label="Large"
           aria-describedby="inputGroup-sizing-sm"
           value={data?.title}
-          onChange={(e) => setData({ ...data, title: e.target.value })}
+
         />
       </div>
       <ReactQuill
