@@ -11,7 +11,7 @@ export default function UpdateAccount() {
     backGroundImg: "",
   });
   const { id } = useParams();
-  let isUploading = false //luc dau thi cai nay chua co upload nen chua bat
+  // let isUploading = false //luc dau thi cai nay chua co upload nen chua bat
   useEffect(() => {
     const fetchAcc = async () => {
       try {
@@ -33,7 +33,7 @@ export default function UpdateAccount() {
     if (!file) return null;
 
     const fd = new FormData();
-    fd.append("file", file); // Key "file" phải khớp với IFormFile file ở Backend
+    fd.append("file", file); 
 
     const token = localStorage.getItem("tk");
     try {
@@ -43,7 +43,7 @@ export default function UpdateAccount() {
           Authorization: `Bearer ${token}`,
         },
       });
-      isUploading = false;
+      // isUploading = false;
       return res.data.url; // Trả về URL từ Cloudinary
     } catch (err) {
       console.error("Lỗi upload:", err.response?.status);
