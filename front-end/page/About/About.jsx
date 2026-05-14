@@ -5,6 +5,13 @@ import Footer from "../../components/Footer";
 import { useUser } from "../../context/UserContext";
 function About() {
   const { user } = useUser();
+  const normalizeContent = (html) => {
+    if (!html) return "";
+
+    return html
+      .replace(/&nbsp;/g, " ")
+      .replace(/\u00A0/g, " ");
+  };
   return (
     <section>
       <Header bgURL={user?.backGroundImg} />
@@ -12,9 +19,14 @@ function About() {
         <div className={styles.avatarWrapper}>
           <img src={user?.avatar} className={styles.avatar} alt="Avatar" />
         </div>
-        <div className="text-center text-black">
+        <div className="container text-center text-black">
           <h1 className={styles.title}>{user?.userName}</h1>
-          <p className=" mt-5">{user?.describe}</p>
+            <div
+            className={`mb-3 lh-lg mt-5 text-start ${styles["post-content"]}`}
+            dangerouslySetInnerHTML={{
+              __html: normalizeContent(user?.describe),
+            }}
+          ></div>
         </div>
       </div>
       <Footer />
