@@ -58,12 +58,16 @@ export default function PostDetail() {
                     </p>
                   </div>
                 ) : (
-                  <div>
+                  <div className="container py-4">
                     <h2 class="fw-bold mb-2 text-decoration-none text-dark">
                       {post?.title}
                     </h2>
                     <br />
-                    <h3 class="fw-light text-muted mb-3">{post?.content}</h3>
+                    <div
+                      className="lh-lg post-content text-break overflow-hidden"
+                      dangerouslySetInnerHTML={{ __html: post.content }}
+                    ></div>
+
                     <hr class="my-4" />
                     <p class="text-muted small">
                       Posted by <strong>{post?.authorName}</strong> on{" "}

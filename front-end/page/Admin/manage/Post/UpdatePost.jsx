@@ -28,70 +28,80 @@ export default function UpdatePost() {
     };
   }, [id]);
   const handleSavePost = async () => {
+    const token = localStorage.getItem("tk");
+    const patchData = [
+      {
+        path: "/title",
+        op: "replace",
+        value: data.title,
+      },
+      {
+        path: "/content",
+        op: "replace",
+        value: data.content,
+      },
+    ];
     try {
-      const token = localStorage.getItem("tk");
-      const patchData = [
-        {
-          path: "/title",
-          op: "replace",
-          value: data.title,
-        },
-        {
-          path: "/content",
-          op: "replace",
-          value: data.content,
-        },
-      ];
       await axiosClient.patch(`/post/${id}`, patchData, {
         headers: {
           "Content-Type": "application/json-patch+json",
-          Authorization: `Bearer: ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       alert("Cập nhật bai viet thành công!");
+      navigate(-1)
     } catch (err) {
       console.log("Co loi khi cap nhat bai viet", err);
       if (err.response?.status === 401)
         alert("Phiên đăng nhập hết hạn, vui lòng login lại!");
-      else alert("Co loi khi cap nhat bai dang");
+      else alert("Cập nhật thất bại!");
     }
   };
   const handleContentChange = (content) => {
     setData({ ...data, content: content });
   };
   return (
-    <div className="container">
-      <div class="input-group input-group-lg">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="inputGroup-sizing-lg">
-            Title
-          </span>
+    <div className="container mt-4">
+      <div className="card shadow-sm border-0">
+        <div className="card-body">
+          <div className="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-3 mb-4">
+            <div className="input-group input-group-lg flex-grow-1">
+              <span className="input-group-text fw-semibold">Title</span>
+
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Nhập tiêu đề bài viết..."
+                value={data?.title || ""}
+                onChange={(e) => setData({ ...data, title: e.target.value })}
+              />
+            </div>
+
+            <div className="d-flex gap-2 justify-content-end">
+              <button
+                type="button"
+                className="btn btn-outline-secondary px-4"
+                onClick={() => navigate(-1)}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-primary px-4"
+                onClick={handleSavePost}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+
+          <ReactQuill
+            theme="snow"
+            value={data?.content || ""}
+            onChange={handleContentChange}
+          />
         </div>
-        <input
-          type="text"
-          class="form-control"
-          aria-label="Large"
-          aria-describedby="inputGroup-sizing-sm"
-          value={data?.title}
-          onChange={(e) => setData({ ...data, title: e.target.value })}
-        />
-      </div>
-      <ReactQuill
-        theme="snow"
-        value={data?.content || ""}
-        onChange={handleContentChange}
-      />
-      <div className="d-flex gap-2 mt-3 ">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          onClick={() => navigate(-1)}
-        >
-          Cancel
-        </button>
-        <button type="button" class="btn btn-primary" onClick={handleSavePost}>
-          Save
-        </button>
       </div>
     </div>
   );
