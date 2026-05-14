@@ -3,10 +3,19 @@ import Footer from "../../components/Footer";
 import Header from "../../components/Header/Header";
 import { useParams } from "react-router-dom";
 import axiosClient from "../../api";
+import "./PostDetail.css"
+
 export default function PostDetail() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const normalizeContent = (html) => {
+    if (!html) return "";
+
+    return html
+      .replace(/&nbsp;/g, " ").
+      replace(/\u00A0/g, " ");
+  };
   useEffect(() => {
     window.scrollTo(0, 0);
     var isMounted = true
@@ -64,8 +73,10 @@ export default function PostDetail() {
                     </h2>
                     <br />
                     <div
-                      className="lh-lg post-content text-break overflow-hidden"
-                      dangerouslySetInnerHTML={{ __html: post.content }}
+                      className="mb-3 lh-lg post-content "
+                      dangerouslySetInnerHTML={{
+                        __html: normalizeContent(post.content)
+                      }}
                     ></div>
 
                     <hr class="my-4" />
