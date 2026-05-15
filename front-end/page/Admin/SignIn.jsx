@@ -8,11 +8,11 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  const [isLoging, setLoging] = useState(false)
   const handleLogin = async (e) => {
     e.preventDefault(); // Ngăn trang web load lại
     setError("");
-
+    setLoging(true)
     try {
       // 2. Gọi API đăng nhập (Thay URL bằng API thật của bạn)
       const res = await axiosClient.post(
@@ -25,12 +25,13 @@ export default function SignIn() {
 
       // 3. Lưu Token vào localStorage (Đặt tên là "tk" như bạn muốn)
       localStorage.setItem("tk", res.data);
-
+      setLoging(false)
       // 4. Đăng nhập xong thì phi thẳng vào Admin Dashboard
       navigate("/admin-dashboard-80820508");
     } catch (err) {
       setError("Email hoặc mật khẩu không chính xác!");
       console.error(err);
+      setLoging(false);
     }
   };
 
@@ -68,8 +69,19 @@ export default function SignIn() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100 mt-4">
-            Login
+          <button
+            type="submit"
+            className="btn btn-primary w-100 mt-4 "
+            disabled={isLoging}
+          >
+            {isLoging ? (
+              <div className="d-flex justify-content-center align-items-center gap-2">
+                <div className="spinner-border" role="status"></div>
+                <span className="sr-only">Loading...</span>
+              </div>
+            ) : (
+              <>Login</>
+            )}
           </button>
         </form>
       </div>

@@ -5,8 +5,10 @@ import axiosClient from "../../../../api";
 import { useNavigate, useParams } from "react-router-dom";
 export default function UpdatePost() {
   const [isLoading, setLoading] = useState(true);
+  const [isUploading, setUploading] = useState(false);
   const [data, setData] = useState({
     title: "",
+    thumbnail: "",
     content: "",
   });
   const { id } = useParams();
@@ -22,7 +24,7 @@ export default function UpdatePost() {
         setLoading(false);
       } catch (err) {
         alert("Loi lay du lieu");
-        console.log(err)
+        console.log(err);
         setLoading(false);
       }
     };
@@ -44,6 +46,11 @@ export default function UpdatePost() {
         op: "replace",
         value: data.content,
       },
+      {
+        path: "/thumbnail",
+        op: "replace",
+        value: data.thumbnail,
+      },
     ];
     setLoading(true);
     try {
@@ -60,16 +67,61 @@ export default function UpdatePost() {
       if (err.response?.status === 401)
         alert("Phiên đăng nhập hết hạn, vui lòng login lại!");
       else alert("Cập nhật thất bại!");
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
   const handleContentChange = (content) => {
     setData({ ...data, content: content });
   };
+  const handleUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return null;
+    const formData = new FormData();
+    formData.append("file", file);
+    setUploading(true);
+    const token = localStorage.getItem("tk");
+    try {
+      const res = await axiosClient.post("/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return res.data.url; // Trả về URL từ Cloudinary
+    } catch (err) {
+      console.error("Lỗi upload status:", err.response?.status);
+      console.error("Lỗi upload data:", err.response?.data);
+      console.error("Lỗi upload message:", err.message);
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+  const onFileChange = async (e) => {
+    const { name } = e.target;
+    const url = await handleUpload(e);
+    if (url) {
+      setData((prev) => ({ ...prev, [name]: url }));
+      alert(`Đã tải lên ${name} thành công!`);
+    }
+  };
   return (
     <>
+      {isUploading && (
+        <div
+          className="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            zIndex: 9999,
+          }}
+        >
+          <div className="spinner-border text-light" role="status"></div>
+          <p className="text-white mt-3">Đang upload...</p>
+        </div>
+      )}
+
       {isLoading ? (
         <div
           className="d-flex justify-content-center align-items-center gap-2"
@@ -116,7 +168,27 @@ export default function UpdatePost() {
                   </button>
                 </div>
               </div>
-
+              <div className="mb-3 text-start">
+                <label className="form-label fw-bold">Thumbnail</label>
+                {data?.thumbnail && (
+                  <img
+                    src={data?.thumbnail}
+                    alt="thumbnail"
+                    className="d-block mb-2 rounded"
+                    style={{
+                      width: "100%",
+                      height: "100px",
+                      objectFit: "cover",
+                    }}
+                  />
+                )}
+                <input
+                  className="form-control"
+                  type="file"
+                  name="thumbnail"
+                  onChange={onFileChange}
+                />
+              </div>
               <ReactQuill
                 theme="snow"
                 value={data?.content || ""}
