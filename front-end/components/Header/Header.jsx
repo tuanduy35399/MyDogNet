@@ -36,7 +36,7 @@ export default function Header({ bgURL }) {
         </div>
         <div className="container text-center">
           <img
-            src="/dognet-favicon-light-nobg.png"
+            src="/dognet-favicon.png"
             style={{ width: "150px" }}
           />
         </div>
