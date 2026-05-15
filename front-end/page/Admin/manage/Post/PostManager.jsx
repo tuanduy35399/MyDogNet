@@ -113,15 +113,25 @@ export default function PostManager() {
             </div>
           </dialog>
           <h1 className="mb-4">Post Manager</h1>
-          <div class="search-container">
-            <input
-              type="text"
-              class="form-control search-input"
-              placeholder="Type something..."
-              value={inputFind}
-              onChange={(e) => setInputFind(e.target.value)}
-              onKeyDown={(e) => e.key == "Enter" && handleFind()}
-            />
+          <div className="d-flex justify-content-between align-items-center gap-2">
+            <div class="search-container d-flex w-75">
+              <input
+                type="text"
+                class="form-control search-input"
+                placeholder="Type something..."
+                value={inputFind}
+                onChange={(e) => setInputFind(e.target.value)}
+                onKeyDown={(e) => e.key == "Enter" && handleFind()}
+              />
+            </div>
+            <Link
+              to={"/admin-dashboard-80820508/create-post-80820508"}
+              className="btn btn-primary text-white"
+            >
+              <span className="text-white text-decoration-none">
+                + NEW POST
+              </span>
+            </Link>
           </div>
           <table class="table mt-3">
             <thead>
