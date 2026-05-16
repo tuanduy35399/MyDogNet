@@ -1,17 +1,17 @@
 # MyDogNet
 Just a web portfolio to get know more about me LOL
 
-###Try it here
+### Try it here
 https://my-dog-net.vercel.app/
 
-###Ngày bắt đầu: 26/4/2026
-###Ngày kết thúc: 16/5/2026
+### Ngày bắt đầu: 26/4/2026
+### Ngày kết thúc: 16/5/2026
 
-###Khuyết điểm chưa khắc phục:
+### Khuyết điểm chưa khắc phục:
 Vẫn còn up hình base64 gây crash server
 => khắc phục bằng cloundinary
 
-###Qua project này tôi học được gì?
+### Qua project này tôi học được gì?
 
 Cách xây dựng BE theo kiểu Repository Pattern tuân thủ SOLID
 
