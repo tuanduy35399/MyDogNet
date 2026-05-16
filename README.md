@@ -1,9 +1,17 @@
 # MyDogNet
 Just a web portfolio to get know more about me LOL
-Try it here
+
+###Try it here
 https://my-dog-net.vercel.app/
 
-Qua project này tôi học được gì?
+###Ngày bắt đầu: 26/4/2026
+###Ngày kết thúc: 16/5/2026
+
+###Khuyết điểm chưa khắc phục:
+Vẫn còn up hình base64 gây crash server
+=> khắc phục bằng cloundinary
+
+###Qua project này tôi học được gì?
 
 Cách xây dựng BE theo kiểu Repository Pattern tuân thủ SOLID
 
@@ -128,3 +136,5 @@ Biết dùng thư viện quill để tạo text-editor như word
 Dùng JWT nhưng lưu localhost dễ bị tấn công XSS, tuy nhiên do tôi mới học nên thôi thì để tạm như vậy (4/5/2026)
 
 Mục tiêu sau khi học thêm về authen với cookie tôi có thể thành thạo dùng cả jwt và cookie 
+
+
