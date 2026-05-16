@@ -9,7 +9,7 @@ https://my-dog-net.vercel.app/
 
 ### Khuyết điểm chưa khắc phục:
 Vẫn còn up hình base64 gây crash server
-=> khắc phục bằng cloundinary
+=> khắc phục bằng cloudinary
 
 ### Qua project này tôi học được gì?
 
