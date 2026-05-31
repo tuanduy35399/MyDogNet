@@ -11,13 +11,14 @@
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
+    "@vercel/kv": "^3.0.0",
     "axios": "^1.15.2",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "jwt-decode": "^4.0.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
-    "react-quill-new": "^3.8.3",
+    "react-quill-new": "^3.7.0",
     "react-router-dom": "^7.14.2"
   },
   "devDependencies": {

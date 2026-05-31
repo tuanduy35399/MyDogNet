@@ -32,9 +32,8 @@ export default function CreatePost() {
       if (err.response?.status === 401)
         alert("Phiên đăng nhập hết hạn, vui lòng login lại!");
       else alert("Đăng bài thất bại!");
-    } finally {
       setLoading(false);
-    }
+    } 
   };
   const handleContentChange = (content) => {
     setData({ ...data, content: content });
