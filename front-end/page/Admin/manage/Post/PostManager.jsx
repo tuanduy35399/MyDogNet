@@ -34,11 +34,10 @@ export default function PostManager() {
       await axiosClient.delete(`/post/${selectedPostId}`);
       alert("Xoa bai viet thanh cong");
       closeDeleteDialog();
-      fetchPosts();
+      await fetchPosts();
     } catch (err) {
       alert("Khong the xoa bai viet");
       console.error("Lỗi khi xóa:", err);
-    } finally {
       setLoading(false);
     }
   };
