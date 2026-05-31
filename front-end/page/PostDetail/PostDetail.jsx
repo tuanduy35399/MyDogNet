@@ -18,7 +18,7 @@ export default function PostDetail() {
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN", {
+    return date.toLocaleString("vi-VN", {
       year: "numeric",
       month: "short",
       day: "numeric",
