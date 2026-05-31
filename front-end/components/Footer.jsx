@@ -1,4 +1,5 @@
 import "./Footer.css";
+import VisitorCounter from "./ViewCounter";
 export default function Footer() {
   return (
     <footer className="bg-dark text-white text-center py-4 mt-5">
@@ -62,7 +63,7 @@ export default function Footer() {
             </svg>
           </a>
         </div>
-
+        <VisitorCounter />
         {/* Khối chữ bản quyền ở dưới */}
         <div className="small text-white-50">
           © {new Date().getFullYear()} Copyright by{" "}
