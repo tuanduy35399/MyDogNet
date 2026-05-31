@@ -3,22 +3,32 @@ import Footer from "../../components/Footer";
 import Header from "../../components/Header/Header";
 import { useParams } from "react-router-dom";
 import axiosClient from "../../api";
-import "./PostDetail.css"
-
+import "./PostDetail.css";
+import { useUser } from "../../context/UserContext";
 export default function PostDetail() {
   const { id } = useParams();
+  const { user } = useUser();
   const [post, setPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const normalizeContent = (html) => {
     if (!html) return "";
 
-    return html
-      .replace(/&nbsp;/g, " ").
-      replace(/\u00A0/g, " ");
+    return html.replace(/&nbsp;/g, " ").replace(/\u00A0/g, " ");
+  };
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("vi-VN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
   useEffect(() => {
     window.scrollTo(0, 0);
-    var isMounted = true
+    var isMounted = true;
     const fetchData = async () => {
       try {
         var res = await axiosClient.get(`/post/${id}`); //lấy id từ path truyền vô đây
@@ -29,14 +39,14 @@ export default function PostDetail() {
           }
         }, 800);
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
-    }    
-    fetchData()
+    };
+    fetchData();
     return () => {
-      isMounted=false
-    }
-  }, [id]) //chay lai neu id thay doi
+      isMounted = false;
+    };
+  }, [id]); //chay lai neu id thay doi
   return (
     <>
       <section>
@@ -45,7 +55,7 @@ export default function PostDetail() {
             <div class="placeholder col-12" style={{ height: "330px" }}></div>
           </div>
         ) : (
-          <Header bgURL={post?.thumbnail} />
+          <Header bgURL={post?.thumbnail || user?.backGroundImg} />
         )}
         <div class="container my-5">
           <div class="row justify-content-center">
@@ -72,18 +82,17 @@ export default function PostDetail() {
                       {post?.title}
                     </h2>
                     <br />
+                    <p class="text-muted small">
+                      Posted by <strong>{post?.authorName}</strong> on{" "}
+                      {formatDate(post?.createdAt)}
+                    </p>
+                    <hr class="my-4" />
                     <div
                       className="mb-3 lh-lg post-content "
                       dangerouslySetInnerHTML={{
-                        __html: normalizeContent(post.content)
+                        __html: normalizeContent(post.content),
                       }}
                     ></div>
-
-                    <hr class="my-4" />
-                    <p class="text-muted small">
-                      Posted by <strong>{post?.authorName}</strong> on{" "}
-                      {post?.createdAt}
-                    </p>
                   </div>
                 )}
               </div>

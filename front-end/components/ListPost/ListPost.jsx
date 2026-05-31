@@ -8,13 +8,13 @@ export default function ListPost({ onDataLoaded }) {
   const [totalPages, setTotalPages] = useState(1);
   const pageSize = 5; // Số lượng bài mỗi trang
 
-const [searchInput, setSearchInput] = useState("");
-const [searchTerm, setSearchTerm] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString("vi-VN", {
       year: "numeric",
       month: "short",
       day: "numeric",
@@ -70,7 +70,7 @@ const [searchTerm, setSearchTerm] = useState("");
                 placeholder="Type something..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                onKeyDown={(e) => e.key=="Enter" && handleFind()}
+                onKeyDown={(e) => e.key == "Enter" && handleFind()}
               />
             </div>
           </div>
@@ -83,12 +83,14 @@ const [searchTerm, setSearchTerm] = useState("");
           key={item?.id}
         >
           <div className="card" style={{ width: "50rem", overflow: "hidden" }}>
-            <img
-              className="card-img-top"
-              src={item?.thumbnail}
-              alt={item?.title}
-              style={{ height: "250px", objectFit: "cover" }}
-            />
+            {item?.thumbnail && (
+              <img
+                className="card-img-top"
+                src={item?.thumbnail}
+                alt={item?.title}
+                style={{ height: "250px", objectFit: "cover" }}
+              />
+            )}
             <div className="card-body text-start">
               <h3 className="card-title">{item?.title}</h3>
               <p className="card-text mb-1">

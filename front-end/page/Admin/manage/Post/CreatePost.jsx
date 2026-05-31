@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import axiosClient from "../../../../api";
@@ -9,11 +9,11 @@ export default function CreatePost() {
   const [data, setData] = useState({
     title: "",
     content: "",
-    thumbnail: "",
+    thumbnail: null,
     isPublished: true, //tạm thời mặc định là true
   });
   const navigate = useNavigate();
-  
+
   const handleSavePost = async () => {
     const token = localStorage.getItem("tk");
 
@@ -86,71 +86,69 @@ export default function CreatePost() {
           <p className="text-white mt-3">Đang upload...</p>
         </div>
       )}
-        <div className="container mt-4">
-          <div className="card shadow-sm border-0">
-            <div className="card-body">
-              <div className="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-3 mb-4">
-                <div className="input-group input-group-lg flex-grow-1">
-                  <span className="input-group-text fw-semibold">Title</span>
+      <div className="container mt-4">
+        <div className="card shadow-sm border-0">
+          <div className="card-body">
+            <div className="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-3 mb-4">
+              <div className="input-group input-group-lg flex-grow-1">
+                <span className="input-group-text fw-semibold">Title</span>
 
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Nhập tiêu đề bài viết..."
-                    value={data?.title || ""}
-                    onChange={(e) =>
-                      setData({ ...data, title: e.target.value })
-                    }
-                  />
-                </div>
-
-                <div className="d-flex gap-2 justify-content-end">
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary px-4"
-                    onClick={() => navigate(-1)}
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    type="button"
-                    className="btn btn-primary px-4"
-                    onClick={handleSavePost}
-                  >
-                    Save
-                  </button>
-                </div>
-              </div>
-              <div className="mb-3 text-start">
-                <label className="form-label fw-bold">Thumbnail</label>
-                {data?.thumbnail && (
-                  <img
-                    src={data?.thumbnail}
-                    alt="thumbnail"
-                    className="d-block mb-2 rounded"
-                    style={{
-                      width: "100%",
-                      height: "100px",
-                      objectFit: "cover",
-                    }}
-                  />
-                )}
                 <input
+                  type="text"
                   className="form-control"
-                  type="file"
-                  name="thumbnail"
-                  onChange={onFileChange}
+                  placeholder="Nhập tiêu đề bài viết..."
+                  value={data?.title || ""}
+                  onChange={(e) => setData({ ...data, title: e.target.value })}
                 />
               </div>
-              <ReactQuill
-                theme="snow"
-                value={data?.content || ""}
-                onChange={handleContentChange}
+
+              <div className="d-flex gap-2 justify-content-end">
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary px-4"
+                  onClick={() => navigate(-1)}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-primary px-4"
+                  onClick={handleSavePost}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+            <div className="mb-3 text-start">
+              <label className="form-label fw-bold">Thumbnail</label>
+              {data?.thumbnail && (
+                <img
+                  src={data?.thumbnail}
+                  alt="thumbnail"
+                  className="d-block mb-2 rounded"
+                  style={{
+                    width: "100%",
+                    height: "100px",
+                    objectFit: "cover",
+                  }}
+                />
+              )}
+              <input
+                className="form-control"
+                type="file"
+                name="thumbnail"
+                onChange={onFileChange}
               />
             </div>
+            <ReactQuill
+              theme="snow"
+              value={data?.content || ""}
+              onChange={handleContentChange}
+            />
           </div>
         </div>
+      </div>
     </>
   );
 }

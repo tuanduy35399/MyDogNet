@@ -1,0 +1,8 @@
+.custom-hover {
+  opacity: 0.6;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.custom-hover:hover {
+  opacity: 1; /* Hover vào mờ còn 10% như bạn muốn */
+}
