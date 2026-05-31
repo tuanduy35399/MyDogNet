@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/vercel-counter",
-      "destination": "/api/counter.js"
+      "destination": "/api/views.js"
     },
     {
       "source": "/api/:path*",
