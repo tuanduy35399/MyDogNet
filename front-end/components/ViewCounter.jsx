@@ -5,7 +5,7 @@ export default function VisitorCounter() {
 
   useEffect(() => {
     // Gọi endpoint cục bộ, khi deploy lên Vercel nó sẽ tự hiểu
-    fetch("/api/views")
+    fetch("/vercel-counter")
       .then((res) => res.json())
       .then((data) => {
         if (data && data.views) setViews(data.views);
