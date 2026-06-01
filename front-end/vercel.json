@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/vercel-counter",
-      "destination": "/api/views.js"
-    },
-    {
       "source": "/api/:path*",
       "destination": "http://dognet.runasp.net/:path*"
     },
