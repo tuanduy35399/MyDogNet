@@ -13,9 +13,9 @@ export default function Footer() {
     counter
       .up("first-counter-4311")
       .then((res) => {
-        console.log("Counter response:", res);
+        console.log("Counter response:", JSON.stringify(res, null, 2));
 
-        setViews(res.count ?? res.Count ?? res.value ?? 0);
+        setViews(res.data.up_count);
       })
       .catch((err) => {
         console.error("CounterAPI Error:", err);

@@ -9,8 +9,4 @@ import { inject } from "@vercel/analytics";
 
 //Kích hoạt Analytics
 inject();
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+createRoot(document.getElementById("root")).render(<App />);
