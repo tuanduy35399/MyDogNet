@@ -11,7 +11,7 @@ export default function Footer() {
     });
 
     counter
-      .up("home-page")
+      .up("first-counter-4311")
       .then((res) => {
         console.log("Counter response:", res);
 
