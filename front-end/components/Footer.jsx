@@ -1,31 +1,30 @@
 import { useState, useEffect } from "react";
-import CounterAPI from "counterapi";
+// Sửa dòng này: thêm { } vào dòng import
+import { Counter } from "counterapi";
 
 export default function Footer() {
   const [views, setViews] = useState(0);
 
   useEffect(() => {
-    // Khởi tạo CounterAPI với ID duy nhất của bạn
-    // Thay 'mydognet-tuan-duy' bằng bất kỳ cụm từ nào bạn thích để làm định danh nhóm
-    const counter = new CounterAPI("mydognet-tuan-duy", "home-page");
+    const counter = new Counter({
+      workspace: "mydognet-tuan-duy",
+    });
 
-    // Hàm gọi API tăng số lượt truy cập lên 1 và lấy kết quả về
     counter
-      .up()
+      .up("home-page")
       .then((res) => {
-        if (res && res.Count) {
-          setViews(res.Count); // Thư viện trả về biến viết hoa chữ 'Count'
-        }
+        console.log("Counter response:", res);
+
+        setViews(res.count ?? res.Count ?? res.value ?? 0);
       })
       .catch((err) => {
-        console.error("Lỗi CounterAPI:", err);
+        console.error("CounterAPI Error:", err);
       });
   }, []);
 
   return (
     <footer className="bg-dark text-white text-center py-4 mt-5">
       <div className="container">
-        {/* Khối chứa các Icon mạng xã hội */}
         <div className="d-flex justify-content-center gap-4 mb-3">
           {/* GitHub */}
           <a
@@ -88,12 +87,10 @@ export default function Footer() {
           </a>
         </div>
 
-        {/* Khối hiển thị số lượt truy cập */}
         <div className="text-white-50 small mb-2">
           Số lượt truy cập: <span className="text-white fw-bold">{views}</span>
         </div>
 
-        {/* Khối chữ bản quyền ở dưới */}
         <div className="small text-white-50">
           © {new Date().getFullYear()} Copyright by{" "}
           <span className="text-white fw-bold">tuanduy35399</span>

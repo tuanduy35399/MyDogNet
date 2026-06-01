@@ -19,19 +19,3 @@ export default function VisitorCounter() {
     </div>
   );
 }
-import { Counter } from "counterapi";
-
-// Create a counter client
-const counter = new Counter({ workspace: "my-workspace" });
-
-// Track an event
-async function trackEvent() {
-  try {
-    const result = await counter.up("api-calls");
-    console.log(`Total API calls: ${result.value}`);
-  } catch (error) {
-    console.error("Failed to track event:", error.message);
-  }
-}
-
-trackEvent();
