@@ -33,10 +33,13 @@ export default function CreatePost() {
         alert("Phiên đăng nhập hết hạn, vui lòng login lại!");
       else alert("Đăng bài thất bại!");
       setLoading(false);
-    } 
+    }
   };
   const handleContentChange = (content) => {
-    setData({ ...data, content: content });
+    setData((prev) => ({
+      ...prev,
+      content,
+    }));
   };
   const handleUpload = async (e) => {
     const file = e.target.files[0];
@@ -71,6 +74,16 @@ export default function CreatePost() {
       alert(`Đã tải lên ${name} thành công!`);
     }
   };
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, 5, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ list: "ordered" }, { list: "bullet" }], // Danh sách
+      [{ color: [] }, { background: [] }], // Màu chữ, màu nền
+      ["link", "image", "video"], // Thêm link, ảnh, video
+      ["clean"],["code-block"], // Nút xóa toàn bộ định dạng văn bản
+    ],
+  };
   return (
     <>
       {isUploading && (
@@ -97,7 +110,7 @@ export default function CreatePost() {
                   className="form-control"
                   placeholder="Nhập tiêu đề bài viết..."
                   value={data?.title || ""}
-                  onChange={(e) => setData({ ...data, title: e.target.value })}
+                  onChange={(e) => setData(prev=> ({ ...prev, title: e.target.value }))}
                 />
               </div>
 
@@ -144,6 +157,7 @@ export default function CreatePost() {
               theme="snow"
               value={data?.content || ""}
               onChange={handleContentChange}
+              modules={modules}
             />
           </div>
         </div>
