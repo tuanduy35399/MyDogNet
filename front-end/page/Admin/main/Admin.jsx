@@ -1,7 +1,14 @@
+import { jwtDecode } from "jwt-decode";
 import { Link, useOutlet } from "react-router-dom";
 
 export default function Admin() {
   const outlet = useOutlet();
+  let roles = [];
+  try {
+    const token = jwtDecode(localStorage.getItem('tk'));
+    const claim = token.role || token['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || [];
+    roles = Array.isArray(claim) ? claim : [claim];
+  } catch { /* ProtectedRoute handles an invalid token. */ }
   return (
     <section>
       <nav className="navbar navbar-expand-lg navbar-light bg-light gap-100">
@@ -22,11 +29,11 @@ export default function Admin() {
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
-              <li className="nav-item">
+              {roles.includes("Admin") && <li className="nav-item">
                 <Link to="account-manager-80820508" className="nav-link active">
                   Accounts
                 </Link>
-              </li>
+              </li>}
               <li className="nav-item">
                 <Link to="post-manager-80820508" className="nav-link active">
                   Posts

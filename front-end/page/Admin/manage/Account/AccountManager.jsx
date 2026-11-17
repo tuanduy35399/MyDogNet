@@ -23,7 +23,7 @@ export default function AccountManager() {
     return () => {
       isMounted = false;
     }
-  });
+  }, []);
   return (
     <>
       {isLoading ? (

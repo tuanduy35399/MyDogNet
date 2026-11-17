@@ -57,3 +57,18 @@ TestResult.xml
 nunit-*.xml
 
 .vs/
+
+# Local development configuration and credentials
+BackEnd/appsettings.Local.json
+.env.*
+!.env.example
+front-end/.env*
+!front-end/.env.example
+.local/
+.drawio-tmp/
+node_modules/
+*.csproj.user
+*.pubxml.user
+
+# Maintenance test artifacts
+maintenance-tests/TestResults/

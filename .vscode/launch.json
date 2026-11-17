@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "MyDogNet: Backend (Linux)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "MyDogNet: build backend",
+      "program": "${workspaceFolder}/BackEnd/bin/Debug/net6.0/BackEnd.dll",
+      "cwd": "${workspaceFolder}/BackEnd",
+      "console": "internalConsole",
+      "launchSettingsProfile": "Linux",
+      "env": {
+        "DOTNET_ROOT": "${env:HOME}/.dotnet",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5091"
+      },
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s/swagger"
+      }
+    }
+  ]
+}

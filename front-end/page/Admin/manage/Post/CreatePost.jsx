@@ -1,11 +1,14 @@
 import { useState } from "react";
-import ReactQuill from "react-quill-new";
+import RichTextEditor, { uploadImage } from "../../../../components/Editor/RichTextEditor";
 import "react-quill-new/dist/quill.snow.css";
 import axiosClient from "../../../../api";
 import { useNavigate, useParams } from "react-router-dom";
 export default function CreatePost() {
   const [isLoading, setLoading] = useState(true);
   const [isUploading, setUploading] = useState(false);
+  const [editorBusy, setEditorBusy] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
   const [data, setData] = useState({
     title: "",
     content: "",
@@ -15,6 +18,10 @@ export default function CreatePost() {
   const navigate = useNavigate();
 
   const handleSavePost = async () => {
+    if (editorBusy || isUploading || saving) return;
+    if (/data:/i.test(data.content)) { setError('Ảnh base64 chưa được chuyển. Hãy tải lại ảnh qua nút chèn ảnh.'); return; }
+    setError('');
+    setSaving(true);
     const token = localStorage.getItem("tk");
 
     setLoading(true);
@@ -25,15 +32,15 @@ export default function CreatePost() {
           Authorization: `Bearer ${token}`,
         },
       });
-      alert("Tạo bài viết thành công!");
+
       navigate("/admin-dashboard-80820508/post-manager-80820508");
     } catch (err) {
       console.log("Co loi khi cap nhat bai viet", err);
       if (err.response?.status === 401)
-        alert("Phiên đăng nhập hết hạn, vui lòng login lại!");
-      else alert("Đăng bài thất bại!");
+        setError("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại.");
+      else setError(err.response?.data?.message || (typeof err.response?.data === "string" ? err.response.data : null) || "Đăng bài thất bại.");
       setLoading(false);
-    }
+    } finally { setSaving(false); }
   };
   const handleContentChange = (content) => {
     setData((prev) => ({
@@ -42,29 +49,11 @@ export default function CreatePost() {
     }));
   };
   const handleUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return null;
-    const formData = new FormData();
-    formData.append("file", file);
+    const file = e.target.files[0]; if (!file) return null;
     setUploading(true);
-    const token = localStorage.getItem("tk");
-    try {
-      const res = await axiosClient.post("/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return res.data.url; // Trả về URL từ Cloudinary
-    } catch (err) {
-      console.error("Lỗi upload status:", err.response?.status);
-      console.error("Lỗi upload data:", err.response?.data);
-      console.error("Lỗi upload message:", err.message);
-      return null;
-    } finally {
-      setUploading(false);
-    }
+    try { return await uploadImage(file); }
+    catch (error) { alert(error.response?.data?.message || error.message); return null; }
+    finally { setUploading(false); }
   };
   const onFileChange = async (e) => {
     const { name } = e.target;
@@ -73,16 +62,6 @@ export default function CreatePost() {
       setData((prev) => ({ ...prev, [name]: url }));
       alert(`Đã tải lên ${name} thành công!`);
     }
-  };
-  const modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, 4, 5, false] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ list: "ordered" }, { list: "bullet" }], // Danh sách
-      [{ color: [] }, { background: [] }], // Màu chữ, màu nền
-      ["link", "image", "video"], // Thêm link, ảnh, video
-      ["clean"],["code-block"], // Nút xóa toàn bộ định dạng văn bản
-    ],
   };
   return (
     <>
@@ -101,6 +80,7 @@ export default function CreatePost() {
       <div className="container mt-4">
         <div className="card shadow-sm border-0">
           <div className="card-body">
+            {error && <p role="alert" className="text-danger">{error}</p>}
             <div className="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-3 mb-4">
               <div className="input-group input-group-lg flex-grow-1">
                 <span className="input-group-text fw-semibold">Title</span>
@@ -126,6 +106,7 @@ export default function CreatePost() {
                 <button
                   type="button"
                   className="btn btn-primary px-4"
+                  disabled={editorBusy || isUploading || saving}
                   onClick={handleSavePost}
                 >
                   Save
@@ -153,11 +134,11 @@ export default function CreatePost() {
                 onChange={onFileChange}
               />
             </div>
-            <ReactQuill
+            <RichTextEditor
               theme="snow"
               value={data?.content || ""}
+              onBusyChange={setEditorBusy}
               onChange={handleContentChange}
-              modules={modules}
             />
           </div>
         </div>

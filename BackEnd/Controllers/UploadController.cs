@@ -1,41 +1,30 @@
-﻿using BackEnd.Services;
+using BackEnd.Data;
+using BackEnd.Models;
+using BackEnd.Services;
+using BackEnd.Maintenance;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
-namespace BackEnd.Controllers
+using System.Security.Claims;
+namespace BackEnd.Controllers;
+[ApiController, Route("[controller]"), Authorize(Roles = "Admin,Editor")]
+public class UploadController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class UploadController : ControllerBase
+    [HttpPost, RequestSizeLimit(6 * 1024 * 1024)]
+    public async Task<IActionResult> Upload(IFormFile file, [FromServices] ICloudinaryServices cloud, [FromServices] ApplicationDbContext db)
     {
-        private readonly ICloudinaryServices _cloudinarySerivce;
-        public UploadController(ICloudinaryServices cloudinaryService)
+        if (file.Length > ContentRules.MaxImageBytes) return StatusCode(413, new { message = "Ảnh vượt 5 MiB." });
+        if (!await ContentRules.IsImage(file)) return BadRequest(new { message = "Chỉ chấp nhận JPEG, PNG hoặc WebP hợp lệ." });
+        UploadedImage uploaded;
+        try { uploaded = await cloud.UploadImageAsync(file); }
+        catch { return StatusCode(502, new { message = "Không tải ảnh lên được. Vui lòng thử lại." }); }
+        var asset = new MediaAsset { OwnerId = User.FindFirstValue(ClaimTypes.NameIdentifier), PublicId = uploaded.PublicId, Url = uploaded.Url };
+        db.MediaAssets.Add(asset);
+        try { await db.SaveChangesAsync(); }
+        catch
         {
-            _cloudinarySerivce = cloudinaryService;
+            try { await cloud.DeleteImageAsync(uploaded.PublicId); } catch { /* Keep the error generic; operator can reconcile an interrupted upload. */ }
+            return StatusCode(503, new { message = "Chưa lưu được ảnh. Vui lòng thử lại." });
         }
-        [HttpPost]
-[Authorize]
-public async Task<IActionResult> Upload(IFormFile file)
-{
-    try 
-    {
-        if (file == null || file.Length == 0) return BadRequest("File is empty");
-        var url = await _cloudinarySerivce.UploadImageAsync(file);
-        return Ok(new { url });
+        return Ok(new { url = asset.Url, assetId = asset.Id });
     }
-    catch (Exception ex)
-    {
-        // Khi lỗi, Server sẽ trả về nội dung lỗi thực sự thay vì số 500 vô hồn
-         return StatusCode(500, new
-        {
-            error = ex.Message,
-            detail = ex.StackTrace, // Cái này sẽ chỉ đích danh dòng số mấy bị lỗi
-            inner = ex.InnerException?.Message
-        });
-            }
 }
-    }
-
-}
-

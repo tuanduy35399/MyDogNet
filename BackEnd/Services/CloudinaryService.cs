@@ -1,4 +1,4 @@
-﻿using CloudinaryDotNet;
+using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 
 namespace BackEnd.Services
@@ -25,7 +25,7 @@ namespace BackEnd.Services
             _cloudinary = new Cloudinary(account);
         }
 
-        public async Task<string> UploadImageAsync(IFormFile file)
+        public async Task<UploadedImage> UploadImageAsync(IFormFile file, string? migrationKey = null)
         {
             // Kiểm tra biến _cloudinary trước khi dùng để tránh lỗi dòng 49
             if (_cloudinary == null)
@@ -39,7 +39,9 @@ namespace BackEnd.Services
             var uploadParams = new ImageUploadParams
             {
                 File = new FileDescription(file.FileName, stream),
-                Folder = "temp"
+                Folder = migrationKey == null ? "mydognet/temp" : null,
+                PublicId = migrationKey,
+                Overwrite = false
             };
 
             var result = await _cloudinary.UploadAsync(uploadParams);
@@ -50,7 +52,13 @@ namespace BackEnd.Services
                 throw new Exception($"Cloudinary Error: {result.Error.Message}");
             }
 
-            return result.SecureUrl.ToString();
+            return new UploadedImage(result.PublicId, result.SecureUrl.ToString());
+        }
+        public async Task DeleteImageAsync(string publicId)
+        {
+            var result = await _cloudinary.DestroyAsync(new DeletionParams(publicId));
+            if (result.Error != null || (result.Result != "ok" && result.Result != "not found"))
+                throw new InvalidOperationException("Cloudinary delete failed.");
         }
     }
 }

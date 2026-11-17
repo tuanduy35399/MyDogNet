@@ -26,7 +26,7 @@ function App() {
           nghĩa
           <Route path="/post/:id" element={<PostDetail />} />
           //trang dang nhap dang ky cho admin
-          <Route path="/admin-signup-80820508" element={<SignUp />} />
+          <Route path="/admin-signup-80820508" element={<ProtectedRoute adminOnly><SignUp /></ProtectedRoute>} />
           <Route path="/admin-signin-80820508" element={<SignIn />} />
           //trang cho Admin được bảo vệ
           <Route
@@ -43,7 +43,7 @@ function App() {
             <Route path="post-manager-80820508" element={<PostManager />} />
             <Route
               path="account-manager-80820508"
-              element={<AccountManager />}
+              element={<ProtectedRoute adminOnly><AccountManager /></ProtectedRoute>}
             />
             <Route
               path="edit-account-80820508/:id"

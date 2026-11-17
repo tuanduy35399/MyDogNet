@@ -29,11 +29,11 @@ export default function PostManager() {
     dialogRef.current.close(); //dong dialog
   };
   const handleDelete = async () => {
+    closeDeleteDialog();
     setLoading(true);
     try {
       await axiosClient.delete(`/post/${selectedPostId}`);
       alert("Xoa bai viet thanh cong");
-      closeDeleteDialog();
       await fetchPosts();
     } catch (err) {
       alert("Khong the xoa bai viet");
@@ -44,7 +44,7 @@ export default function PostManager() {
   const fetchPosts = async () => {
     try {
       var res = await axiosClient.get(
-        `/post?pageNumber=${page}&pageSize=${pageSize}&searchTerm=${searchTerm}`,
+        `/post/manage?pageNumber=${page}&pageSize=${pageSize}&searchTerm=${searchTerm}`,
       );
       setPosts(res.data.data || []);
       setTotalPages(res.data.totalPages || 1);

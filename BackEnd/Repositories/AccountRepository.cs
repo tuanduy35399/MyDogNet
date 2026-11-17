@@ -1,4 +1,4 @@
-﻿using BackEnd.DTOs.AdminDTOs;
+using BackEnd.DTOs.AdminDTOs;
 using BackEnd.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +19,14 @@ namespace BackEnd.Repositories
         private readonly SignInManager<Admin> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _context;
-        public AccountRepository(UserManager<Admin> userManager, SignInManager<Admin> signInManager, IConfiguration configuration, ApplicationDbContext context)
+        private readonly ILogger<AccountRepository> _logger;
+        public AccountRepository(UserManager<Admin> userManager, SignInManager<Admin> signInManager, IConfiguration configuration, ApplicationDbContext context, ILogger<AccountRepository> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration; //lấy từ appconfig.jspon
             _context = context;
+            _logger = logger;
         }
         //Dùng Task<IEnumerable<AllAccounts>> để chỉ đọc, chặn việc sửa đổi như List<>
         public async Task<IEnumerable<AllAccounts>> GetAllAccountsAsync()
@@ -34,7 +36,7 @@ namespace BackEnd.Repositories
                 {
                     Id = acc.Id,
                     UserName= acc.UserName,
-                    
+
                 }).ToArrayAsync();
             return listAccount;
         }
@@ -56,15 +58,24 @@ namespace BackEnd.Repositories
             var user = new Admin
             {
                 UserName = modelDTO.UserName,
-                
+
             };
-            return await _userManager.CreateAsync(user, modelDTO.Password); 
+            var result = await _userManager.CreateAsync(user, modelDTO.Password);
+            if (result.Succeeded) result = await _userManager.AddToRoleAsync(user, modelDTO.Role);
+            return result;
         }
 
         public async Task<string> SignInAsync(SignInDTO modelDTO)
         {
-            var result = await _signInManager.PasswordSignInAsync(modelDTO.UserName, modelDTO.Password,false, false);
-            if (!result.Succeeded) return string.Empty;
+            await using var tx = await _context.Database.BeginTransactionAsync();
+            var normalized = _userManager.NormalizeName(modelDTO.UserName);
+            // Serialize failures for the same account across instances; Identity keeps the lockout in SQL.
+            var existing = await _context.Admins.FromSqlInterpolated($"SELECT * FROM AspNetUsers WITH (UPDLOCK, ROWLOCK) WHERE NormalizedUserName={normalized}").SingleOrDefaultAsync();
+            if (existing != null && !existing.LockoutEnabled)
+                await _userManager.SetLockoutEnabledAsync(existing, true);
+            var result = await _signInManager.PasswordSignInAsync(modelDTO.UserName, modelDTO.Password, false, true);
+            await tx.CommitAsync();
+            if (!result.Succeeded) { _logger.LogWarning("Login failed or account locked"); return string.Empty; }
             //Neu dung thi tao token
             //Claim dung de nhét thông tin user vào JWT token
             var user = await _userManager.FindByNameAsync(modelDTO.UserName);
@@ -81,6 +92,8 @@ namespace BackEnd.Repositories
                 //User A login lần 2 → token 2 (jti = xyz)
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
+            foreach (var role in await _userManager.GetRolesAsync(user))
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
             var authenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]));
             var token= new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],

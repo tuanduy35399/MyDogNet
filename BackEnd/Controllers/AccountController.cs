@@ -1,4 +1,7 @@
-﻿using BackEnd.DTOs.AdminDTOs;
+using BackEnd.Maintenance;
+using BackEnd.Data;
+using System.Security.Claims;
+using BackEnd.DTOs.AdminDTOs;
 using BackEnd.Models;
 using BackEnd.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +25,8 @@ namespace BackEnd.Controllers
         }
         //Lấy danh sách các tài khoản
         [HttpGet]
-        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
+        [Authorize(Roles = "Admin")]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> GetAllAccount()
         {
             var result = await _repo.GetAllAccountsAsync();
@@ -30,9 +34,11 @@ namespace BackEnd.Controllers
             return Ok(result);
         }
         [HttpGet("{id}")]
-        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
+        [Authorize(Roles = "Admin,Editor")]
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
         public async Task<IActionResult> GetDetailAccount(string id)
         {
+            if (!User.IsInRole("Admin") && User.FindFirstValue(ClaimTypes.NameIdentifier) != id) return Forbid();
             var result = await _repo.GetMoreDetail(id);
             if (result == null) return NotFound();
             return Ok(result);
@@ -42,9 +48,11 @@ namespace BackEnd.Controllers
         //public async Task<IActionResult> CreateNewAccount { get; set; }
 
         [HttpPost("signUp")]
+        [Authorize(Roles = "Admin")]
         //[AllowAnonymous]
         public async Task<IActionResult> SignUp(SignUpDTO signUpModel)
         {
+            if (signUpModel.Role is not ("Admin" or "Editor")) return BadRequest("Vai trò không hợp lệ.");
             var result = await _repo.SignUpAsync(signUpModel);
             if (!result.Succeeded)
             {
@@ -75,9 +83,11 @@ namespace BackEnd.Controllers
         //Cái này để tạm , sau này có thời gian thì fix thêm
         //Do chưa chuẩn SOLID, logic của cái này cần tách thành file Repository
         [HttpPatch("{id}")]
-        [Authorize]
-        public async Task<IActionResult> Update(string id, [FromBody] JsonPatchDocument<UpdateAdminDTO> patchDocument)
+        [Authorize(Roles = "Admin,Editor")]
+        public async Task<IActionResult> Update(string id, [FromBody] JsonPatchDocument<UpdateAdminDTO> patchDocument, [FromServices] ApplicationDbContext db, [FromServices] MediaLifecycle media)
         {
+            if (!User.IsInRole("Admin") && User.FindFirstValue(ClaimTypes.NameIdentifier) != id) return Forbid();
+            if (patchDocument?.Operations.Any(o => o.op != "replace" || string.IsNullOrEmpty(o.path) || !new[] { "/username", "/describe", "/avatar", "/backgroundimg" }.Contains(o.path.ToLowerInvariant())) == true) return BadRequest("Trường cập nhật không hợp lệ.");
             if (patchDocument == null)
             {
                 return BadRequest();
@@ -93,6 +103,10 @@ namespace BackEnd.Controllers
             };
             patchDocument.ApplyTo(adminToPatch, ModelState);
             if (!ModelState.IsValid) return BadRequest(ModelState);
+            var avatarError = ContentRules.Validate("profile", "<p>profile</p>", adminToPatch.Avatar)
+                ?? ContentRules.Validate("profile", "<p>profile</p>", adminToPatch.BackGroundImg);
+            if (avatarError != null) return BadRequest(avatarError);
+            await using var tx = await db.Database.BeginTransactionAsync();
             //Kiem tra nguoi dung co doi username khong
             if (oldAdmin.UserName != adminToPatch.UserName)
             {
@@ -102,12 +116,16 @@ namespace BackEnd.Controllers
                     return BadRequest(setUserNameResult.Errors);
                 }
             }
+            try { await media.SyncReferences(User, ContentRules.ImageUrls(null, adminToPatch.Avatar, adminToPatch.BackGroundImg), adminId: id); }
+            catch (UnauthorizedAccessException) { return Forbid(); }
+            catch (InvalidOperationException e) { return BadRequest(e.Message); }
             oldAdmin.Avatar = adminToPatch.Avatar;
             oldAdmin.Describe = adminToPatch.Describe;
             oldAdmin.BackGroundImg = adminToPatch.BackGroundImg;
             //await _context.SaveChangesAsync();
             var updateResult = await _userManager.UpdateAsync(oldAdmin);
             if (!updateResult.Succeeded) return BadRequest(updateResult.Errors);
+            await tx.CommitAsync();
             return Ok(new
             {
                 message = "Update profile success",

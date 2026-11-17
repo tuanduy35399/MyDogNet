@@ -1,4 +1,7 @@
 # MyDogNet
+
+**Chạy trên Linux / VS Code:** xem [hướng dẫn thiết lập, cấu hình CSDL và F5](docs/CHAY_TREN_LINUX.md).
+
 Just a web portfolio to get know more about me LOL
 
 ### Try it here
@@ -138,3 +141,7 @@ Dùng JWT nhưng lưu localhost dễ bị tấn công XSS, tuy nhiên do tôi m�
 Mục tiêu sau khi học thêm về authen với cookie tôi có thể thành thạo dùng cả jwt và cookie 
 
 
+
+### Bảo trì HC01 HC02 DP01 DP03
+
+Xem [hướng dẫn vận hành sau bảo trì](docs/BAO_TRI_HC01_HC02_DP01_DP03.md) để cập nhật CSDL, cấp quyền tài khoản cũ, chuyển ảnh base64 và chạy lại bộ kiểm thử cô lập.

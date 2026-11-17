@@ -29,7 +29,7 @@ export default function SignIn() {
       // 4. Đăng nhập xong thì phi thẳng vào Admin Dashboard
       navigate("/admin-dashboard-80820508");
     } catch (err) {
-      setError("Email hoặc mật khẩu không chính xác!");
+      setError(err.response?.status === 429 ? `Vui lòng chờ ${err.response.headers["retry-after"] || 60} giây trước khi đăng nhập lại.` : "Không thể đăng nhập. Kiểm tra thông tin hoặc thử lại sau.");
       console.error(err);
       setLoging(false);
     }

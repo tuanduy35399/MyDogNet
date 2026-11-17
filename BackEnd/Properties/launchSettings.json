@@ -9,6 +9,15 @@
     }
   },
   "profiles": {
+    "Linux": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5091",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
     "BackEnd": {
       "commandName": "Project",
       "dotnetRunMessages": true,

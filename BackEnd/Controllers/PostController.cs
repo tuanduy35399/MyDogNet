@@ -1,192 +1,91 @@
-﻿
-
 using BackEnd.Data;
 using BackEnd.DTOs;
 using BackEnd.DTOs.PostDTOs;
 using BackEnd.Models;
+using BackEnd.Maintenance;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.InteropServices;
 using System.Security.Claims;
-
-namespace BackEnd.Controllers
+namespace BackEnd.Controllers;
+[ApiController, Route("[controller]")]
+public class PostController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class PostController : ControllerBase
+    private readonly ApplicationDbContext db;
+    private readonly MediaLifecycle media;
+    public PostController(ApplicationDbContext db, MediaLifecycle media) => (this.db, this.media) = (db, media);
+    private bool CanEdit(Post post) => User.IsInRole("Admin") || post.AuthorId == User.FindFirstValue(ClaimTypes.NameIdentifier);
+    [HttpGet]
+    public Task<IActionResult> List(int pageNumber = 1, int pageSize = 5, string? searchTerm = null) => ListPosts(false, pageNumber, pageSize, searchTerm);
+    [HttpGet("manage"), Authorize(Roles = "Admin,Editor"), ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+    public Task<IActionResult> Manage(int pageNumber = 1, int pageSize = 5, string? searchTerm = null) => ListPosts(true, pageNumber, pageSize, searchTerm);
+    private async Task<IActionResult> ListPosts(bool manage, int page, int size, string? search)
     {
-        private readonly ApplicationDbContext _context;
-        //private readonly IMapper _mapper;
-        public PostController(ApplicationDbContext context) {
-            _context = context;
-            //_mapper = mapper;
-            }
-        //[HttpGet(Name = "getPostPublish")]
-        
-        //[ResponseCache(Location = ResponseCacheLocation.Client, Duration =100)]
-        //public async Task<IActionResult> GetPosts(int pageNumber = 1, int pageSize = 5)
-        //{
-        //    if (pageNumber < 1) pageNumber = 1;
-        //    var totalRecords = await _context.Posts.CountAsync();
-        //    var posts = await _context.Posts
-        //.OrderByDescending(p => p.CreatedAt) // Hiện bài mới nhất trước
-        //.Skip((pageNumber - 1) * pageSize)   // Công thức tính số bản ghi cần bỏ qua
-        //.Take(pageSize)                      // Lấy đúng số lượng pageSize
-        //.Select(post=> new GetAllPost
-        //{
-        //    Id = post.Id,
-        //    Title = post.Title,
-        //    Thumbnail = post.Thumbnail,
-        //    AuthorName = post.Author.UserName,
-        //    CreatedAt = post.CreatedAt,
-        //    UpdatedAt = post.UpdatedAt,
-        //    ViewCount = post.ViewCount,
-
-        //})
-        //.ToListAsync();
-        //    var response = new PagedResponse<GetAllPost>
-        //    {
-        //        Data = posts,
-        //        TotalRecords = totalRecords,
-        //        PageNumber = pageNumber,
-        //        PageSize = pageSize
-        //    };
-        //    return Ok(response);
-        //}
-
-        [HttpGet(Name ="SearchPost")]
-        [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 100)]
-        public async Task<IActionResult> GetPosts(int pageNumber = 1, int pageSize = 5, string? searchTerm = null)
-        {
-            // Tạo truy vấn cơ bản
-            var query = _context.Posts.AsQueryable();
-
-            // Nếu có từ khóa tìm kiếm, lọc theo tiêu đề
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                query = query.Where(p => p.Title.Contains(searchTerm));
-            }
-
-            var totalRecords = await query.CountAsync();
-            var posts = await query
-                .OrderByDescending(p => p.CreatedAt)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(post => new GetAllPost
-                {
-                    Id = post.Id,
-                    Title = post.Title,
-                    Thumbnail = post.Thumbnail,
-                    AuthorName = post.Author.UserName,
-                    CreatedAt = post.CreatedAt,
-                    UpdatedAt = post.UpdatedAt,
-                    ViewCount = post.ViewCount,
-                })
-                .ToListAsync();
-
-            return Ok(new PagedResponse<GetAllPost>
-            {
-                Data = posts,
-                TotalRecords = totalRecords,
-                PageNumber = pageNumber,
-                PageSize = pageSize
-            });
-        }
-        [HttpGet("{id}", Name = "getDetailPost")]
-        [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 100)]
-        
-        public async Task<IActionResult> GetDetail(int id)
-        {
-            //Author có thể null
-            var post = await _context.Posts.Include(p => p.Author).FirstOrDefaultAsync(p=> p.Id == id);
-            if (post == null) return NotFound();
-            var postDTO = new ReadPostDTO
-            {
-                Title = post.Title,
-                Content = post.Content,
-                Thumbnail = post.Thumbnail,
-                AuthorName = post.Author.UserName,
-                CreatedAt = post.CreatedAt,
-                UpdatedAt = post.UpdatedAt,
-                ViewCount = post.ViewCount,
-            };
-            return Ok(postDTO);
-        }
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> CreatePost(CreatePostDTO createPostDTO)
-        {
-            if (createPostDTO==null) return BadRequest("Invalid data");
-            //Lấy userId hiện đang login từ JWT
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var post = new Post
-            {
-                Title = createPostDTO.Title,
-                Content = createPostDTO.Content,
-                AuthorId = userId,
-                IsPublished = createPostDTO.IsPublished,
-                Thumbnail = createPostDTO.Thumbnail,
-                
-            };
-            _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
-            return Ok(new
-            {
-                message = "Create success",
-                post.AuthorId,
-            });
-        }
-        [HttpPatch("{id}")]
-        [Authorize]
-        public async Task<IActionResult> UpdatePost(int id, [FromBody] JsonPatchDocument<UpdatePostDTO> PostDocument)
-        {
-            if (PostDocument == null) return BadRequest();
-            var oldPost = await _context.Posts.FirstOrDefaultAsync(p => p.Id == id);
-            if (oldPost == null) return NotFound();
-
-            //Đổ tất cả sang 1 class lọc DTO đầy đủ các trường
-
-            //var postToPatch = _mapper.Map<UpdatePostDTO>(oldPost); //Tạo đối tượng mới kiểu UpdatePostDTO nguồn là oldPost
-            var postToPatch = new UpdatePostDTO
-            {
-                Title = oldPost.Title,
-                Content = oldPost.Content,
-                Thumbnail = oldPost.Thumbnail,
-            };
-            //kiểm tra, so sánh thay đổi, xóa với trường nào, trường nào giữ nguyên
-            //Rồi tiến hành thay đổi DTO đó
-            PostDocument.ApplyTo(postToPatch, ModelState);
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            //Ánh xạ ngược lại từ DTO sang Entity
-            //Khác với put thì khi người dùng gửi thiếu 1 trường, bên put sẽ cho nó là null luôn chứ không có bước so sánh
-            //_mapper.Map(postToPatch, oldPost); //ghi đè đối tượng oldPost đã có từ nguồn postToPatch
-            oldPost.Title = postToPatch.Title;
-            oldPost.Content = postToPatch.Content;
-            oldPost.Thumbnail = postToPatch.Thumbnail;
-            await _context.SaveChangesAsync();
-            return Ok(new
-            {
-                message="Update post success",
-                oldPost.Id
-            })
-            ;
-        }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePost(int id)
-        {
-            var post = await _context.Posts
-                .Where(post => post.Id == id)
-                .FirstOrDefaultAsync();
-            if (post == null)
-            {
-                return NotFound(new { message = $"Không tìm thấy bài đăng với ID = {id}" });
-            }
-            _context.Remove(post);
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
+        if (page < 1 || size < 1 || size > 50) return BadRequest();
+        var query = db.Posts.AsNoTracking().AsQueryable();
+        if (!manage) query = query.Where(x => x.IsPublished);
+        else if (!User.IsInRole("Admin")) { var id = User.FindFirstValue(ClaimTypes.NameIdentifier); query = query.Where(x => x.AuthorId == id); }
+        if (!string.IsNullOrEmpty(search)) query = query.Where(x => x.Title.Contains(search));
+        var total = await query.CountAsync();
+        var rows = await query.OrderByDescending(x => x.CreatedAt).ThenByDescending(x => x.Id).Skip((page - 1) * size).Take(size)
+            .Select(x => new GetAllPost { Id = x.Id, Title = x.Title, Thumbnail = x.Thumbnail, AuthorName = x.Author!.UserName,
+                CreatedAt = x.CreatedAt, UpdatedAt = x.UpdatedAt, ViewCount = x.ViewCount }).ToListAsync();
+        return Ok(new PagedResponse<GetAllPost> { Data = rows, TotalRecords = total, PageNumber = page, PageSize = size });
+    }
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> Detail(int id) => await Read(id, false);
+    [HttpGet("manage/{id:int}"), Authorize(Roles = "Admin,Editor"), ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+    public async Task<IActionResult> ManageDetail(int id) => await Read(id, true);
+    private async Task<IActionResult> Read(int id, bool manage)
+    {
+        var post = await db.Posts.AsNoTracking().Include(x => x.Author).SingleOrDefaultAsync(x => x.Id == id);
+        if (post == null || (!manage && !post.IsPublished)) return NotFound();
+        if (manage && !CanEdit(post)) return Forbid();
+        return Ok(new { post.Id, post.Title, post.Content, post.Thumbnail, post.IsPublished, post.CreatedAt, post.UpdatedAt,
+            post.ViewCount, AuthorName = post.Author?.UserName });
+    }
+    [HttpPost, Authorize(Roles = "Admin,Editor"), RequestSizeLimit(1024 * 1024)]
+    public async Task<IActionResult> Create(CreatePostDTO data)
+    {
+        var error = ContentRules.Validate(data.Title, data.Content, data.Thumbnail);
+        if (error != null) return BadRequest(error);
+        await using var tx = await db.Database.BeginTransactionAsync();
+        var post = new Post { Title = data.Title, Content = data.Content, Thumbnail = data.Thumbnail,
+            IsPublished = data.IsPublished, AuthorId = User.FindFirstValue(ClaimTypes.NameIdentifier)! };
+        db.Posts.Add(post); await db.SaveChangesAsync();
+        try { await media.SyncReferences(User, ContentRules.ImageUrls(post.Content, post.Thumbnail), postId: post.Id); }
+        catch (UnauthorizedAccessException) { return Forbid(); }
+        catch (InvalidOperationException e) { return BadRequest(e.Message); }
+        await tx.CommitAsync();
+        return Ok(new { post.Id, message = "Create success", post.AuthorId });
+    }
+    [HttpPatch("{id:int}"), Authorize(Roles = "Admin,Editor"), RequestSizeLimit(1024 * 1024)]
+    public async Task<IActionResult> Update(int id, JsonPatchDocument<UpdatePostDTO> patch)
+    {
+        if (patch == null || patch.Operations.Any(o => o.op != "replace" || string.IsNullOrEmpty(o.path) || !new[] { "/title", "/content", "/thumbnail" }.Contains(o.path.ToLowerInvariant()))) return BadRequest();
+        await using var tx = await db.Database.BeginTransactionAsync();
+        // Lock the post so two edits cannot leave references for an outdated Content version.
+        var post = await db.Posts.FromSqlInterpolated($"SELECT * FROM Posts WITH (UPDLOCK, ROWLOCK) WHERE Id={id}").SingleOrDefaultAsync();
+        if (post == null) return NotFound();
+        if (!CanEdit(post)) return Forbid();
+        var data = new UpdatePostDTO { Title = post.Title, Content = post.Content, Thumbnail = post.Thumbnail };
+        patch.ApplyTo(data, ModelState);
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var error = ContentRules.Validate(data.Title, data.Content, data.Thumbnail);
+        if (error != null) return BadRequest(error);
+        try { await media.SyncReferences(User, ContentRules.ImageUrls(data.Content, data.Thumbnail), postId: id); }
+        catch (UnauthorizedAccessException) { return Forbid(); }
+        catch (InvalidOperationException e) { return BadRequest(e.Message); }
+        post.Title = data.Title; post.Content = data.Content; post.Thumbnail = data.Thumbnail; post.UpdatedAt = DateTime.UtcNow;
+        await db.SaveChangesAsync(); await tx.CommitAsync(); return Ok(new { post.Id, message = "Update success" });
+    }
+    [HttpDelete("{id:int}"), Authorize(Roles = "Admin,Editor")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var post = await db.Posts.SingleOrDefaultAsync(x => x.Id == id);
+        if (post == null) return NotFound();
+        if (!CanEdit(post)) return Forbid();
+        db.Posts.Remove(post); await db.SaveChangesAsync(); return NoContent();
     }
 }

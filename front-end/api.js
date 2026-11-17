@@ -8,5 +8,10 @@ const axiosClient = axios.create({
   },
 });
 
+axiosClient.interceptors.request.use(config => {
+  const token = localStorage.getItem('tk');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 export default axiosClient;
 

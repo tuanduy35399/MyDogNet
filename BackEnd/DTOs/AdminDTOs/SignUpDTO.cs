@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace BackEnd.DTOs.AdminDTOs
 {
     public class SignUpDTO
     {
+        public string Role { get; set; } = "Editor";
         [Required]
         public string UserName { get; set; }= null!;
         public string? Describe { get; set; }
