@@ -8,7 +8,9 @@ function Home() {
   const { user } = useUser();
   const [isListLoading, setIsListLoading] = useState(true);
 
-  const isLoading = isListLoading || !user;
+  // Tách trạng thái tải: Home chỉ phụ thuộc vào tải danh sách bài viết.
+  // Khi AboutMe lỗi hoặc đang tải, không khóa vĩnh viễn toàn bộ trang chủ.
+  const isLoading = isListLoading;
 
   return (
     <section>
@@ -17,6 +19,7 @@ function Home() {
         <div
           className="d-flex justify-content-center align-items-center gap-2"
           style={{ height: "100vh" }}
+          data-testid="home-loading-spinner"
         >
           <div className="spinner-grow text-primary" role="status"></div>
           <div className="spinner-grow text-primary" role="status"></div>
@@ -25,7 +28,7 @@ function Home() {
       ) : null}
 
       {/* Vẫn render nhưng ẩn đi cho đến khi load xong để tránh giật trang */}
-      <div style={{ display: isLoading ? "none" : "block" }}>
+      <div style={{ display: isLoading ? "none" : "block" }} data-testid="home-content">
         <Header bgURL={user?.backGroundImg} />
         <ListPost onDataLoaded={() => setIsListLoading(false)} />
         <Footer />

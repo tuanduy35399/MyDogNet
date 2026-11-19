@@ -1,178 +1,288 @@
-import { useEffect, useState, useRef, use } from "react";
+import { useEffect, useState, useRef } from "react";
 import axiosClient from "../../../../api";
 import { Link } from "react-router-dom";
 
 export default function PostManager() {
   const [posts, setPosts] = useState([]);
-  const [page, setPage] = useState(1); //mac dinh la trang 1
-  const [totalPages, setTotalPages] = useState(1); //mac dinh tong so tang la 1
-  const pageSize = 5; //So luong bai viet xuat hien o moi trang
+  const [page, setPage] = useState(1); // Mặc định trang 1
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const pageSize = 5; // Số lượng bài viết mỗi trang
   const [isLoading, setLoading] = useState(true);
   const [inputFind, setInputFind] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  //Luu id bai viet duoc chon de xoa
+  // Lưu id bài viết được chọn để xóa
   const [selectedPostId, setSelectedPostId] = useState(null);
-  //xu ly tim kiem bai viet
+
+  // Xử lý tìm kiếm bài viết
   const handleFind = () => {
-    setPage(1); //set ve trang 1 moi khi nhan nut tim kiem
-    setSearchTerm(inputFind); //gan gia tri duoc go vao setSearchTerm de chay UseEffect
+    setPage(1); // Set về trang 1 mỗi khi tìm kiếm
+    setSearchTerm(inputFind.trim());
   };
-  //Ref xu dung de dong/mo dialog thay cho getElementById truyen thong
+
+  const handleClearFind = () => {
+    setInputFind("");
+    setSearchTerm("");
+    setPage(1);
+  };
+
+  // Ref sử dụng để đóng/mở dialog
   const dialogRef = useRef(null);
 
-  //Ham xu ly dong/mo dialog
+  // Hàm xử lý đóng/mở dialog
   const openDeleteDialog = (id) => {
     setSelectedPostId(id);
-    dialogRef.current.showModal(); //mo dialog
+    if (dialogRef.current) {
+      dialogRef.current.showModal();
+    }
   };
+
   const closeDeleteDialog = () => {
-    dialogRef.current.close(); //dong dialog
+    if (dialogRef.current) {
+      dialogRef.current.close();
+    }
   };
+
   const handleDelete = async () => {
     closeDeleteDialog();
     setLoading(true);
     try {
       await axiosClient.delete(`/post/${selectedPostId}`);
-      alert("Xoa bai viet thanh cong");
-      await fetchPosts();
+      alert("Xóa bài viết thành công!");
+
+      // Nếu xóa bài viết cuối cùng của trang hiện tại (và không phải trang 1), lùi về trang trước
+      if (posts.length === 1 && page > 1) {
+        setPage((prev) => prev - 1);
+      } else {
+        await fetchPosts();
+      }
     } catch (err) {
-      alert("Khong the xoa bai viet");
+      alert("Không thể xóa bài viết. Vui lòng thử lại sau.");
       console.error("Lỗi khi xóa:", err);
       setLoading(false);
     }
   };
+
   const fetchPosts = async () => {
     try {
-      var res = await axiosClient.get(
-        `/post/manage?pageNumber=${page}&pageSize=${pageSize}&searchTerm=${searchTerm}`,
-      );
-      setPosts(res.data.data || []);
-      setTotalPages(res.data.totalPages || 1);
-      
-      /*
-        Ban đầu ta chưa biết được có total nhiêu trang, nên ta mới để mặc định total là 1
-        Và quy định pageSize là 5
-        Đây là mẫu kết quả trả về res.data, 
-        do đó ta cần biết thêm thông tin cụ thể trong data 1 cái nữa, mà res.data.data chính là 1 mảng
-        {
-  "data": [
-    {
-      "id": 5,
-      "title": "Mô hình Agile Scrum",
-      "thumbnail": "https://res.cloudinary.com/db0315mif/image/upload/v1777184228/default_background_i13wjr.jpg",
-      "createdAt": "2026-05-02T15:20:28.4644903",
-      "updatedAt": "2026-05-02T15:20:28.4644914",
-      "viewCount": 0,
-      "authorName": "tuanduyhandsome"
-    }
-  ],
-  "totalRecords": 1,
-  "pageNumber": 1,
-  "pageSize": 5,
-  "totalPages": 1
-}
-        */
+      // Dùng axios params thay vì nối chuỗi trực tiếp để tự động mã hóa ký tự đặc biệt, gọi endpoint quản trị /post/manage
+      const res = await axiosClient.get("/post/manage", {
+        params: {
+          pageNumber: page,
+          pageSize: pageSize,
+          searchTerm: searchTerm || undefined,
+        },
+      });
+      setPosts(res.data?.data || []);
+      setTotalPages(res.data?.totalPages || 1);
+      setTotalRecords(res.data?.totalRecords || 0);
     } catch (err) {
-      console.log("Khong the lay danh sach cac post", err);
+      console.error("Không thể lấy danh sách các bài viết:", err);
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     window.scrollTo(0, 0);
-
     fetchPosts();
   }, [page, searchTerm]);
+
   return (
     <>
       {isLoading ? (
         <div
           className="d-flex justify-content-center align-items-center gap-2"
           style={{ height: "100vh" }}
+          data-testid="admin-loading"
         >
           <div className="spinner-grow text-primary" role="status"></div>
           <div className="spinner-grow text-primary" role="status"></div>
           <div className="spinner-grow text-primary" role="status"></div>
         </div>
       ) : (
-        <div>
+        <div className="container py-4">
+          {/* Dialog xác nhận xóa lịch sự, chuyên nghiệp */}
           <dialog
             ref={dialogRef}
-            style={{ border: "none", borderRadius: "8px", padding: "20px" }}
+            className="rounded shadow p-4 border-0"
+            style={{ maxWidth: "450px" }}
+            data-testid="delete-dialog"
           >
-            <h3>Mày có chắc là muốn xóa nó không?</h3>
-            <p>Xóa rồi là đ*o khôi phục lại được nha con</p>
-            <div className="d-flex gap-2">
-              <button className="btn btn-secondary" onClick={closeDeleteDialog}>
-                Thôi thôi
+            <div className="text-center mb-3">
+              <i className="bi bi-exclamation-circle text-danger display-5"></i>
+              <h4 className="mt-2 fw-bold">Xác nhận xóa bài viết</h4>
+              <p className="text-muted">
+                Bạn có chắc chắn muốn xóa bài viết này không? Dữ liệu sau khi xóa sẽ không thể phục hồi.
+              </p>
+            </div>
+            <div className="d-flex justify-content-center gap-2">
+              <button
+                type="button"
+                className="btn btn-secondary px-4"
+                onClick={closeDeleteDialog}
+              >
+                Hủy bỏ
               </button>
-              <button className="btn btn-danger" onClick={handleDelete}>
-                Xóa mẹ đi
+              <button
+                type="button"
+                className="btn btn-danger px-4"
+                onClick={handleDelete}
+                data-testid="confirm-delete-button"
+              >
+                Xác nhận xóa
               </button>
             </div>
           </dialog>
-          <h1 className="mb-4">Post Manager</h1>
-          <div className="d-flex justify-content-between align-items-center gap-2">
-            <div class="search-container d-flex w-75">
+
+          <h1 className="mb-4 fw-bold">Quản lý bài viết (Post Manager)</h1>
+
+          <div className="d-flex justify-content-between align-items-center gap-2 mb-4">
+            <div className="input-group w-75 shadow-sm">
               <input
                 type="text"
-                class="form-control search-input"
-                placeholder="Type something..."
+                className="form-control"
+                placeholder="Tìm bài viết theo tiêu đề..."
                 value={inputFind}
                 onChange={(e) => setInputFind(e.target.value)}
-                onKeyDown={(e) => e.key == "Enter" && handleFind()}
+                onKeyDown={(e) => e.key === "Enter" && handleFind()}
+                data-testid="admin-search-input"
               />
+              <button
+                className="btn btn-primary"
+                type="button"
+                onClick={handleFind}
+                data-testid="admin-search-button"
+              >
+                <i className="bi bi-search me-1"></i> Tìm
+              </button>
+              {(searchTerm || inputFind) && (
+                <button
+                  className="btn btn-outline-secondary"
+                  type="button"
+                  onClick={handleClearFind}
+                  title="Xóa lọc"
+                  data-testid="admin-clear-button"
+                >
+                  <i className="bi bi-x-lg"></i>
+                </button>
+              )}
             </div>
+
             <Link
               to={"/admin-dashboard-80820508/create-post-80820508"}
-              className="btn btn-primary text-white"
+              className="btn btn-success text-white shadow-sm"
             >
-              <span className="text-white text-decoration-none">
-                + NEW POST
-              </span>
+              <i className="bi bi-plus-lg me-1"></i>
+              <span>+ THÊM BÀI VIẾT</span>
             </Link>
           </div>
-          <table class="table mt-3">
-            <thead>
-              <tr>
-                <th scope="col">STT</th>
-                <th scope="col">Title</th>
-                <th scope="col">Author</th>
-                <th scope="col">Handle</th>
-              </tr>
-            </thead>
-            <tbody>
-              {posts?.map((item, index) => (
+
+          {searchTerm && (
+            <div className="mb-3 text-muted small">
+              Kết quả tìm kiếm cho: <strong>"{searchTerm}"</strong> ({totalRecords} bài viết)
+            </div>
+          )}
+
+          <div className="table-responsive shadow-sm rounded">
+            <table className="table table-hover align-middle mb-0">
+              <thead className="table-light">
                 <tr>
-                  <th scope="row">{index + 1}</th>
-                  <td>{item?.title}</td>
-                  <td>{item?.authorName}</td>
-                  <td>
-                    <div className="d-flex gap-2 flex-nowrap">
-                      <button type="button" class="btn btn-primary">
-                        <Link
-                          to={`/admin-dashboard-80820508/edit-post-80820508/${item?.id}`}
-                        >
-                          <span className="text-white text-decoration-none">
-                            Edit
-                          </span>
-                        </Link>
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-danger"
-                        onClick={() => openDeleteDialog(item?.id)}
-                      >
-                        <span className="text-white text-decoration-none">
-                          Delete
-                        </span>
-                      </button>
-                    </div>
-                  </td>
+                  <th scope="col" style={{ width: "80px" }}>STT</th>
+                  <th scope="col">Tiêu đề (Title)</th>
+                  <th scope="col">Tác giả (Author)</th>
+                  <th scope="col" className="text-center" style={{ width: "180px" }}>Thao tác (Action)</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {posts?.length === 0 ? (
+                  <tr>
+                    <td colSpan="4" className="text-center py-4 text-muted" data-testid="admin-empty-posts">
+                      <i className="bi bi-inbox display-6 text-secondary d-block mb-2"></i>
+                      Không tìm thấy bài viết nào.
+                    </td>
+                  </tr>
+                ) : (
+                  posts?.map((item, index) => (
+                    <tr key={item?.id} data-testid={`admin-post-row-${item?.id}`}>
+                      <th scope="row">{(page - 1) * pageSize + index + 1}</th>
+                      <td className="fw-semibold">{item?.title}</td>
+                      <td className="text-muted">{item?.authorName}</td>
+                      <td>
+                        <div className="d-flex justify-content-center gap-2">
+                          <Link
+                            to={`/admin-dashboard-80820508/edit-post-80820508/${item?.id}`}
+                            className="btn btn-outline-primary btn-sm px-3"
+                          >
+                            <i className="bi bi-pencil me-1"></i>Sửa
+                          </Link>
+                          <button
+                            type="button"
+                            className="btn btn-outline-danger btn-sm px-3"
+                            onClick={() => openDeleteDialog(item?.id)}
+                            data-testid={`delete-btn-${item?.id}`}
+                          >
+                            <i className="bi bi-trash me-1"></i>Xóa
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Thanh phân trang hoàn thiện trong PostManager */}
+          {totalPages > 1 && (
+            <nav
+              className="mt-4 d-flex flex-column align-items-center"
+              aria-label="Phân trang quản lý bài viết"
+              data-testid="admin-pagination"
+            >
+              <ul className="pagination shadow-sm">
+                <li className={`page-item ${page <= 1 ? "disabled" : ""}`}>
+                  <button
+                    className="page-link"
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page <= 1}
+                    data-testid="admin-prev-page"
+                  >
+                    &laquo; Trước
+                  </button>
+                </li>
+
+                {[...Array(totalPages)].map((_, i) => (
+                  <li
+                    key={i}
+                    className={`page-item ${page === i + 1 ? "active" : ""}`}
+                  >
+                    <button
+                      className="page-link"
+                      onClick={() => setPage(i + 1)}
+                      data-testid={`admin-page-${i + 1}`}
+                    >
+                      {i + 1}
+                    </button>
+                  </li>
+                ))}
+
+                <li className={`page-item ${page >= totalPages ? "disabled" : ""}`}>
+                  <button
+                    className="page-link"
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={page >= totalPages}
+                    data-testid="admin-next-page"
+                  >
+                    Sau &raquo;
+                  </button>
+                </li>
+              </ul>
+              <div className="text-muted small">
+                Trang {page} / {totalPages} (Tổng số: {totalRecords} bài viết)
+              </div>
+            </nav>
+          )}
         </div>
       )}
     </>

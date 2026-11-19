@@ -6,10 +6,12 @@ export default function ListPost({ onDataLoaded }) {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
   const pageSize = 5; // Số lượng bài mỗi trang
 
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isFetching, setIsFetching] = useState(false);
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -22,67 +24,151 @@ export default function ListPost({ onDataLoaded }) {
       minute: "2-digit",
     });
   };
+
   const handleFind = () => {
     setPage(1); // Reset về trang 1 khi tìm kiếm mới
-    setSearchTerm(searchInput); // Gán giá trị gõ được vào searchTerm để useEffect chạy
+    setSearchTerm(searchInput.trim());
   };
+
+  const handleClear = () => {
+    setSearchInput("");
+    setSearchTerm("");
+    setPage(1);
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
     let isMounted = true;
+    const controller = new AbortController();
 
     const fetchData = async () => {
+      setIsFetching(true);
       try {
-        // Gửi tham số phân trang lên server
-        const res = await axiosClient.get(
-          `/post?pageNumber=${page}&pageSize=${pageSize}&searchTerm=${searchTerm}`,
-        );
+        // Gửi tham số bằng params của Axios để tự động mã hóa an toàn các ký tự đặc biệt (&, +, ?, tiếng Việt)
+        const res = await axiosClient.get("/post", {
+          params: {
+            pageNumber: page,
+            pageSize: pageSize,
+            searchTerm: searchTerm || undefined,
+          },
+          signal: controller.signal,
+        });
 
         if (isMounted) {
-          // res.data.data là mảng bài viết, res.data.totalPages là tổng số trang
-          setPosts(res.data.data || []);
-          setTotalPages(res.data.totalPages || 1);
+          const list = res.data?.data || [];
+          setPosts(list);
+          setTotalPages(res.data?.totalPages || 1);
+          setTotalRecords(res.data?.totalRecords || 0);
         }
       } catch (err) {
+        if (
+          controller.signal.aborted ||
+          err?.name === "CanceledError" ||
+          err?.code === "ERR_CANCELED"
+        ) {
+          return;
+        }
         console.error("Fetch error:", err);
       } finally {
         if (isMounted) {
-          onDataLoaded();
+          setIsFetching(false);
+          if (onDataLoaded) {
+            onDataLoaded();
+          }
         }
       }
     };
 
     fetchData();
+
     return () => {
       isMounted = false;
+      controller.abort();
     };
-  }, [page, searchTerm]); // useEffect sẽ chạy lại mỗi khi 'page' thay đổi
+  }, [page, searchTerm]);
 
   return (
     <>
-      {/* Danh sách bài viết */}
-      <div class="container mt-5">
-        <div class="d-flex flex-row justify-content-center gap-3">
-          <div class="col-md-6">
-            <div class="search-container">
+      {/* Thanh tìm kiếm bài viết */}
+      <div className="container mt-5">
+        <div className="row justify-content-center">
+          <div className="col-md-8 col-lg-6">
+            <div className="input-group shadow-sm">
               <input
                 type="text"
-                class="form-control search-input"
-                placeholder="Type something..."
+                className="form-control"
+                placeholder="Tìm kiếm bài viết theo tiêu đề..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                onKeyDown={(e) => e.key == "Enter" && handleFind()}
+                onKeyDown={(e) => e.key === "Enter" && handleFind()}
+                aria-label="Tìm kiếm bài viết"
+                data-testid="search-input"
               />
+              <button
+                className="btn btn-primary px-3"
+                type="button"
+                onClick={handleFind}
+                data-testid="search-button"
+              >
+                <i className="bi bi-search me-1"></i> Tìm
+              </button>
+              {(searchTerm || searchInput) && (
+                <button
+                  className="btn btn-outline-secondary px-3"
+                  type="button"
+                  onClick={handleClear}
+                  title="Xóa bộ lọc tìm kiếm"
+                  data-testid="clear-search-button"
+                >
+                  <i className="bi bi-x-lg me-1"></i> Xóa lọc
+                </button>
+              )}
             </div>
+            {searchTerm && (
+              <div className="text-muted small mt-2 d-flex justify-content-between align-items-center">
+                <span>
+                  Kết quả cho: <strong>"{searchTerm}"</strong>
+                </span>
+                <span className="badge bg-light text-dark border">
+                  {totalRecords} bài viết
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
+      {/* Trạng thái không có kết quả */}
+      {!isFetching && posts.length === 0 && (
+        <div
+          className="container text-center py-5 my-4"
+          data-testid="empty-posts-message"
+        >
+          <div className="text-muted mb-3">
+            <i className="bi bi-journal-x display-4 text-secondary"></i>
+          </div>
+          <h4 className="fw-bold text-secondary">Không tìm thấy bài viết nào</h4>
+          <p className="text-muted">
+            {searchTerm
+              ? `Không có bài viết nào khớp với từ khóa "${searchTerm}".`
+              : "Hiện tại chưa có bài viết nào được đăng tải."}
+          </p>
+          {searchTerm && (
+            <button className="btn btn-outline-primary mt-2" onClick={handleClear}>
+              Xem tất cả bài viết
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Danh sách bài viết */}
       {posts.map((item) => (
         <div
           className="container d-flex justify-content-center mt-5"
           key={item?.id}
+          data-testid={`post-card-${item?.id}`}
         >
-          <div className="card" style={{ width: "50rem", overflow: "hidden" }}>
+          <div className="card shadow-sm" style={{ width: "50rem", overflow: "hidden" }}>
             {item?.thumbnail && (
               <img
                 className="card-img-top"
@@ -91,51 +177,75 @@ export default function ListPost({ onDataLoaded }) {
                 style={{ height: "250px", objectFit: "cover" }}
               />
             )}
-            <div className="card-body text-start">
-              <h3 className="card-title">{item?.title}</h3>
-              <p className="card-text mb-1">
+            <div className="card-body text-start p-4">
+              <h3 className="card-title fw-bold mb-2">{item?.title}</h3>
+              <p className="card-text mb-1 text-secondary">
                 <strong>Author:</strong> {item?.authorName}
               </p>
-              <p className="card-text mb-1">
+              <p className="card-text mb-3">
                 <small className="text-muted">
+                  <i className="bi bi-clock me-1"></i>
                   {formatDate(item?.createdAt)}
                 </small>
               </p>
-              <Link to={`/post/${item?.id}`} className="btn btn-primary">
-                READ MORE
+              <Link to={`/post/${item?.id}`} className="btn btn-primary px-3">
+                READ MORE <i className="bi bi-arrow-right ms-1"></i>
               </Link>
             </div>
           </div>
         </div>
       ))}
 
-      {/* Chỗ này là cái thanh điều hướng phân trang lấy từ Bootstrap */}
-      <nav className="mt-5 d-flex justify-content-center">
-        <ul className="pagination">
-          <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
-            <button className="page-link" onClick={() => setPage(page - 1)}>
-              Previous
-            </button>
-          </li>
-
-          {[...Array(totalPages)].map((_, i) => (
-            <li
-              key={i}
-              className={`page-item ${page === i + 1 ? "active" : ""}`}
-            >
-              <button className="page-link" onClick={() => setPage(i + 1)}>
-                {i + 1}
+      {/* Thanh điều hướng phân trang */}
+      {totalPages > 1 && (
+        <nav
+          className="mt-5 d-flex flex-column align-items-center"
+          aria-label="Điều hướng trang"
+          data-testid="pagination-nav"
+        >
+          <ul className="pagination shadow-sm">
+            <li className={`page-item ${page <= 1 ? "disabled" : ""}`}>
+              <button
+                className="page-link"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                data-testid="prev-page-button"
+              >
+                &laquo; Trước
               </button>
             </li>
-          ))}
 
-          <li className={`page-item ${page === totalPages ? "disabled" : ""}`}>
-            <button className="page-link" onClick={() => setPage(page + 1)}>
-              Next
-            </button>
-          </li>
-        </ul>
-      </nav>
+            {[...Array(totalPages)].map((_, i) => (
+              <li
+                key={i}
+                className={`page-item ${page === i + 1 ? "active" : ""}`}
+              >
+                <button
+                  className="page-link"
+                  onClick={() => setPage(i + 1)}
+                  data-testid={`page-button-${i + 1}`}
+                >
+                  {i + 1}
+                </button>
+              </li>
+            ))}
+
+            <li className={`page-item ${page >= totalPages ? "disabled" : ""}`}>
+              <button
+                className="page-link"
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+                data-testid="next-page-button"
+              >
+                Sau &raquo;
+              </button>
+            </li>
+          </ul>
+          <div className="text-muted small mt-1">
+            Trang {page} / {totalPages} (Tổng số: {totalRecords} bài)
+          </div>
+        </nav>
+      )}
     </>
   );
 }
