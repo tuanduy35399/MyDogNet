@@ -23,9 +23,17 @@ public class SandboxFactory : WebApplicationFactory<Program>
         builder.UseEnvironment("Testing");
         builder.UseContentRoot(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"../../../../BackEnd")));
         builder.ConfigureServices(s => { s.RemoveAll<ICloudinaryServices>(); s.AddSingleton<ICloudinaryServices>(Cloud); });
+        // Only the captured pre-maintenance host needs this adapter: ca6d164
+        // has ambiguous controller constructors. Its product source stays intact.
+        if (Environment.GetEnvironmentVariable("MAINTENANCE_BASELINE_DI") == "true")
+            builder.ConfigureServices(s => {
+                s.AddControllers().AddControllersAsServices();
+                s.AddTransient<BackEnd.Controllers.PostController>(p => new BackEnd.Controllers.PostController(
+                    p.GetRequiredService<ApplicationDbContext>(), p.GetRequiredService<MediaLifecycle>()));
+            });
     }
 }
-public static class Runner
+public static partial class Runner
 {
     static SandboxFactory factory = null!;
     static readonly List<object> results = new();
@@ -65,6 +73,8 @@ public static class Runner
                 if(await users.FindByNameAsync(name)==null){var u=new Admin{UserName=name,Describe="Hồ sơ sandbox",Avatar="/dognet-logo.png",BackGroundImg="/background.png"};Assert((await users.CreateAsync(u,password)).Succeeded,"seed user");await users.AddToRoleAsync(u,name=="maintadmin"?"Admin":"Editor");}
             }
         }
+        if(args.Contains("publication") || args.Contains("publication-baseline")) { await PublicationChecks(args.Contains("publication-baseline")); return; }
+        if(args.Contains("serve-publication")) { await SeedPublicationFixtures(); await Serve(); return; }
         if(args.Contains("serve")) { await Serve();return; }
         var adminToken=await Token("maintadmin");var aToken=await Token("editorA");var bToken=await Token("editorB");
         using var admin=Client(adminToken);using var a=Client(aToken);using var b=Client(bToken);using var guest=Client();
@@ -129,7 +139,7 @@ public static class Runner
     }
     static async Task Serve()
     {
-        var builder=WebApplication.CreateBuilder();builder.WebHost.UseUrls("http://localhost:5191");var app=builder.Build();
+        var builder=WebApplication.CreateBuilder();builder.WebHost.UseUrls("http://127.0.0.1:" + (Environment.GetEnvironmentVariable("MAINTENANCE_PORT") ?? "5191"));var app=builder.Build();
         app.Run(async ctx=>{
             if(ctx.Request.Path.StartsWithSegments("/sandbox-assets"))
             {var id=ctx.Request.Path.Value!["/sandbox-assets/".Length..].Replace(".png","");if(factory.Cloud.Files.TryGetValue(id,out var bytes)){ctx.Response.ContentType="image/png";await ctx.Response.Body.WriteAsync(bytes);return;}ctx.Response.StatusCode=404;return;}

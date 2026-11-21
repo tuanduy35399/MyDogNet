@@ -21,6 +21,7 @@ vi.mock("../api", () => {
 describe("Nhóm HC03: Sửa trạng thái tải không kết thúc khi lấy dữ liệu thất bại", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    axiosClient.post.mockResolvedValue({ data: { viewCount: 1 } });
   });
 
   afterEach(() => {

@@ -12,6 +12,7 @@ using System.Security.Claims;
 namespace BackEnd.Controllers;
 
 [ApiController, Route("[controller]")]
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class PostController : ControllerBase
 {
     private readonly ApplicationDbContext db;
@@ -19,6 +20,7 @@ public class PostController : ControllerBase
 
     public PostController(ApplicationDbContext db) : this(db, null!) { }
 
+    [ActivatorUtilitiesConstructor]
     public PostController(ApplicationDbContext db, MediaLifecycle media) => (this.db, this.media) = (db, media);
 
     private bool CanEdit(Post post) => User.IsInRole("Admin") || post.AuthorId == User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -30,14 +32,17 @@ public class PostController : ControllerBase
     public Task<IActionResult> GetPosts(int pageNumber = 1, int pageSize = 5, string? searchTerm = null) => List(pageNumber, pageSize, searchTerm);
 
     [HttpGet("manage"), Authorize(Roles = "Admin,Editor"), ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-    public Task<IActionResult> Manage(int pageNumber = 1, int pageSize = 5, string? searchTerm = null) => ListPosts(true, pageNumber, pageSize, searchTerm);
+    public Task<IActionResult> Manage(int pageNumber = 1, int pageSize = 5, string? searchTerm = null, string? status = null) => ListPosts(true, pageNumber, pageSize, searchTerm, status ?? "all");
 
-    private async Task<IActionResult> ListPosts(bool manage, int page, int size, string? search)
+    private async Task<IActionResult> ListPosts(bool manage, int page, int size, string? search, string status = "all")
     {
         if (page < 1 || size < 1 || size > 50)
         {
             return BadRequest(new { message = "Tham số phân trang không hợp lệ: pageNumber phải >= 1 và pageSize phải từ 1 đến 50." });
         }
+
+        if (manage && !new[] { "all", "draft", "published" }.Contains(status))
+            return BadRequest(new { message = "Trạng thái phải là all, draft hoặc published." });
 
         var query = db.Posts.AsNoTracking().AsQueryable();
         if (!manage)
@@ -49,6 +54,8 @@ public class PostController : ControllerBase
             var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             query = query.Where(x => x.AuthorId == id);
         }
+
+        if (manage && status != "all") query = query.Where(x => x.IsPublished == (status == "published"));
 
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -66,7 +73,8 @@ public class PostController : ControllerBase
                 AuthorName = x.Author!.UserName,
                 CreatedAt = x.CreatedAt,
                 UpdatedAt = x.UpdatedAt,
-                ViewCount = x.ViewCount
+                ViewCount = x.ViewCount,
+                IsPublished = x.IsPublished
             }).ToListAsync();
 
         return Ok(new PagedResponse<GetAllPost> { Data = rows, TotalRecords = total, PageNumber = page, PageSize = size });
@@ -83,18 +91,32 @@ public class PostController : ControllerBase
         var post = await db.Posts.AsNoTracking().Include(x => x.Author).SingleOrDefaultAsync(x => x.Id == id);
         if (post == null || (!manage && !post.IsPublished)) return NotFound();
         if (manage && !CanEdit(post)) return Forbid();
-        return Ok(new
+        return Ok(new ReadPostDTO
         {
-            post.Id,
-            post.Title,
-            post.Content,
-            post.Thumbnail,
-            post.IsPublished,
-            post.CreatedAt,
-            post.UpdatedAt,
-            post.ViewCount,
+            Id = post.Id,
+            Title = post.Title,
+            Content = post.Content,
+            Thumbnail = post.Thumbnail,
+            IsPublished = post.IsPublished,
+            CreatedAt = DateTime.SpecifyKind(post.CreatedAt, DateTimeKind.Utc),
+            UpdatedAt = DateTime.SpecifyKind(post.UpdatedAt, DateTimeKind.Utc),
+            ViewCount = post.ViewCount,
             AuthorName = post.Author?.UserName
         });
+    }
+
+    [HttpPost("{id:int}/view")]
+    public async Task<IActionResult> RecordView(int id)
+    {
+        await using var tx = await db.Database.BeginTransactionAsync();
+        // UPDATE holds the row lock until the returned count has been read.
+        // This also serializes with publish/withdraw, without loading a stale counter into EF.
+        var changed = await db.Database.ExecuteSqlInterpolatedAsync(
+            $"UPDATE [Posts] SET [ViewCount] = [ViewCount] + 1 WHERE [Id] = {id} AND [IsPublished] = 1");
+        if (changed == 0) return NotFound();
+        var viewCount = await db.Posts.AsNoTracking().Where(x => x.Id == id).Select(x => x.ViewCount).SingleAsync();
+        await tx.CommitAsync();
+        return Ok(new { viewCount });
     }
 
     [HttpPost, Authorize(Roles = "Admin,Editor"), RequestSizeLimit(1024 * 1024)]
@@ -126,13 +148,13 @@ public class PostController : ControllerBase
     [HttpPatch("{id:int}"), Authorize(Roles = "Admin,Editor"), RequestSizeLimit(1024 * 1024)]
     public async Task<IActionResult> Update(int id, JsonPatchDocument<UpdatePostDTO> patch)
     {
-        if (patch == null || patch.Operations.Any(o => o.op != "replace" || string.IsNullOrEmpty(o.path) || !new[] { "/title", "/content", "/thumbnail" }.Contains(o.path.ToLowerInvariant()))) return BadRequest();
+        if (patch == null || patch.Operations.Any(o => o.op != "replace" || string.IsNullOrEmpty(o.path) || !new[] { "/title", "/content", "/thumbnail", "/ispublished" }.Contains(o.path.ToLowerInvariant()) || (o.path.Equals("/ispublished", StringComparison.OrdinalIgnoreCase) && o.value is not bool))) return BadRequest();
         await using var tx = await db.Database.BeginTransactionAsync();
         // Lock the post so two edits cannot leave references for an outdated Content version.
         var post = await db.Posts.FromSqlInterpolated($"SELECT * FROM Posts WITH (UPDLOCK, ROWLOCK) WHERE Id={id}").SingleOrDefaultAsync();
         if (post == null) return NotFound();
         if (!CanEdit(post)) return Forbid();
-        var data = new UpdatePostDTO { Title = post.Title, Content = post.Content, Thumbnail = post.Thumbnail };
+        var data = new UpdatePostDTO { Title = post.Title, Content = post.Content, Thumbnail = post.Thumbnail, IsPublished = post.IsPublished };
         patch.ApplyTo(data, ModelState);
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var error = ContentRules.Validate(data.Title, data.Content, data.Thumbnail);
@@ -146,6 +168,7 @@ public class PostController : ControllerBase
         post.Title = data.Title;
         post.Content = data.Content;
         post.Thumbnail = data.Thumbnail;
+        post.IsPublished = data.IsPublished;
         post.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync();
         await tx.CommitAsync();

@@ -8,6 +8,7 @@ import PostDetail from "../page/PostDetail/PostDetail";
 import Admin from "../page/Admin/main/Admin";
 import CreatePost from "../page/Admin/manage/Post/CreatePost";
 import UpdatePost from "../page/Admin/manage/Post/UpdatePost";
+import PostPreview from "../page/Admin/manage/Post/PostPreview";
 import AccountManager from "../page/Admin/manage/Account/AccountManager";
 import PostManager from "../page/Admin/manage/Post/PostManager";
 import SignIn from "../page/Admin/SignIn";
@@ -40,6 +41,7 @@ function App() {
             //NestRoute- đường dẫn nội bộ sẽ không có dấu "/" phía trước
             <Route path="create-post-80820508" element={<CreatePost />} />
             <Route path="edit-post-80820508/:id" element={<UpdatePost />} />
+            <Route path="preview-post-80820508/:id" element={<PostPreview />} />
             <Route path="post-manager-80820508" element={<PostManager />} />
             <Route
               path="account-manager-80820508"

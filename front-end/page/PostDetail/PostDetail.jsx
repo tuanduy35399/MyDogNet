@@ -1,19 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header/Header";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useLocation, Link } from "react-router-dom";
 import axiosClient from "../../api";
 import "./PostDetail.css";
 import { useUser } from "../../context/UserContext";
 
 export default function PostDetail() {
   const { id } = useParams();
+  const location = useLocation();
+  const openKey = `${location.key}:${id}`;
   const { user } = useUser();
   const [post, setPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorType, setErrorType] = useState(null); // '404' | 'error' | null
   const [errorMessage, setErrorMessage] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
+  const [loadedFor, setLoadedFor] = useState(null);
+  const viewAttempt = useRef(null);
+  const [viewResult, setViewResult] = useState(null);
+
+  useEffect(() => {
+    if (isLoading || errorType || loadedFor !== openKey || String(post?.id) !== id || post?.isPublished === false) return;
+    // Reuse the same promise if StrictMode replays this effect. Never retry an
+    // uncertain POST automatically: it may already have committed in SQL.
+    if (viewAttempt.current?.key !== openKey) {
+      viewAttempt.current = { key: openKey, promise: axiosClient.post(`/post/${id}/view`, null, { timeout: 15000 }) };
+    }
+    let active = true;
+    viewAttempt.current.promise.then(res => {
+      if (active) setViewResult({ key: openKey, count: res.data.viewCount });
+    }).catch(() => {
+      if (active) setViewResult({ key: openKey, failed: true });
+    });
+    return () => { active = false; };
+  }, [id, openKey, loadedFor, post?.id, isLoading, errorType]);
 
   const normalizeContent = (html) => {
     if (!html) return "";
@@ -52,6 +73,7 @@ export default function PostDetail() {
         });
         if (!controller.signal.aborted) {
           setPost(res.data);
+          setLoadedFor(openKey);
           setErrorType(null);
         }
       } catch (err) {
@@ -91,7 +113,7 @@ export default function PostDetail() {
       clearTimeout(timeoutId);
       controller.abort();
     };
-  }, [id, reloadKey]);
+  }, [id, openKey, reloadKey]);
 
   return (
     <>
@@ -169,7 +191,9 @@ export default function PostDetail() {
                     <p className="text-muted small">
                       Posted by <strong>{post?.authorName}</strong> on{" "}
                       {formatDate(post?.createdAt)}
+                      {" · "}<span data-testid="post-view-count">Lượt xem: {viewResult?.key === openKey && !viewResult.failed ? viewResult.count : (post?.viewCount ?? 0)}</span>
                     </p>
+                    {viewResult?.key === openKey && viewResult.failed && <p className="text-muted small" role="status">Chưa cập nhật được lượt xem. Bạn vẫn có thể đọc bài viết.</p>}
                     <hr className="my-4" />
                     <div
                       className="mb-3 lh-lg post-content"

@@ -9,40 +9,46 @@ export default function UpdatePost() {
   const [editorBusy, setEditorBusy] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [loadFailed, setLoadFailed] = useState(false);
   const [data, setData] = useState({
     title: "",
     thumbnail: "",
     content: "",
+    isPublished: false,
   });
   const { id } = useParams();
   const navigate = useNavigate();
   useEffect(() => {
     let isMounted = true;
+    const controller = new AbortController();
+    setLoading(true);
+    setLoadFailed(false);
+    setError("");
     const fetchData = async () => {
       try {
-        const res = await axiosClient.get(`/post/manage/${id}`);
+        const res = await axiosClient.get(`/post/manage/${id}`, { signal: controller.signal, timeout: 15000 });
         if (isMounted) {
           setData(res.data);
         }
-        setLoading(false);
       } catch (err) {
-        alert("Loi lay du lieu");
-        console.log(err);
-        setLoading(false);
+        if (isMounted) { setLoadFailed(true); setError("Không tải được bài viết hoặc bạn không có quyền chỉnh sửa."); }
+      } finally {
+        if (isMounted) setLoading(false);
       }
     };
     fetchData();
     return () => {
       isMounted = false;
+      controller.abort();
     };
   }, [id]);
-  const handleSavePost = async () => {
+  const handleSavePost = async (isPublished) => {
     if (editorBusy || isUploading || saving) return;
     if (/data:/i.test(data.content)) { setError('Ảnh base64 chưa được chuyển. Hãy tải lại ảnh qua nút chèn ảnh.'); return; }
     setError('');
     setSaving(true);
-    const token = localStorage.getItem("tk");
     const patchData = [
+      { path: "/isPublished", op: "replace", value: isPublished },
       {
         path: "/title",
         op: "replace",
@@ -59,12 +65,10 @@ export default function UpdatePost() {
         value: data.thumbnail,
       },
     ];
-    setLoading(true);
     try {
       await axiosClient.patch(`/post/${id}`, patchData, {
         headers: {
           "Content-Type": "application/json-patch+json",
-          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -80,7 +84,7 @@ export default function UpdatePost() {
     }
   };
   const handleContentChange = (content) => {
-    setData({ ...data, content: content });
+    setData(prev => ({ ...prev, content }));
   };
   const handleUpload = async (e) => {
     const file = e.target.files[0]; if (!file) return null;
@@ -121,6 +125,8 @@ export default function UpdatePost() {
           <div className="spinner-grow text-primary" role="status"></div>
           <div className="spinner-grow text-primary" role="status"></div>
         </div>
+      ) : loadFailed ? (
+        <div className="container mt-4"><p role="alert">{error}</p><button className="btn btn-secondary" onClick={() => navigate(-1)}>Quay lại</button></div>
       ) : (
         <div className="container mt-4">
           <div className="card shadow-sm border-0">
@@ -154,12 +160,14 @@ export default function UpdatePost() {
                     type="button"
                     className="btn btn-primary px-4"
                     disabled={editorBusy || isUploading || saving}
-                  onClick={handleSavePost}
+                  onClick={() => handleSavePost(data.isPublished)}
                   >
-                    Save
+                    {data.isPublished ? "Lưu thay đổi" : "Lưu nháp"}
                   </button>
+                  <button type="button" className={data.isPublished ? "btn btn-outline-warning px-4" : "btn btn-success px-4"} disabled={editorBusy || isUploading || saving} onClick={() => handleSavePost(!data.isPublished)}>{data.isPublished ? "Thu hồi về nháp" : "Xuất bản"}</button>
                 </div>
               </div>
+              <p className="text-start"><span className={data.isPublished ? "badge bg-success" : "badge bg-secondary"}>{data.isPublished ? "Đã xuất bản" : "Nháp"}</span> · Tác giả: {data.authorName} · Cập nhật: {data.updatedAt ? new Date(data.updatedAt).toLocaleString("vi-VN") : ""}</p>
               <div className="mb-3 text-start">
                 <label className="form-label fw-bold">Thumbnail</label>
                 {data?.thumbnail && (

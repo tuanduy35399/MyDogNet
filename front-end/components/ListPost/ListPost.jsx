@@ -186,6 +186,7 @@ export default function ListPost({ onDataLoaded }) {
                 <small className="text-muted">
                   <i className="bi bi-clock me-1"></i>
                   {formatDate(item?.createdAt)}
+                  {" · "}Lượt xem: {item?.viewCount ?? 0}
                 </small>
               </p>
               <Link to={`/post/${item?.id}`} className="btn btn-primary px-3">

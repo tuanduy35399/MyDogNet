@@ -23,6 +23,7 @@ vi.mock("../api", () => {
 describe("Nhóm HC04: Sửa ảnh và nội dung bị lệch hoặc tràn ngang trên điện thoại", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    axiosClient.post.mockResolvedValue({ data: { viewCount: 1 } });
   });
 
   it("TC-HC04-01: Kiểm tra quy tắc CSS chống tràn ngang tại các viewport di động (320px, 360px, 390px)", () => {

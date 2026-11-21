@@ -2,9 +2,8 @@ import { useState } from "react";
 import RichTextEditor, { uploadImage } from "../../../../components/Editor/RichTextEditor";
 import "react-quill-new/dist/quill.snow.css";
 import axiosClient from "../../../../api";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export default function CreatePost() {
-  const [isLoading, setLoading] = useState(true);
   const [isUploading, setUploading] = useState(false);
   const [editorBusy, setEditorBusy] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -13,23 +12,19 @@ export default function CreatePost() {
     title: "",
     content: "",
     thumbnail: null,
-    isPublished: true, //tạm thời mặc định là true
+    isPublished: false,
   });
   const navigate = useNavigate();
 
-  const handleSavePost = async () => {
+  const handleSavePost = async (isPublished) => {
     if (editorBusy || isUploading || saving) return;
     if (/data:/i.test(data.content)) { setError('Ảnh base64 chưa được chuyển. Hãy tải lại ảnh qua nút chèn ảnh.'); return; }
     setError('');
     setSaving(true);
-    const token = localStorage.getItem("tk");
-
-    setLoading(true);
     try {
-      await axiosClient.post(`/post`, data, {
+      await axiosClient.post(`/post`, { ...data, isPublished }, {
         headers: {
-          "Content-Type": "application/json-patch+json",
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
 
@@ -39,7 +34,6 @@ export default function CreatePost() {
       if (err.response?.status === 401)
         setError("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại.");
       else setError(err.response?.data?.message || (typeof err.response?.data === "string" ? err.response.data : null) || "Đăng bài thất bại.");
-      setLoading(false);
     } finally { setSaving(false); }
   };
   const handleContentChange = (content) => {
@@ -107,12 +101,14 @@ export default function CreatePost() {
                   type="button"
                   className="btn btn-primary px-4"
                   disabled={editorBusy || isUploading || saving}
-                  onClick={handleSavePost}
+                  onClick={() => handleSavePost(false)}
                 >
-                  Save
+                  Lưu nháp
                 </button>
+                <button type="button" className="btn btn-success px-4" disabled={editorBusy || isUploading || saving} onClick={() => handleSavePost(true)}>Xuất bản</button>
               </div>
             </div>
+            <p className="text-muted text-start">Bài lưu nháp chỉ có chủ bài và quản trị viên được xem.</p>
             <div className="mb-3 text-start">
               <label className="form-label fw-bold">Thumbnail</label>
               {data?.thumbnail && (

@@ -11,6 +11,9 @@ export default function PostManager() {
   const [isLoading, setLoading] = useState(true);
   const [inputFind, setInputFind] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [status, setStatus] = useState("all");
+  const [error, setError] = useState("");
+  const requestId = useRef(0);
   // Lưu id bài viết được chọn để xóa
   const [selectedPostId, setSelectedPostId] = useState(null);
 
@@ -64,6 +67,8 @@ export default function PostManager() {
   };
 
   const fetchPosts = async () => {
+    const request = ++requestId.current;
+    setError("");
     try {
       // Dùng axios params thay vì nối chuỗi trực tiếp để tự động mã hóa ký tự đặc biệt, gọi endpoint quản trị /post/manage
       const res = await axiosClient.get("/post/manage", {
@@ -71,22 +76,26 @@ export default function PostManager() {
           pageNumber: page,
           pageSize: pageSize,
           searchTerm: searchTerm || undefined,
+          ...(status !== "all" ? { status } : {}),
         },
       });
+      if (request !== requestId.current) return;
       setPosts(res.data?.data || []);
       setTotalPages(res.data?.totalPages || 1);
       setTotalRecords(res.data?.totalRecords || 0);
     } catch (err) {
+      if (request === requestId.current) setError("Không tải được danh sách bài viết. Vui lòng thử lại.");
       console.error("Không thể lấy danh sách các bài viết:", err);
     } finally {
-      setLoading(false);
+      if (request === requestId.current) setLoading(false);
     }
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchPosts();
-  }, [page, searchTerm]);
+    return () => { requestId.current++; };
+  }, [page, searchTerm, status]);
 
   return (
     <>
@@ -178,6 +187,13 @@ export default function PostManager() {
             </Link>
           </div>
 
+          <div className="d-flex align-items-center gap-2 mb-3">
+            <label htmlFor="post-status">Trạng thái</label>
+            <select id="post-status" className="form-select w-auto" value={status} onChange={e => { setStatus(e.target.value); setPage(1); }}>
+              <option value="all">Tất cả</option><option value="draft">Nháp</option><option value="published">Đã xuất bản</option>
+            </select>
+          </div>
+          {error && <p role="alert" className="text-danger">{error} <button className="btn btn-link" onClick={fetchPosts}>Thử lại</button></p>}
           {searchTerm && (
             <div className="mb-3 text-muted small">
               Kết quả tìm kiếm cho: <strong>"{searchTerm}"</strong> ({totalRecords} bài viết)
@@ -191,13 +207,15 @@ export default function PostManager() {
                   <th scope="col" style={{ width: "80px" }}>STT</th>
                   <th scope="col">Tiêu đề (Title)</th>
                   <th scope="col">Tác giả (Author)</th>
-                  <th scope="col" className="text-center" style={{ width: "180px" }}>Thao tác (Action)</th>
+                  <th scope="col">Trạng thái</th>
+                  <th scope="col">Lượt xem</th>
+                  <th scope="col" className="text-center" style={{ width: "300px" }}>Thao tác (Action)</th>
                 </tr>
               </thead>
               <tbody>
                 {posts?.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="text-center py-4 text-muted" data-testid="admin-empty-posts">
+                    <td colSpan="6" className="text-center py-4 text-muted" data-testid="admin-empty-posts">
                       <i className="bi bi-inbox display-6 text-secondary d-block mb-2"></i>
                       Không tìm thấy bài viết nào.
                     </td>
@@ -208,8 +226,11 @@ export default function PostManager() {
                       <th scope="row">{(page - 1) * pageSize + index + 1}</th>
                       <td className="fw-semibold">{item?.title}</td>
                       <td className="text-muted">{item?.authorName}</td>
+                      <td><span className={item.isPublished ? "badge bg-success" : "badge bg-secondary"}>{item.isPublished ? "Đã xuất bản" : "Nháp"}</span></td>
+                      <td>{item.viewCount ?? 0}</td>
                       <td>
                         <div className="d-flex justify-content-center gap-2">
+                          <Link to={`/admin-dashboard-80820508/preview-post-80820508/${item.id}`} className="btn btn-outline-secondary btn-sm">Xem trước</Link>
                           <Link
                             to={`/admin-dashboard-80820508/edit-post-80820508/${item?.id}`}
                             className="btn btn-outline-primary btn-sm px-3"
