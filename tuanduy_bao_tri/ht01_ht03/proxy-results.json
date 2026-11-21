@@ -1,0 +1,21 @@
+[
+  {
+    "id": "PROXY-HT01-PUBLIC",
+    "status": "PASS",
+    "http": 200,
+    "cacheControl": "no-store, no-cache"
+  },
+  {
+    "id": "PROXY-HT01-WITHDRAW",
+    "status": "PASS",
+    "http": 404,
+    "cacheControl": "no-store, no-cache"
+  },
+  {
+    "id": "PROXY-HT01-LIST",
+    "status": "PASS",
+    "http": 200,
+    "total": 0,
+    "cacheControl": "no-store, no-cache"
+  }
+]

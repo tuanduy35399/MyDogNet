@@ -1,0 +1,40 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "MyDogNet: build backend",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/dev.sh", "build"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": "$msCompile",
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "MyDogNet: backend (terminal)",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/dev.sh", "backend"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated", "reveal": "always" }
+    },
+    {
+      "label": "MyDogNet: frontend",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/dev.sh", "frontend"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "presentation": { "panel": "dedicated", "reveal": "always" }
+    },
+    {
+      "label": "MyDogNet: migrate database",
+      "type": "process",
+      "command": "bash",
+      "args": ["scripts/dev.sh", "migrate"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    }
+  ]
+}

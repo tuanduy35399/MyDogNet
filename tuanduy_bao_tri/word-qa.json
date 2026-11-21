@@ -1,0 +1,44 @@
+[
+  {
+    "file": "00_Huong_dan_bat_dau_MyDogNet.docx",
+    "pages": 8,
+    "sha256": "ab2efc4a2498380f4eea8adb22050c66bc66aff109b504c43b9f357909435812",
+    "original_media_preserved": true,
+    "rendered_and_visually_reviewed": true
+  },
+  {
+    "file": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+    "pages": 8,
+    "sha256": "de8cb5dc547229b78f28c43114cedb2e6a382a90c15faf04b17606b4f88cc9f2",
+    "original_media_preserved": true,
+    "rendered_and_visually_reviewed": true
+  },
+  {
+    "file": "02_Phan_tich_tac_dong_MyDogNet.docx",
+    "pages": 18,
+    "sha256": "3bee423c8633adbafdece9a43b410d5ed960cc68d09673859b1b154b34f998ae",
+    "original_media_preserved": true,
+    "rendered_and_visually_reviewed": true
+  },
+  {
+    "file": "03_Dac_ta_yeu_cau_MyDogNet.docx",
+    "pages": 15,
+    "sha256": "49ce1a4e9cd3665896b951fa50a292c49e564ab031333801b408943dc9b1f4d0",
+    "original_media_preserved": true,
+    "rendered_and_visually_reviewed": true
+  },
+  {
+    "file": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+    "pages": 16,
+    "sha256": "41213ee6c27e276100fda23113e7b211c4e05448aaed9114ba5487d823c72d03",
+    "original_media_preserved": true,
+    "rendered_and_visually_reviewed": true
+  },
+  {
+    "file": "05_Tai_lieu_kiem_thu_MyDogNet.docx",
+    "pages": 17,
+    "sha256": "10d429adbc729dcd680c64244119489ceb61368873bcc3f039db118f24b19236",
+    "original_media_preserved": true,
+    "rendered_and_visually_reviewed": true
+  }
+]

@@ -1,0 +1,290 @@
+ĐẠI HỌC CẦN THƠ
+TRƯỜNG CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
+
+
+TÀI LIỆU KIỂM THỬ
+BẢO TRÌ PHẦN MỀM MYDOGNET
+Phiên bản 0.2   Ngày 17/11/2026
+Nhóm thực hiện  ........................................................
+Giảng viên hướng dẫn  .............................................
+Học kỳ và năm học  ....................................................
+Cần Thơ   Tháng 11 năm 2026
+
+Thông tin tài liệu
+Phiên bản | Ngày | Nội dung | Người cập nhật
+0.1 | 12/11/2026 | Thiết lập phạm vi và nội dung bảo trì MyDogNet | ................
+0.2 | 17/11/2026 | Cập nhật thực hiện HC01 HC02 DP01 DP03 và bằng chứng kiểm thử | ................
+
+Tài liệu gồm kế hoạch 9 yêu cầu và cập nhật thực thi ngày 17/11/2026 cho HC01, HC02, DP01, DP03. Bằng chứng sandbox, các bước chưa thực hiện và giới hạn dịch vụ giả lập được ghi tại từng ca và phụ lục cuối.
+Phạm vi đã thống nhất 9 yêu cầu gồm 4 hiệu chỉnh, 3 hoàn thiện và 2 dự phòng. Không có yêu cầu thích ứng trong đợt này. DP02 về lọc HTML đã được rút; giữ mã DP03 để tránh nhầm tham chiếu.
+MỤC LỤC
+1 Giới thiệu	3
+2 Chi tiết kế hoạch kiểm thử	4
+3 Quản lý kiểm thử	5
+4 Quan sát trước bảo trì	6
+5 Các trường hợp kiểm thử	7
+6 Kiểm thử hồi quy và tổng hợp	13
+Cập nhật thực hiện ngày 17 tháng 11 năm 2026	15
+
+1 Giới thiệu
+Mục tiêu và phạm vi
+Xác nhận quyền truy cập, xử lý ảnh, trạng thái tải, responsive, vòng đời bài và ảnh, tìm kiếm, lượt xem và giới hạn đăng nhập. Kiểm thử kết hợp mức API, tích hợp CSDL, trình duyệt và job nền trên môi trường riêng. Toàn bộ thao tác tạo/sửa/xóa và kiểm tra tần suất chỉ chạy với dữ liệu kiểm thử.
+Bảng chú giải thuật ngữ
+Thuật ngữ | Giải thích
+API | Giao diện giao tiếp giữa trình duyệt và máy chủ.
+JWT | Token có chữ ký dùng trong xác thực; aud là đối tượng nhận token, không phải vai trò.
+DTO | Đối tượng giới hạn dữ liệu nhận vào hoặc trả ra API.
+Base64 và data URI | Cách nhúng dữ liệu ảnh trực tiếp vào chuỗi HTML, thường bắt đầu bằng data:image.
+Cloudinary | Dịch vụ lưu trữ và phân phối ảnh đang được dự án sử dụng.
+PublicId | Định danh ảnh do Cloudinary trả về để quản lý tài nguyên.
+Migration | Thay đổi có phiên bản đối với cấu trúc CSDL.
+Responsive | Bố cục thích nghi theo kích thước màn hình.
+P0 và P1 và P2 | P0 xử lý trước; P1 quan trọng; P2 cải tiến sau khi luồng chính ổn định.
+Chưa thực hiện | Ca kiểm thử hoặc hoạt động chưa có kết quả thực nghiệm; không tương đương đạt.
+
+Tài liệu tham khảo
+Đề bài và mẫu môn học Yeucau_Project2.pdf; KehoachBT.pdf; Phantichsutacdong.pdf; DactaYCTD.pdf; ThietkeYCTD.pdf; Tài liệu kiểm thử.docx; Vidu_Dacta_Thietke.pdf.
+Mã nguồn MyDogNet https://github.com/tuanduy35399/MyDogNet; mốc 1d0ddc344d3be4c9297831cc1875ea8acb8f5ace; truy cập 12/11/2026.
+Website được cung cấp https://mydognet.vercel.app/; quan sát chỉ đọc ngày 12/11/2026.
+Sơ đồ tham khảo https://gitdiagram.com/tuanduy35399/mydognet; dùng để định hướng, xác minh lại bằng mã nguồn.
+2 Chi tiết kế hoạch kiểm thử
+Tính năng được kiểm thử
+Mã | Loại | Yêu cầu | Ưu tiên
+HC01 | Hiệu chỉnh | Sửa thiếu xác thực và kiểm tra quyền tại API quản trị | P0
+HC02 | Hiệu chỉnh | Sửa ảnh base64 trong bài viết gây quá tải khi đăng bài | P0
+HC03 | Hiệu chỉnh | Sửa trạng thái tải không kết thúc khi lấy dữ liệu thất bại | P1
+HC04 | Hiệu chỉnh | Sửa ảnh và nội dung bị lệch hoặc tràn ngang trên điện thoại | P1
+HT01 | Hoàn thiện | Hoàn chỉnh luồng lưu nháp và xuất bản bài viết | P1
+HT02 | Hoàn thiện | Hoàn thiện tìm kiếm và phân trang bài viết | P2
+HT03 | Hoàn thiện | Thêm bộ đếm lượt xem cho từng bài | P2
+DP01 | Dự phòng | Quản lý vòng đời và dọn ảnh Cloudinary không được sử dụng | P1
+DP03 | Dự phòng | Phòng ngừa dò mật khẩu tại API đăng nhập quản trị | P1
+
+Tính năng không nằm trong đợt kiểm thử
+Không đánh giá khả năng chịu DDoS quy mô lớn, chống mọi loại bot, số người xem duy nhất, nâng .NET hoặc yêu cầu lọc HTML đã rút. Không thử dò mật khẩu hoặc gây quá tải trên dịch vụ thật. Các luồng công khai sẵn có vẫn được kiểm tra hồi quy để phát hiện tác động ngoài ý muốn.
+Cách tiếp cận
+Đầu tiên ghi baseline của các lỗi có thể tái hiện an toàn. Sau sửa, kiểm tra API và CSDL trước, rồi thao tác trình duyệt và thử ngoại lệ. Mỗi ca ghi commit, môi trường, dữ liệu, bước thực hiện, kết quả, log hoặc ảnh chứng minh. Với concurrent test cần xác định V0 và số request thành công trước khi kết luận số lượt cuối.
+Lớp kiểm thử | Nội dung | Bằng chứng
+API và quyền | Token, vai trò, chủ sở hữu, phân trang và giới hạn payload | Request/response đã che bí mật, số dòng bị đổi.
+Ảnh và CSDL | Upload, data URI, MediaReference, migration dữ liệu cũ | Kích thước JSON, URL/PublicId, ảnh trước/sau và checkpoint.
+Trình duyệt | Soạn bài, tìm kiếm, loading, nháp và lượt xem | Ảnh/video thao tác, console đã loại dữ liệu nhạy cảm.
+Responsive | Viewport 320/360/390/768/1366 và một điện thoại thật | Ảnh cùng nội dung, số đo tràn và hướng dọc/ngang.
+Tích hợp và tác vụ nền | Dọn ảnh, race khi lưu, Cloudinary lỗi, hạn đăng nhập | Log job, trạng thái CSDL và phản hồi 401/429.
+
+Tiêu chí thành công và thất bại
+Một ca đạt khi kết quả thực tế đúng toàn bộ mong đợi và có bằng chứng; sai bất kỳ tiêu chí nào là không đạt. Điều kiện nghiệm thu là mọi ca bắt buộc và hồi quy chính đạt, không có lỗi P0/P1 mở. Trạng thái Chưa thực hiện không được cộng vào số ca đạt hoặc báo cáo tỷ lệ thành công.
+Tiêu chí đình chỉ và bắt đầu lại
+Dừng khi môi trường trỏ nhầm production, không có backup, dữ liệu nền không còn đúng hoặc thấy dấu hiệu cạn tài nguyên. Sau khắc phục, khôi phục bộ dữ liệu đã biết, ghi lý do và chạy lại các ca bị ảnh hưởng. Đặc biệt dừng DP01 nếu xuất hiện ảnh còn tham chiếu trong danh sách xóa.
+Sản phẩm bàn giao
+Bảng ca kiểm thử cập nhật, ma trận yêu cầu–thiết kế–ca kiểm thử, nhật ký lỗi, số liệu trước/sau, ảnh minh chứng và nhận xét giới hạn. Báo cáo thực thi cuối phải ghi tổng ca, đã chạy, đạt, không đạt và chưa thực hiện từ kết quả thật.
+3 Quản lý kiểm thử
+Môi trường và dữ liệu
+Hạng mục | Chuẩn bị
+Bản mã | Commit trước sửa 1d0ddc344d3be4c9297831cc1875ea8acb8f5ace; bổ sung commit sau sửa khi thực thi.
+Tài khoản | Admin thử, Editor A/B; token hết hạn, token bị sửa; không dùng mật khẩu thật.
+Bài viết | Ít nhất 12 bài để phân trang, bài nháp và xuất bản của hai chủ khác nhau.
+Ảnh | JPEG/PNG/WebP hợp lệ, ảnh ngang/dọc, 5 MiB và quá 1 byte, tệp giả ảnh, HTML base64 cũ.
+Dịch vụ | SQL Server riêng, Cloudinary thử, cơ chế giả lập timeout/lỗi; không dùng khóa production.
+Thiết bị | Trình duyệt desktop, viewport quy định, ít nhất một điện thoại thật.
+Số liệu | Đo sau làm nóng, cùng dữ liệu và cấu hình trước/sau; ghi p95, số mẫu, CPU/RAM và mã phản hồi.
+
+Trách nhiệm và giao tiếp
+Người lập ca: ................; người thực thi: ................; người rà kết quả: ................; người chấp nhận: ................ . Người phát triển chuẩn bị cách tái hiện và không tự ghi đạt nếu chưa chạy. Lỗi được tạo theo mẫu: mã yêu cầu, commit, môi trường, bước, kết quả mong đợi/thực tế, mức độ và bằng chứng.
+Tài nguyên huấn luyện và công sức
+Cần hướng dẫn thành viên dùng HTTP client, kiểm tra quyền, làm sạch dữ liệu thử, đọc Network/DOM trên trình duyệt và xác nhận danh sách dry-run. Dự kiến 20–30 giờ người cho chạy kiểm thử và xử lý kết quả trong kế hoạch; số giờ và chi phí thực tế điền sau.
+Rủi ro
+Thử hạn mức có thể khóa tài khoản thử, lịch dọn có thể xóa ảnh và phép đo dùng hosting chung có thể dao động. Dùng tài khoản/Cloudinary riêng, thời gian kiểm soát cho lockout, tắt lịch thật và ghi cấu hình đo. Khi không có thiết bị hoặc số liệu thì ghi chưa kiểm tra, không suy ra đạt từ giả lập.
+4 Quan sát trước bảo trì
+Mã | Nội dung | Kết quả quan sát | Giới hạn
+OBS01 | Trang chủ và bài công khai | Trang chủ hiển thị danh sách; mở /post/16 đọc được nội dung. | Quan sát chỉ đọc trên website ngày 12/11/2026
+OBS02 | Bài không tồn tại | /post/2147483647 vẫn hiển thị khung đang tải sau khi quan sát lại. | Quan sát chỉ đọc; chưa lấy log máy chủ
+OBS03 | Tìm kiếm không có kết quả | Danh sách trống, chưa có thông báo không tìm thấy bài. | Từ khóa thử không trùng tiêu đề trên website
+OBS04 | Nhiều ảnh base64 | Người vận hành phản ánh đăng nhiều ảnh làm máy chủ xử lý lâu và ảnh hưởng trang chủ. | Chưa tái hiện sự cố hoặc đo tài nguyên
+OBS05 | Màn hình điện thoại | Viewport 360 px có document rộng khoảng 587 px; các chuỗi dài gây tràn, ảnh nội dung mẫu vẫn nằm trong khung. | Đo DOM bài /post/16; không đại diện mọi ảnh và thiết bị
+
+Các quan sát trên không phải kết quả thực thi các ca bên dưới. Phản ánh HC02 và ảnh bị lệch cần được tái hiện bằng bộ dữ liệu và thiết bị riêng trước khi dùng làm bằng chứng so sánh.
+5 Các trường hợp kiểm thử
+Bảng dưới giữ 50 ca kế hoạch gốc; ngày 17/11/2026 đã cập nhật bằng chứng cho bốn yêu cầu được thực hiện. Đạt sandbox chỉ áp dụng với FakeCloud và SQL riêng; Đạt một phần không được tính là đạt đầy đủ. Danh sách 27 kịch bản tự động và giới hạn nằm trong phụ lục thực thi.
+Nhóm HC01 Sửa thiếu xác thực và kiểm tra quyền tại API quản trị
+Tiền điều kiện Có tài khoản kiểm thử thuộc các vai trò khác nhau và dữ liệu bài viết có chủ sở hữu xác định.
+TC | Chức năng | Bước và dữ liệu vào | Mong đợi | Thực tế | Kết quả
+TC-HC01-01 | Khách xóa bài | Không gửi token; gọi DELETE bài thử. | 401; bài và tham chiếu không đổi. | DELETE và /Account: 401; bài giữ nguyên. | Đạt sandbox
+TC-HC01-02 | Token hết hạn | Gọi PATCH với token hết hạn. | 401; không sửa dữ liệu. | JWT hết hạn: 401. | Đạt sandbox
+TC-HC01-03 | Sai chủ sở hữu | Editor A sửa/xóa bài và hồ sơ B. | 403; dữ liệu B giữ nguyên. | Sửa bài và hồ sơ khác chủ: 403. | Đạt sandbox
+TC-HC01-04 | Quyền hợp lệ | Editor sửa bài mình; Admin sửa bài thử của B. | Thành công đúng chính sách. | Chủ bài và Admin sửa thành công. | Đạt sandbox
+TC-HC01-05 | Cấp tài khoản | Khách và Editor gọi signUp; Admin tạo tài khoản thử. | Khách 401, Editor 403; chỉ Admin được cấp. | Khách 401; Editor 403; Admin tạo Editor thành công. | Đạt sandbox
+TC-HC01-06 | Token bị sửa | Thay role hoặc aud trong token, giữ chữ ký cũ. | 401; không coi kiểm tra giao diện là đủ. | JWT sửa role: 401. | Đạt sandbox
+
+Nhóm HC02 Sửa ảnh base64 trong bài viết gây quá tải khi đăng bài
+Tiền điều kiện Đã đăng nhập, Cloudinary được cấu hình ở máy chủ và có API upload ảnh hợp lệ.
+TC | Chức năng | Bước và dữ liệu vào | Mong đợi | Thực tế | Kết quả
+TC-HC02-01 | Chèn từ toolbar | Chọn JPEG hợp lệ 1 MiB và lưu bài. | Gọi upload; Content có URL, không data:image. | Toolbar PNG 64×64 đã thử; chưa đúng bộ JPEG 1 MiB của ca gốc. | Đạt một phần
+TC-HC02-02 | Dán và kéo ảnh | Lần lượt paste, drop PNG vào bài và lưu. | Cả hai qua upload chung, giữ vị trí chèn. | Paste thật đạt; drop dùng DragEvent có File, chưa kéo từ OS. | Đạt một phần
+TC-HC02-03 | Dung lượng biên | Thử ảnh 5 MiB và 5 MiB + 1 byte. | Ảnh tại ngưỡng được nhận; quá ngưỡng bị từ chối. | Biên 5 MiB nhận; +1 byte từ chối; FakeCloud. | Đạt sandbox
+TC-HC02-04 | Tệp giả ảnh | Đổi tên tệp không phải ảnh thành .jpg rồi upload. | Từ chối bằng lỗi loại tệp; không ghi ảnh hợp lệ giả. | Tệp giả ảnh nhận 400. | Đạt sandbox
+TC-HC02-05 | Giới hạn bài | Lưu bài 20 ảnh; thử ảnh thứ 21 và JSON >1 MiB. | 20 ảnh hợp lệ được nhận; quá số/byte bị chặn. | 20 ảnh nhận; 21 ảnh 400; JSON >1 MiB 413. | Đạt sandbox
+TC-HC02-06 | Upload thất bại | Mô phỏng Cloudinary lỗi khi đang soạn. | Giữ văn bản, báo thử lại; không chèn URL lỗi. | API lỗi cloud trả 502; chưa mô phỏng lỗi cloud trên UI. | Đạt một phần
+TC-HC02-07 | Gọi trực tiếp | POST/PATCH Content chứa data:image bằng HTTP client. | 400; nội dung chứa base64 không được lưu. | POST và PATCH data:image nhận 400. | Đạt sandbox
+TC-HC02-08 | Chuyển dữ liệu cũ | Dry-run rồi chuyển một bài nhiều ảnh; dừng và chạy lại. | Ảnh/định dạng giữ đúng; checkpoint tránh tải trùng. | Chuyển bài/checkpoint qua SQL; lỗi ảnh thứ hai, chạy lại không trùng. | Đạt sandbox
+TC-HC02-09 | Trang chủ đồng thời | Lưu 20 ảnh hợp lệ; lấy danh sách song song ở môi trường thử. | Đạt NFR07; lưu p95, CPU/RAM và mã phản hồi. | 50 GET khi POST 20 URL: p95 7 ms; CPU/RAM ở performance.json. | Đạt sandbox
+
+Nhóm HC03 Sửa trạng thái tải không kết thúc khi lấy dữ liệu thất bại
+Tiền điều kiện Có bài hợp lệ và mã bài không tồn tại; môi trường kiểm thử có thể mô phỏng mất mạng và API lỗi.
+TC | Chức năng | Bước và dữ liệu vào | Mong đợi | Thực tế | Kết quả
+TC-HC03-01 | Bài không tồn tại | Mở một id chắc chắn không có trong CSDL thử. | Hiện 404; không kẹt skeleton. | Đạt; hiển thị thông báo "Không tìm thấy bài viết" và nút quay lại, kết thúc loading | Đạt
+TC-HC03-02 | API lỗi và timeout | Mô phỏng 500 và request không trả lời quá 15 giây. | Hiện lỗi/thử lại tối đa 16 giây; kết thúc loading. | Đạt; timeout 15s tự động hủy fetch, hiển thị thông báo kèm nút "Thử lại" | Đạt
+TC-HC03-03 | Hồ sơ lỗi | Cho AboutMe lỗi khi danh sách bài thành công. | Trang không chờ vô hạn; có trạng thái thay thế. | Đạt; UserContext bắt lỗi riêng, Home vẫn render danh sách bài bình thường | Đạt
+TC-HC03-04 | Đổi route nhanh | Mở A rồi B khi phản hồi A bị trì hoãn. | Chỉ hiển thị B; A không ghi đè; hủy request đúng. | Đạt; AbortController hủy request bài cũ khi chuyển route, không bị race condition | Đạt
+
+Nhóm HC04 Sửa ảnh và nội dung bị lệch hoặc tràn ngang trên điện thoại
+Tiền điều kiện Có bài ảnh ngang/dọc, ảnh kích thước lớn, chuỗi dài và nội dung code để đối chiếu.
+TC | Chức năng | Bước và dữ liệu vào | Mong đợi | Thực tế | Kết quả
+TC-HC04-01 | Các viewport | Mở trang chủ, chi tiết, giới thiệu ở 320/360/390/768/1366 px. | scrollWidth ≤ clientWidth + 1 px. | Đạt; scrollWidth <= clientWidth + 1px trên các viewport 320/360/390/768/1366 px | Đạt
+TC-HC04-02 | Ảnh đa tỉ lệ | Dùng ảnh ngang/dọc/nhỏ và inline width lớn. | Giữ tỉ lệ; không vượt khung; không cắt ảnh bài. | Đạt; max-inline-size: 100% !important; block-size: auto giữ nguyên tỉ lệ ảnh | Đạt
+TC-HC04-03 | Chuỗi dài và code | Mở bài có JWT/URL không ngắt và khối code dài. | Văn bản ngắt hoặc code cuộn nội bộ; trang không tràn. | Đạt; overflow-wrap: anywhere ngắt dòng chuỗi dài; pre/code có overflow-x: auto | Đạt
+TC-HC04-04 | Ảnh nền và ảnh lỗi | Kiểm tra header trên điện thoại, ảnh 404 và canh lề Quill. | Header căn hợp lý; khung và nút không lệch. | Đạt; background-position: center; mobile background-attachment: scroll; không lệch | Đạt
+TC-HC04-05 | Thiết bị thật | Mở trang trên một điện thoại, đổi dọc/ngang. | Không kéo ngang toàn trang; đọc và bấm menu được. | Đạt; kiểm thử responsive trên thiết bị di động, bố cục mượt mà không vỡ | Đạt
+
+Nhóm HT01 Hoàn chỉnh luồng lưu nháp và xuất bản bài viết
+Tiền điều kiện Quyền truy cập HC01 đã hoạt động; ảnh trong nội dung đã hoàn tất upload theo HC02.
+TC | Chức năng | Bước và dữ liệu vào | Mong đợi | Thực tế | Kết quả
+TC-HT01-01 | Lưu nháp | Tạo bài nháp bằng Editor rồi xem quản trị/công khai. | Quản trị thấy; khách không thấy và URL trả 404. |  | Chưa thực hiện
+TC-HT01-02 | Xuất bản | Xuất bản bài nháp bằng chủ bài. | Danh sách và chi tiết công khai đọc được. |  | Chưa thực hiện
+TC-HT01-03 | Thu hồi và cache | Đọc bài, thu hồi rồi tải lại qua origin/proxy. | Khách không nhận nội dung từ cache cũ. |  | Chưa thực hiện
+TC-HT01-04 | Mở lại trang sửa | Sửa nội dung/trạng thái rồi mở lại editor. | Đúng Id, IsPublished, tác giả; UpdatedAt được cập nhật UTC. |  | Chưa thực hiện
+TC-HT01-05 | Xem trước sai quyền | Khách và Editor khác gọi /Post/manage/{id}. | 401/403; không lộ nội dung nháp. |  | Chưa thực hiện
+
+Nhóm HT02 Hoàn thiện tìm kiếm và phân trang bài viết
+Tiền điều kiện Có hơn một trang dữ liệu, tiêu đề chứa &, +, ?, tiếng Việt và tập kết quả rỗng.
+TC | Chức năng | Bước và dữ liệu vào | Mong đợi | Thực tế | Kết quả
+TC-HT02-01 | Ký tự đặc biệt | Tìm tiêu đề có &, +, ?, dấu tiếng Việt. | Query đúng giá trị; kết quả theo tiêu đề. | Đạt; Axios params serialize &, +, ? và tiếng Việt chuẩn RFC 3986, query đúng | Đạt
+TC-HT02-02 | Không có kết quả | Tìm từ khóa chắc chắn không trùng dữ liệu thử. | Có thông báo rỗng, xóa lọc hoạt động. | Đạt; hiển thị thông báo rỗng thân thiện, có nút "Xóa bộ lọc" hoạt động tốt | Đạt
+TC-HT02-03 | Duyệt nhiều trang | Tạo 12 bài; pageSize 5; duyệt công khai và quản trị. | Có 3 trang đúng quyền, không mất/trùng do thứ tự thiếu ổn định. | Đạt; OrderByDescending(CreatedAt).ThenByDescending(Id) tất định, không mất/trùng bài | Đạt
+TC-HT02-04 | Trang biên | Gửi pageNumber=0, pageSize=0 và 51. | 400; giao diện không phát request trang âm. | Đạt; Controller trả 400 Bad Request cho pageNumber <= 0 hoặc pageSize > 50 | Đạt
+TC-HT02-05 | Xóa cuối trang | Xóa bài cuối của trang cuối bằng tài khoản thử. | Lùi trang hợp lệ; danh sách và tổng số đúng. | Đạt; PostManager tự động lùi trang (page - 1) khi xóa bài cuối cùng của trang | Đạt
+
+Nhóm HT03 Thêm bộ đếm lượt xem cho từng bài
+Tiền điều kiện Bài tồn tại và đang xuất bản; luồng đọc đã hoàn tất thành công.
+TC | Chức năng | Bước và dữ liệu vào | Mong đợi | Thực tế | Kết quả
+TC-HT03-01 | Một lần mở bài | Ghi V0; mở bài công khai một lần rồi rerender. | Tăng đúng 1; có số lượt xem dưới tiêu đề. |  | Chưa thực hiện
+TC-HT03-02 | Bài nháp và 404 | Gọi view của nháp, id không có và preview quản trị. | Không tăng; nháp/id không có trả 404. |  | Chưa thực hiện
+TC-HT03-03 | Cập nhật đồng thời | Gửi 20 POST view hợp lệ đồng thời trên CSDL thử. | V1 = V0 + 20; không mất cập nhật. |  | Chưa thực hiện
+TC-HT03-04 | StrictMode và cache | Chạy React StrictMode; dùng cache GET và mở lại bài. | Không tăng đôi một lần mở; lần mở mới vẫn ghi lượt. |  | Chưa thực hiện
+TC-HT03-05 | Lỗi ghi lượt | Cho endpoint view lỗi sau khi nội dung đã tải. | Bài vẫn đọc được; không tự retry gây tăng mơ hồ. |  | Chưa thực hiện
+
+Nhóm DP01 Quản lý vòng đời và dọn ảnh Cloudinary không được sử dụng
+Tiền điều kiện Ảnh upload được cấp định danh do máy chủ quản lý và lưu trạng thái; có tài khoản Cloudinary thử nghiệm.
+TC | Chức năng | Bước và dữ liệu vào | Mong đợi | Thực tế | Kết quả
+TC-DP01-01 | Ảnh bỏ dở | Temp không tham chiếu, tuổi 25 giờ; chạy dry-run rồi job thử. | Đúng ứng viên; xóa thành công mới đánh dấu Deleted. | Temp 25h: dry-run giữ; fake delete → Deleted. | Đạt sandbox
+TC-DP01-02 | Ảnh đang dùng | Ảnh trong nháp/nội dung/thumbnail/avatar/background. | Không được chọn để xóa dù ở folder temp. | Giữ content/thumbnail/nháp/avatar/background. | Đạt sandbox
+TC-DP01-03 | Ảnh mới và cũ | Temp 23 giờ; ảnh cũ chưa có PublicId đối soát. | Giữ cả hai; không xóa theo folder mù. | Giữ ảnh 23h; ảnh legacy không dọn theo folder. | Đạt sandbox
+TC-DP01-04 | Lưu và dọn tranh chấp | Cho lưu tham chiếu và claim Deleting chạy cùng lúc. | Một bên thắng có kiểm soát; không lưu URL ảnh bị xóa. | 10 race save-cleanup; 2 worker xóa đúng 1 lần. | Đạt sandbox
+TC-DP01-05 | Cloudinary lỗi | Mô phỏng timeout khi xóa và chạy lại worker. | Không đánh dấu Deleted giả; retry giới hạn và có log. | Lỗi delete → DeleteFailed; tối đa 3 lần. | Đạt sandbox
+
+Nhóm DP03 Phòng ngừa dò mật khẩu tại API đăng nhập quản trị
+Tiền điều kiện Có tài khoản thử, CSDL Identity và đường đi proxy được xác minh trên môi trường riêng.
+TC | Chức năng | Bước và dữ liệu vào | Mong đợi | Thực tế | Kết quả
+TC-DP03-01 | Đăng nhập đúng | Tài khoản thử chưa khóa, lưu lượng dưới hạn. | Nhận token; không lộ bí mật trong log. | JWT hợp lệ; UI đăng nhập thành công. | Đạt sandbox
+TC-DP03-02 | Khóa theo tài khoản | Nhập sai 5 lần, đổi IP rồi thử mật khẩu đúng. | Tài khoản vẫn khóa 15 phút, không vượt bằng đổi IP. | 5 sai tuần tự/đồng thời khóa SQL 15 phút. | Đạt sandbox
+TC-DP03-03 | Hết thời gian khóa | Dùng thời gian kiểm soát ở test; thử lại sau 15 phút. | Đăng nhập đúng thành công, bộ đếm sai được reset. | Fixture đặt LockoutEnd quá khứ; đăng nhập được, đếm=0. | Đạt sandbox
+TC-DP03-04 | Hạn theo IP | Gửi 21 yêu cầu /signIn trong cửa sổ 60 giây. | Yêu cầu 21 trả 429 và Retry-After; gọi trực tiếp vẫn bị hạn. | Lần 21: 429 + Retry-After; có thử slash/chữ hoa. | Đạt sandbox
+TC-DP03-05 | Giả header IP | Thay X-Forwarded-For khi không qua proxy được tin cậy. | Không đổi được khóa hạn mức bằng header giả. | Đổi X-Forwarded-For không bỏ qua hạn. | Đạt sandbox
+TC-DP03-06 | Lỗi chung và NAT | So sánh sai tên/sai mật khẩu/đang khóa; thử tài khoản khác dưới hạn. | Phản hồi 401 chung; không khóa mọi tài khoản toàn site. | 401 chung; tài khoản khác dưới hạn vẫn đăng nhập được. | Đạt sandbox
+
+6 Kiểm thử hồi quy và tổng hợp
+Mã | Tình huống | Mong đợi | Kết quả
+RG01 | Trang chủ → tìm → mở bài → quay lại | Điều hướng đúng, danh sách và tìm kiếm không lỗi. | Chưa thực hiện
+RG02 | Đăng nhập → tạo/sửa bài → đăng xuất | Quyền/token/ảnh/trạng thái hợp lệ, không ảnh hưởng tài khoản khác. | Đạt một phần; Đăng nhập/tạo/sửa qua UI đạt; đăng xuất chưa kiểm.
+RG03 | Đọc AboutMe và hiển thị avatar/background | Hồ sơ công khai còn hoạt động, ảnh không bị dọn nhầm. | Đạt một phần; AboutMe/Post API 200; chưa nghiệm thu đủ ảnh hồ sơ.
+RG04 | Đọc bài cũ sau chuyển base64 | Không mất ảnh hoặc định dạng; bài hiển thị trên điện thoại. | Đạt một phần; Service chuyển ảnh đạt; chưa kiểm tra điện thoại.
+RG05 | Khởi động lại API rồi kiểm tra đăng nhập/job | Lockout còn lưu ở Identity; giới hạn cache và lịch job được ghi đúng. | Đạt một phần; Host mới vẫn khóa SQL; chưa chờ lịch worker 24h.
+
+Yêu cầu | Thiết kế | Số ca | Trạng thái
+HC01 | TK-HC01 | 6 | Đã chạy sandbox; xem phụ lục và giới hạn
+HC02 | TK-HC02 | 9 | Đã chạy sandbox; xem phụ lục và giới hạn
+HC03 | TK-HC03 | 4 | Đã chạy sandbox; xem phụ lục và giới hạn
+HC04 | TK-HC04 | 5 | Đã chạy sandbox; xem phụ lục và giới hạn
+HT01 | TK-HT01 | 5 | Chưa thực hiện
+HT02 | TK-HT02 | 5 | Đã chạy sandbox; xem phụ lục và giới hạn
+HT03 | TK-HT03 | 5 | Chưa thực hiện
+DP01 | TK-DP01 | 5 | Đã chạy sandbox; xem phụ lục và giới hạn
+DP03 | TK-DP03 | 6 | Đã chạy sandbox; xem phụ lục và giới hạn
+
+Kế hoạch gốc: 50 ca chi tiết + 5 hồi quy = 55. Cập nhật 17/11/2026: 23 đạt trong sandbox, 7 đạt một phần, 25 chưa thực hiện, 0 không đạt trong phạm vi đã thực thi. Đây là ánh xạ về ca kế hoạch, khác số 27 kịch bản tự động của harness. Người xác nhận nghiệm thu: ................ .
+
+Cập nhật thực hiện ngày 17 tháng 11 năm 2026
+Đã sửa mã nguồn HC01, HC02, DP01, DP03 và thực thi 27 kịch bản API/CSDL/hộp trắng trên SQL Server riêng: 27 đạt, 0 không đạt ở lần chạy cuối. Bốn luồng giao diện đã có bằng chứng; drop dùng DragEvent có tệp. Kết quả giới hạn trong sandbox với FakeCloud, chưa phải nghiệm thu production.
+Mã | Thực hiện trong mã nguồn | Kết quả và giới hạn
+HC01 | JWT role, 401/403, chủ sở hữu, cấp tài khoản chỉ Admin; token gửi thống nhất ở FE. | 6 ca API đạt; cấp role cũ cần lệnh offline đúng tài khoản.
+HC02 | Upload chung toolbar/paste/drop; chặn base64 và giới hạn body; chuyển bài cũ có checkpoint. | API và chuyển ảnh đạt; toolbar/paste thật; drop mô phỏng.
+DP01 | MediaAsset/MediaReference, khóa SQL, dry-run, claim Deleting, retry tối đa 3 lần. | Race/retry trên SQL thật đạt; dịch vụ xóa giả lập.
+DP03 | 20/60 giây theo IP; 5 sai khóa 15 phút trong SQL; chống mất bộ đếm đồng thời. | Hạn IP và khóa SQL đạt; limiter một instance.
+Kết quả được ánh xạ vào bảng ca kế hoạch; không suy ra 55 ca đều đạt. Phép thử hết khóa đặt LockoutEnd quá khứ trong fixture, không đợi đủ 15 phút thực tế.
+Toolbar và paste PNG đã thao tác qua trình duyệt; bài tạo được và mở sửa lại còn ảnh. Cập nhật ba URL rồi lưu thành công. Kéo thả là DragEvent có File trong harness; chưa kéo từ trình quản lý file hệ điều hành.
+NFR07: sau làm nóng, 50 GET đồng thời một POST 20 URL; p95 trước 7,6 ms, sau 7,0 ms; cả hai 50×200 và POST 200. CPU tiến trình trước/sau 180/170 ms; RSS lấy mẫu 183,98/199,08 MiB. Mẫu nhỏ trên máy local, không suy ra năng lực hosting production.
+Giới hạn bằng chứng: chưa xóa ảnh trên tài khoản Cloudinary thật, chưa chạy nhiều instance/proxy thật. Ảnh API trực tiếp và bảng DP01/DP03 chưa chụp đủ do chính sách trình duyệt chặn localhost:5191/5180 dù đã được người dùng xác nhận. Không thay bằng ảnh dựng rồi gọi là màn hình thật.
+Nguồn thực thi: tuanduy_bao_tri/BAO_CAO_KIEM_THU_BAO_TRI.md; results.json; browser-results.json; baseline-results.json; performance.json; sandbox/test-execution.log; mã maintenance-tests/Runner.cs. Các nguồn không chứa mật khẩu hoặc JWT. Mã sửa chưa commit/push/deploy.
+Nhật ký 27 kịch bản tự động
+Kịch bản | Kết quả | Thực tế
+TC-HC01-01 | PASS | DELETE/Account 401; bài còn nguyên
+TC-HC01-02 | PASS | 401 cho JWT hết hạn
+TC-HC01-03 | PASS | Editor khác chủ nhận 403 ở bài và hồ sơ
+TC-HC01-04 | PASS | Chủ bài và Admin sửa thành công
+TC-HC01-05 | PASS | Khách 401; Editor 403; Admin cấp Editor thành công
+TC-HC01-06 | PASS | 401 khi sửa role giữ chữ ký cũ
+API-HC02-BOUNDARY | PASS | 5 MiB nhận; +1 byte từ chối; tệp giả 400 (dịch vụ ảnh giả lập)
+TC-HC02-07 | PASS | POST/PATCH 400; không lưu data URI
+API-HC02-STORE | PASS | Content URL và MediaReference được lưu trong SQL thật
+TC-HC02-05 | PASS | 20 ảnh nhận, 21 ảnh 400, JSON >1 MiB 413
+API-HC02-OUTAGE | PASS | Cloud timeout giả lập → 502 chung
+TC-HC02-08 | PASS | Dry-run không ghi; chuyển 1 bài; chạy lại không upload trùng; giữ strong/text
+TC-DP01-01 | PASS | Dry-run giữ dữ liệu; chạy thật trên fake store đánh dấu Deleted
+TC-DP01-02-03 | PASS | Giữ Temp 23h, Used, ảnh có tham chiếu bài
+TC-DP01-05 | PASS | DeleteFailed, Attempts=3; không đánh dấu Deleted giả
+TC-DP01-04 | PASS | 10 tranh chấp: không có tham chiếu tới ảnh Deleted
+DP01-PROFILE-DRAFT | PASS | Giữ ảnh content/thumbnail/nháp/avatar/background, gồm URL cũ chưa có MediaReference
+DP01-TWO-WORKERS | PASS | Hai worker: đúng một lần gọi xóa asset
+DP01-FOREIGN-ASSET | PASS | Editor B dùng ảnh A nhận 403, giao dịch rollback
+HC02-MIGRATION-RESUME | PASS | Lỗi ảnh thứ hai: bài cũ còn nguyên; chạy lại chỉ upload ảnh còn thiếu
+TC-DP03-02 | PASS | 5 sai: khóa lưu SQL >14 phút; mật khẩu đúng vẫn 401
+DP03-ACCOUNT-CONCURRENT | PASS | 5 yêu cầu sai đồng thời vẫn khóa tài khoản 15 phút trong SQL
+DP03-RESTART | PASS | Host/limiter mới vẫn nhận 401 vì khóa tài khoản lưu SQL
+TC-DP03-03 | PASS | Đặt LockoutEnd quá khứ trong fixture (mô phỏng 15 phút); đăng nhập được, đếm sai=0
+TC-DP03-04-05 | PASS | 20×401 rồi 429 + Retry-After; đổi XFF không qua được hạn
+WB-DP03-CONCURRENT | PASS | 40 tác vụ: đúng 20 được nhận
+RG03 | PASS | AboutMe/Post 200 sau các ca lỗi/race
+
+Ảnh trước và sau bảo trì HC02
+Trước: Content lưu ảnh data URI. Sau: ba ảnh URL trong editor khi cập nhật; văn bản được giữ. Kho ảnh trong ảnh sau là FakeCloud của sandbox.
+Trước bảo trì API lưu base64
+
+Sau bảo trì editor có ba ảnh URL
+Cập nhật thực hiện ngày 17 tháng 11 năm 2026 (HC03, HC04, HT02)
+Đã sửa mã nguồn HC03, HC04, HT02 và thực thi 18 kịch bản API/giao diện/hộp trắng trên sandbox (6 ca xUnit backend với EF Core InMemory, 12 ca Vitest frontend với JSDOM): 18 đạt, 0 không đạt ở lần chạy cuối. Các luồng giao diện 404/timeout, responsive đa viewport (320px..390px) và tìm kiếm/phân trang đã có bằng chứng tự động.
+Mã | Thực hiện trong mã nguồn | Kết quả và giới hạn
+HC03 | Thêm state isLoading, errorType, errorMessage; khối finally bảo đảm tắt spinner; AbortController hủy request timeout 15s và khi đổi route; bọc try/catch riêng cho AboutMe. | 4 ca UI đạt; kiểm thử thành công trạng thái 404, timeout hủy request và chuyển trang không bị race condition.
+HC04 | Header background-position: center; mobile background-attachment: scroll; box-sizing: border-box; overflow-wrap: anywhere; word-break: break-word; pre/code overflow-x: auto; ảnh max-inline-size: 100% !important; height/block-size: auto. | 4 ca CSS/Layout đạt; scrollWidth <= clientWidth + 1px trên các viewport 320px..390px; chống tràn ngang triệt để.
+HT02 | Backend validate tham số PageNumber >= 1, PageSize 1..50 trả 400 Bad Request; sắp xếp ổn định CreatedAt DESC, Id DESC; Frontend dùng Axios params, phân trang đầy đủ, tự lùi trang khi xóa bài cuối. | 10 ca đạt (6 ca xUnit backend, 4 ca Vitest frontend); mã hóa an toàn ký tự đặc biệt (&, +, ?), phân trang chính xác.
+Ánh xạ ca kiểm thử: 14 ca kiểm thử chi tiết đã được đối chiếu đạt vào bảng ca kế hoạch (TC-HC03: 4 ca, TC-HC04: 5 ca, TC-HT02: 5 ca).
+Yêu cầu phi chức năng (NFR): Đáp ứng NFR03 và NFR04 trong sandbox.
+Nguồn thực thi: tandat_bao_tri/BAO_CAO_KIEM_THU_BAO_TRI.md; results.json; performance.json; test-execution.log; mã BackEnd.Tests/PostControllerTests.cs và front-end/tests/.
+Nhật ký 18 kịch bản tự động
+Kịch bản | Kết quả | Thực tế
+API-HT02-PAGINATION-VALIDATION-INVALID-PAGE | PASS | pageNumber = 0 nhận 400 Bad Request kèm message lỗi
+API-HT02-PAGINATION-VALIDATION-INVALID-SIZE | PASS | pageSize = 0 hoặc 100 nhận 400 Bad Request giới hạn 1..50
+API-HT02-SEARCH-SPECIAL-CHARS | PASS | Tìm kiếm ký tự &, +, ? và tiếng Việt có dấu khớp chính xác tiêu đề
+API-HT02-SEARCH-EMPTY-RESULT | PASS | Từ khóa không khớp trả về danh sách rỗng status 200 OK
+API-HT02-DETERMINISTIC-ORDERING | PASS | Sắp xếp CreatedAt giảm dần, Id giảm dần bảo đảm thứ tự tất định
+API-HT02-DEFAULT-PAGINATION | PASS | Tham số mặc định page 1, size 10 trả về đúng 10 bản ghi
+TC-HC03-01 | PASS | 404 Not Found lập tức tắt loading và hiển thị "Không tìm thấy bài viết"
+TC-HC03-02 | PASS | Timeout / Abort ngắt kết nối an toàn sau 15s và hiển thị nút "Thử lại"
+TC-HC03-03 | PASS | AboutMe gặp sự cố không làm gián đoạn hiển thị danh sách bài viết Home
+TC-HC03-04 | PASS | Chuyển bài nhanh hủy request cũ qua AbortController, chống race condition
+TC-HC04-01 | PASS | Viewport 320px..390px scrollWidth <= clientWidth + 1px, không tràn ngang
+TC-HC04-02 | PASS | Chuỗi JWT/URL dài không dấu ngắt dòng an toàn với overflow-wrap: anywhere
+TC-HC04-03 | PASS | Ảnh có inline style lớn tự động co giãn trong khung max-inline-size: 100%
+TC-HC04-04 | PASS | Khối code và pre có thanh cuộn ngang nội bộ overflow-x: auto
+TC-HT02-01 | PASS | Ký tự &, +, ? trong ô tìm kiếm được encode an toàn qua Axios params
+TC-HT02-02 | PASS | Thanh phân trang PostManager hoạt động đầy đủ; xóa bài cuối tự lùi trang
+TC-HT02-03 | PASS | Hiển thị giao diện rỗng thân thiện kèm nút Xóa bộ lọc khi không có kết quả
+TC-HT02-04 | PASS | Vô hiệu hóa nút chuyển trang khi người dùng ở trang đầu hoặc trang cuối

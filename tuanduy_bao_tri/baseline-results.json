@@ -1,0 +1,72 @@
+[
+  {
+    "id": "HC01",
+    "status": 200,
+    "detail": "Khách đọc được danh sách tài khoản",
+    "body": [
+      {
+        "id": "dedb863f-21ce-4579-b671-5ccee73763d7",
+        "userName": "maintadmin"
+      }
+    ]
+  },
+  {
+    "id": "HC01-DELETE",
+    "status": 204,
+    "detail": "Khách xóa được bài sandbox 2"
+  },
+  {
+    "id": "HC02",
+    "status": 200,
+    "detail": "Content lưu data:image;base64",
+    "data_uri_in_content": true,
+    "body": {
+      "id": 0,
+      "title": "Bài kiểm thử ảnh bảo trì",
+      "content": "<p>Văn bản kiểm thử giữ nguyên.</p><p><img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+X2ioAAAAASUVORK5CYII=\"></p>",
+      "thumbnail": null,
+      "createdAt": "2026-11-16T23:26:59.5678717",
+      "updatedAt": "2026-11-16T23:26:59.5678718",
+      "isPublished": false,
+      "viewCount": 0,
+      "authorName": "maintadmin"
+    }
+  },
+  {
+    "id": "DP01",
+    "status": 404,
+    "detail": "Chưa có endpoint và bảng quản lý ảnh"
+  },
+  {
+    "id": "DP03-IP",
+    "statuses": [
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401,
+      401
+    ],
+    "detail": "Yêu cầu 21 vẫn 401; không có 429"
+  },
+  {
+    "id": "DP03-LOCK",
+    "status": 200,
+    "detail": "Sau 5 lần sai vẫn đăng nhập đúng được"
+  }
+]

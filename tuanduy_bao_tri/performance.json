@@ -1,0 +1,32 @@
+[
+  {
+    "environment": "before",
+    "samples": 50,
+    "get_concurrency_max": 6,
+    "save_status": 200,
+    "http_codes": [
+      200
+    ],
+    "p95_ms": 7.6,
+    "max_ms": 8.02,
+    "wall_seconds": 0.054,
+    "cpu_process_ms": 180.0,
+    "peak_rss_mib": 183.98,
+    "pid": 17619
+  },
+  {
+    "environment": "after",
+    "samples": 50,
+    "get_concurrency_max": 6,
+    "save_status": 200,
+    "http_codes": [
+      200
+    ],
+    "p95_ms": 7.0,
+    "max_ms": 7.3,
+    "wall_seconds": 0.05,
+    "cpu_process_ms": 170.0,
+    "peak_rss_mib": 199.08,
+    "pid": 34771
+  }
+]

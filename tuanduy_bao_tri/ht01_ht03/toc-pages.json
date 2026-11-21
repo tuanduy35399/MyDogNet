@@ -1,0 +1,426 @@
+[
+  {
+    "file": "00_Huong_dan_bat_dau_MyDogNet.docx",
+    "heading": "1 Bạn nên bắt đầu từ đâu",
+    "page": 3,
+    "anchors": [
+      "heading_1"
+    ]
+  },
+  {
+    "file": "00_Huong_dan_bat_dau_MyDogNet.docx",
+    "heading": "2 Các tệp trong thư mục dự án",
+    "page": 3,
+    "anchors": [
+      "heading_2"
+    ]
+  },
+  {
+    "file": "00_Huong_dan_bat_dau_MyDogNet.docx",
+    "heading": "3 Những gì đã kiểm tra",
+    "page": 4,
+    "anchors": [
+      "heading_3"
+    ]
+  },
+  {
+    "file": "00_Huong_dan_bat_dau_MyDogNet.docx",
+    "heading": "4 Danh sách và thứ tự bảo trì",
+    "page": 5,
+    "anchors": [
+      "heading_4"
+    ]
+  },
+  {
+    "file": "00_Huong_dan_bat_dau_MyDogNet.docx",
+    "heading": "5 Đọc và chạy mã nguồn",
+    "page": 5,
+    "anchors": [
+      "heading_5"
+    ]
+  },
+  {
+    "file": "00_Huong_dan_bat_dau_MyDogNet.docx",
+    "heading": "6 Bằng chứng cần thu thập và cách hoàn tất báo cáo",
+    "page": 6,
+    "anchors": [
+      "heading_6"
+    ]
+  },
+  {
+    "file": "00_Huong_dan_bat_dau_MyDogNet.docx",
+    "heading": "7 Tài liệu tham khảo",
+    "page": 6,
+    "anchors": [
+      "heading_7"
+    ]
+  },
+  {
+    "file": "00_Huong_dan_bat_dau_MyDogNet.docx",
+    "heading": "Cập nhật thực hiện ngày 17 tháng 11 năm 2026",
+    "page": 8,
+    "anchors": [
+      "maintenance_execution"
+    ]
+  },
+  {
+    "file": "00_Huong_dan_bat_dau_MyDogNet.docx",
+    "heading": "Thực hiện HT01 và HT03 ngày 21 tháng 11 năm 2026",
+    "page": 9,
+    "anchors": [
+      "ht_20261121"
+    ]
+  },
+  {
+    "file": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+    "heading": "1 Giới thiệu",
+    "page": 3,
+    "anchors": [
+      "_heading=h.csqmn06ig67u"
+    ]
+  },
+  {
+    "file": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+    "heading": "2 Tài liệu tham khảo",
+    "page": 3,
+    "anchors": [
+      "_heading=h.d2eha317y4ig"
+    ]
+  },
+  {
+    "file": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+    "heading": "3 Các định nghĩa",
+    "page": 4,
+    "anchors": [
+      "_heading=h.pzy4a1bcmmup"
+    ]
+  },
+  {
+    "file": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+    "heading": "4 Tổng quan về tổ chức và kế hoạch làm việc",
+    "page": 4,
+    "anchors": [
+      "_heading=h.e33c692aw2fo"
+    ]
+  },
+  {
+    "file": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+    "heading": "5 Quy trình bảo trì",
+    "page": 6,
+    "anchors": [
+      "_heading=h.6i1r5nyvvs7d"
+    ]
+  },
+  {
+    "file": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+    "heading": "6 Quản lý cấu hình và thay đổi",
+    "page": 6,
+    "anchors": [
+      "_heading=h.jvhd98h4yljf"
+    ]
+  },
+  {
+    "file": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+    "heading": "7 Quản lý chất lượng và rủi ro",
+    "page": 7,
+    "anchors": [
+      "_heading=h.xsrszc8gl7ek"
+    ]
+  },
+  {
+    "file": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+    "heading": "Cập nhật thực hiện ngày 17 tháng 11 năm 2026",
+    "page": 8,
+    "anchors": [
+      "maintenance_execution"
+    ]
+  },
+  {
+    "file": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+    "heading": "Cập nhật thực hiện ngày 17 tháng 11 năm 2026 (HC03, HC04, HT02)",
+    "page": 8,
+    "anchors": [
+      "qa_heading_56"
+    ]
+  },
+  {
+    "file": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+    "heading": "Thực hiện HT01 và HT03 ngày 21 tháng 11 năm 2026",
+    "page": 10,
+    "anchors": [
+      "ht_20261121"
+    ]
+  },
+  {
+    "file": "02_Phan_tich_tac_dong_MyDogNet.docx",
+    "heading": "1 Giới thiệu",
+    "page": 3,
+    "anchors": [
+      "heading_1"
+    ]
+  },
+  {
+    "file": "02_Phan_tich_tac_dong_MyDogNet.docx",
+    "heading": "2 Danh mục tiếp nhận và nguyên tắc đánh giá",
+    "page": 3,
+    "anchors": [
+      "heading_4"
+    ]
+  },
+  {
+    "file": "02_Phan_tich_tac_dong_MyDogNet.docx",
+    "heading": "3 Hồ sơ phân tích từng yêu cầu",
+    "page": 4,
+    "anchors": [
+      "heading_5"
+    ]
+  },
+  {
+    "file": "02_Phan_tich_tac_dong_MyDogNet.docx",
+    "heading": "4 Tổng hợp tác động và trình tự",
+    "page": 18,
+    "anchors": [
+      "heading_51"
+    ]
+  },
+  {
+    "file": "02_Phan_tich_tac_dong_MyDogNet.docx",
+    "heading": "Cập nhật thực hiện ngày 17 tháng 11 năm 2026",
+    "page": 20,
+    "anchors": [
+      "maintenance_execution"
+    ]
+  },
+  {
+    "file": "02_Phan_tich_tac_dong_MyDogNet.docx",
+    "heading": "Cập nhật thực hiện ngày 17 tháng 11 năm 2026 (HC03, HC04, HT02)",
+    "page": 20,
+    "anchors": [
+      "qa_heading_253"
+    ]
+  },
+  {
+    "file": "02_Phan_tich_tac_dong_MyDogNet.docx",
+    "heading": "Thực hiện HT01 và HT03 ngày 21 tháng 11 năm 2026",
+    "page": 22,
+    "anchors": [
+      "ht_20261121"
+    ]
+  },
+  {
+    "file": "03_Dac_ta_yeu_cau_MyDogNet.docx",
+    "heading": "1 Giới thiệu",
+    "page": 3,
+    "anchors": [
+      "heading_1"
+    ]
+  },
+  {
+    "file": "03_Dac_ta_yeu_cau_MyDogNet.docx",
+    "heading": "2 Yêu cầu chức năng điều chỉnh và bổ sung",
+    "page": 4,
+    "anchors": [
+      "heading_6"
+    ]
+  },
+  {
+    "file": "03_Dac_ta_yeu_cau_MyDogNet.docx",
+    "heading": "3 Yêu cầu phi chức năng và giới hạn",
+    "page": 13,
+    "anchors": [
+      "heading_16"
+    ]
+  },
+  {
+    "file": "03_Dac_ta_yeu_cau_MyDogNet.docx",
+    "heading": "4 Tổ chức các tính năng và tình huống sử dụng",
+    "page": 14,
+    "anchors": [
+      "heading_17"
+    ]
+  },
+  {
+    "file": "03_Dac_ta_yeu_cau_MyDogNet.docx",
+    "heading": "5 Ma trận yêu cầu và nghiệm thu",
+    "page": 15,
+    "anchors": [
+      "heading_18"
+    ]
+  },
+  {
+    "file": "03_Dac_ta_yeu_cau_MyDogNet.docx",
+    "heading": "Cập nhật thực hiện ngày 17 tháng 11 năm 2026",
+    "page": 16,
+    "anchors": [
+      "maintenance_execution"
+    ]
+  },
+  {
+    "file": "03_Dac_ta_yeu_cau_MyDogNet.docx",
+    "heading": "Cập nhật thực hiện ngày 17 tháng 11 năm 2026 (HC03, HC04, HT02)",
+    "page": 16,
+    "anchors": [
+      "qa_heading_213"
+    ]
+  },
+  {
+    "file": "03_Dac_ta_yeu_cau_MyDogNet.docx",
+    "heading": "Thực hiện HT01 và HT03 ngày 21 tháng 11 năm 2026",
+    "page": 18,
+    "anchors": [
+      "ht_20261121"
+    ]
+  },
+  {
+    "file": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+    "heading": "1 Giới thiệu",
+    "page": 3,
+    "anchors": [
+      "heading_1"
+    ]
+  },
+  {
+    "file": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+    "heading": "2 Kiến trúc hệ thống",
+    "page": 4,
+    "anchors": [
+      "heading_3"
+    ]
+  },
+  {
+    "file": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+    "heading": "3 Thiết kế dữ liệu",
+    "page": 5,
+    "anchors": [
+      "heading_6"
+    ]
+  },
+  {
+    "file": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+    "heading": "4 Hợp đồng API và tương thích",
+    "page": 6,
+    "anchors": [
+      "heading_8"
+    ]
+  },
+  {
+    "file": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+    "heading": "5 Thiết kế theo chức năng",
+    "page": 7,
+    "anchors": [
+      "heading_9"
+    ]
+  },
+  {
+    "file": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+    "heading": "6 Migration triển khai và phục hồi",
+    "page": 15,
+    "anchors": [
+      "heading_19"
+    ]
+  },
+  {
+    "file": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+    "heading": "7 Bảng tham khảo tới các yêu cầu",
+    "page": 15,
+    "anchors": [
+      "heading_20"
+    ]
+  },
+  {
+    "file": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+    "heading": "Cập nhật thực hiện ngày 17 tháng 11 năm 2026",
+    "page": 17,
+    "anchors": [
+      "maintenance_execution"
+    ]
+  },
+  {
+    "file": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+    "heading": "Cập nhật thực hiện ngày 17 tháng 11 năm 2026 (HC03, HC04, HT02)",
+    "page": 17,
+    "anchors": [
+      "qa_heading_151"
+    ]
+  },
+  {
+    "file": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+    "heading": "Thực hiện HT01 và HT03 ngày 21 tháng 11 năm 2026",
+    "page": 19,
+    "anchors": [
+      "ht_20261121"
+    ]
+  },
+  {
+    "file": "05_Tai_lieu_kiem_thu_MyDogNet.docx",
+    "heading": "1 Giới thiệu",
+    "page": 3,
+    "anchors": [
+      "heading_1"
+    ]
+  },
+  {
+    "file": "05_Tai_lieu_kiem_thu_MyDogNet.docx",
+    "heading": "2 Chi tiết kế hoạch kiểm thử",
+    "page": 4,
+    "anchors": [
+      "heading_5"
+    ]
+  },
+  {
+    "file": "05_Tai_lieu_kiem_thu_MyDogNet.docx",
+    "heading": "3 Quản lý kiểm thử",
+    "page": 5,
+    "anchors": [
+      "heading_12"
+    ]
+  },
+  {
+    "file": "05_Tai_lieu_kiem_thu_MyDogNet.docx",
+    "heading": "4 Quan sát trước bảo trì",
+    "page": 7,
+    "anchors": [
+      "heading_17"
+    ]
+  },
+  {
+    "file": "05_Tai_lieu_kiem_thu_MyDogNet.docx",
+    "heading": "5 Các trường hợp kiểm thử",
+    "page": 7,
+    "anchors": [
+      "heading_18"
+    ]
+  },
+  {
+    "file": "05_Tai_lieu_kiem_thu_MyDogNet.docx",
+    "heading": "6 Kiểm thử hồi quy và tổng hợp",
+    "page": 15,
+    "anchors": [
+      "heading_28"
+    ]
+  },
+  {
+    "file": "05_Tai_lieu_kiem_thu_MyDogNet.docx",
+    "heading": "Cập nhật thực hiện ngày 17 tháng 11 năm 2026",
+    "page": 17,
+    "anchors": [
+      "maintenance_execution"
+    ]
+  },
+  {
+    "file": "05_Tai_lieu_kiem_thu_MyDogNet.docx",
+    "heading": "Cập nhật thực hiện ngày 17 tháng 11 năm 2026 (HC03, HC04, HT02)",
+    "page": 20,
+    "anchors": [
+      "qa_heading_107"
+    ]
+  },
+  {
+    "file": "05_Tai_lieu_kiem_thu_MyDogNet.docx",
+    "heading": "Thực hiện HT01 và HT03 ngày 21 tháng 11 năm 2026",
+    "page": 23,
+    "anchors": [
+      "ht_20261121"
+    ]
+  }
+]

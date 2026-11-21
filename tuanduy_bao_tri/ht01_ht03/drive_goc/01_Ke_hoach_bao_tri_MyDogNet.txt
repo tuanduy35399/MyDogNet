@@ -1,0 +1,129 @@
+ĐẠI HỌC CẦN THƠ
+TRƯỜNG CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
+
+
+KẾ HOẠCH BẢO TRÌ PHẦN MỀM
+BẢO TRÌ PHẦN MỀM MYDOGNET
+Phiên bản 0.2   Ngày 17/11/2026
+Nhóm thực hiện  ........................................................
+Giảng viên hướng dẫn  .............................................
+Học kỳ và năm học  ....................................................
+Cần Thơ   Tháng 11 năm 2026
+Thông tin tài liệu
+Phiên bản | Ngày | Nội dung | Người cập nhật
+0.1 | 12/11/2026 | Thiết lập phạm vi và nội dung bảo trì MyDogNet | ................
+0.2 | 17/11/2026 | Cập nhật thực hiện HC01 HC02 DP01 DP03 và bằng chứng kiểm thử | ................
+
+Kế hoạch tổ chức bảo trì MyDogNet theo ba loại đã chọn, ưu tiên quyền truy cập, tải ảnh và khả năng đọc trên điện thoại. Các ước lượng dùng để lập kế hoạch, chưa đại diện tiến độ hoặc kết quả đã hoàn thành.
+Phạm vi đã thống nhất 9 yêu cầu gồm 4 hiệu chỉnh, 3 hoàn thiện và 2 dự phòng. Không có yêu cầu thích ứng trong đợt này. DP02 về lọc HTML đã được rút; giữ mã DP03 để tránh nhầm tham chiếu.
+MỤC LỤC
+
+1 Giới thiệu
+MyDogNet là website portfolio và bài viết, gồm giao diện React, API ASP.NET Core, SQL Server và Cloudinary. Mục tiêu đợt bảo trì là xử lý bốn lỗi có căn cứ, hoàn thiện ba luồng sử dụng và bổ sung hai cơ chế dự phòng.
+Phạm vi bao gồm phân tích tác động, đặc tả, thiết kế, thực hiện có kiểm soát, kiểm thử và cập nhật báo cáo. Nâng cấp nền tảng, lọc HTML như một yêu cầu độc lập, thay đổi toàn bộ giao diện và chống mọi loại bot không thuộc đợt này. Những việc cần thiết để bảo đảm yêu cầu đã chọn hoạt động vẫn phải được thể hiện trong thiết kế tương ứng.
+Mã | Loại | Yêu cầu | Ưu tiên
+HC01 | Hiệu chỉnh | Sửa thiếu xác thực và kiểm tra quyền tại API quản trị | P0
+HC02 | Hiệu chỉnh | Sửa ảnh base64 trong bài viết gây quá tải khi đăng bài | P0
+HC03 | Hiệu chỉnh | Sửa trạng thái tải không kết thúc khi lấy dữ liệu thất bại | P1
+HC04 | Hiệu chỉnh | Sửa ảnh và nội dung bị lệch hoặc tràn ngang trên điện thoại | P1
+HT01 | Hoàn thiện | Hoàn chỉnh luồng lưu nháp và xuất bản bài viết | P1
+HT02 | Hoàn thiện | Hoàn thiện tìm kiếm và phân trang bài viết | P2
+HT03 | Hoàn thiện | Thêm bộ đếm lượt xem cho từng bài | P2
+DP01 | Dự phòng | Quản lý vòng đời và dọn ảnh Cloudinary không được sử dụng | P1
+DP03 | Dự phòng | Phòng ngừa dò mật khẩu tại API đăng nhập quản trị | P1
+
+2 Tài liệu tham khảo
+Mẫu báo cáo: Yeucau_Project2.pdf; KehoachBT.pdf; Phantichsutacdong.pdf; DactaYCTD.pdf; ThietkeYCTD.pdf; Tài liệu kiểm thử.docx; Vidu_Dacta_Thietke.pdf.
+-học phần Bảo trì phần mềm. 
+Mã nguồn MyDogNet: https://github.com/tuanduy35399/MyDogNet
+Link Website: https://mydognet.vercel.app/
+Sơ đồ tham khảo https://gitdiagram.com/tuanduy35399/mydognet
+
+3 Các định nghĩa
+Thuật ngữ | Giải thích
+API | Giao diện giao tiếp giữa trình duyệt và máy chủ.
+JWT | Token có chữ ký dùng trong xác thực; aud là đối tượng nhận token, không phải vai trò.
+DTO | Đối tượng giới hạn dữ liệu nhận vào hoặc trả ra API.
+Base64 và data URI | Cách nhúng dữ liệu ảnh trực tiếp vào chuỗi HTML, thường bắt đầu bằng data:image.
+Cloudinary | Dịch vụ lưu trữ và phân phối ảnh đang được dự án sử dụng.
+PublicId | Định danh ảnh do Cloudinary trả về để quản lý tài nguyên.
+Migration | Thay đổi có phiên bản đối với cấu trúc CSDL.
+Responsive | Bố cục thích nghi theo kích thước màn hình.
+P0 và P1 và P2 | P0 xử lý trước; P1 quan trọng; P2 cải tiến sau khi luồng chính ổn định.
+Chưa thực hiện | Ca kiểm thử hoặc hoạt động chưa có kết quả thực nghiệm; không tương đương đạt.
+
+4 Tổng quan về tổ chức và kế hoạch làm việc
+Tổ chức bảo trì
+Vai trò | Trách nhiệm | Người đảm nhiệm
+Điều phối và quản lý thay đổi | Chốt yêu cầu, quản lý mốc, kiểm tra tài liệu và quyết định phát hành. | Tuấn Duy
+Phân tích và thiết kế | Thu thập bằng chứng, so sánh giải pháp, lập đặc tả và thiết kế. | Cả nhóm
+Phát triển frontend | Quill, responsive, loading, tìm kiếm và hiển thị trạng thái/lượt xem. | Tuấn Duy, Trọng Phúc
+Phát triển backend | Policy quyền, upload, dữ liệu ảnh, lượt xem và chống dò mật khẩu. | Tuấn Duy, Tấn Đạt
+Kiểm thử và quản lý chất lượng | Thiết kế dữ liệu, thực thi ca kiểm thử, lưu bằng chứng và kiểm tra hồi quy. | Cả nhóm
+
+Một thành viên có thể kiêm nhiều vai trò nhưng không tự phê duyệt thay đổi rủi ro cao của mình mà không có người khác rà soát. Trao đổi được ghi vào issue hoặc nhật ký công việc gắn mã yêu cầu; quyết định phải có ngày và người xác nhận.
+Kế hoạch làm việc
+Yêu cầu | Giờ dự kiến | Vai trò chính | Đầu ra cần đạt
+HC01 | 12–18 | Frontend + Backend | Khách không thể xóa bài hoặc lấy danh sách tài khoản quản trị.
+HC02 | 16–24 | Frontend + Backend | Thử đủ ba đường chọn, dán, kéo thả; nội dung gửi lên và Content lưu trong CSDL không có data:image.
+HC03 | 4–6 | Frontend | 404 không còn khung chờ sau khi nhận phản hồi.
+HC04 | 6–10 | Frontend | documentElement.scrollWidth không vượt clientWidth quá 1 px ở các viewport đã quy định.
+HT01 | 12–18 | Frontend + Backend | Bài lưu nháp xuất hiện ở trang quản trị nhưng không có trong danh sách công khai.
+HT02 | 6–10 | Frontend + Backend | Ký tự & và + được gửi đúng như từ khóa, không bị tách thành tham số mới.
+HT03 | 6–10 | Frontend + Backend | Một lần mở bài hợp lệ tăng 1; rerender hoặc StrictMode không tạo hai lượt cho cùng lần mở.
+DP01 | 12–20 | Frontend + Backend | Ảnh Temp quá 24 giờ và không có tham chiếu được xử lý, ảnh mới hơn được giữ.
+DP03 | 10–16 | Frontend + Backend | Yêu cầu thứ 21 trong cửa sổ 60 giây của cùng IP bị từ chối bằng 429.
+
+Tài nguyên và công cụ
+Dùng máy phát triển của nhóm, Git, công cụ HTTP, trình duyệt có giả lập thiết bị, môi trường .NET 6 và Node phù hợp baseline, SQL Server thử nghiệm và tài khoản Cloudinary riêng. Chỉ dùng dữ liệu giả lập trong các ca thay đổi dữ liệu hoặc giới hạn đăng nhập.
+Ước lượng chi phí bằng giờ thực tế nhân đơn giá được nhóm hoặc môn học chấp nhận, cộng phí hosting/Cloudinary phát sinh theo tài khoản thực tế. Chưa chốt đơn giá và hạn mức nên không ghi tổng tiền giả định là chi phí đã chi. Bí mật cấu hình được quản lý ngoài repository và tài liệu bàn giao.
+5 Quy trình bảo trì
+Giai đoạn | Đầu vào | Hoạt động và kiểm soát | Đầu ra
+Tiếp nhận | Phản ánh, mã nguồn, đề bài | Gán mã, phân loại và xác định bằng chứng. | Phiếu đề xuất và tiếp nhận
+Phân tích | Yêu cầu đã ghi nhận | So sánh ít nhất hai giải pháp, tác động, công sức và rủi ro. | Khuyến nghị và quyết định
+Thiết kế | Yêu cầu được chấp thuận | Thiết kế API, dữ liệu, giao diện, migration và rollback. | Tài liệu thiết kế và ca kiểm thử
+Thực hiện | Thiết kế đã rà soát | Nhánh riêng, commit theo mã, kiểm tra không lộ khóa. | Bản chạy thử và ghi chú thay đổi
+Kiểm thử | Bản chạy thử | Chạy ca đúng/sai/biên, kiểm tra hồi quy và ghi bằng chứng. | Kết quả thực tế và danh sách lỗi
+Phát hành | Ca bắt buộc đạt | Backup, duyệt migration và cấu hình, kiểm tra nhanh rồi theo dõi. | Mốc sau bảo trì và nhật ký phát hành
+
+6 Quản lý cấu hình và thay đổi
+• Baseline gắn commit 1d0ddc344d3be4c9297831cc1875ea8acb8f5ace và bản sao CSDL trước sửa. Mỗi bản phát hành ghi đủ commit frontend/backend, migration và cấu hình đã thay đổi.
+• Nhánh theo mã yêu cầu, ví dụ fix/HC02-inline-image; issue liên kết phiếu phân tích, đặc tả, thiết kế và ca kiểm thử.
+• Thay đổi phạm vi phải cập nhật cùng lúc bảng yêu cầu của năm tài liệu. Giữ các mã ổn định, không dùng lại DP02 cho nội dung khác.
+• Triển khai từng nhóm thay đổi có thể kiểm chứng; thay schema bổ sung trước, bật hành vi mới sau. HC02 chuyển dữ liệu cũ bằng job riêng có checkpoint.
+• Rollback mã và CSDL dùng bản sao phù hợp, không giả định rollback khôi phục được ảnh đã xóa trên Cloudinary. DP01 phải chạy dry-run và xác nhận danh sách trước lần xóa thật.
+7 Quản lý chất lượng và rủi ro
+Dùng mã yêu cầu duy nhất, đặt tên rõ, kiểm soát DTO và quyền ở API; tránh lặp logic upload ở nhiều trang. Báo cáo dùng Times New Roman, A4 và ký hiệu Hiện trạng, Điều chỉnh, Bổ sung để nhận biết thay đổi. Mọi tài liệu có phiên bản và người chịu trách nhiệm rà soát.
+Rủi ro | Mức | Biện pháp
+Ảnh base64 cũ làm nặng request hoặc job chuyển đổi | Cao | Backup, thử từng bài, giới hạn giải mã và checkpoint.
+Mất quyền quản trị sau sửa policy | Cao | Xác nhận tài khoản chủ, chạy ma trận quyền trên môi trường riêng.
+Dọn nhầm ảnh còn dùng | Cao | MediaReference, trạng thái Deleting, dry-run và bảo vệ bài nháp.
+Khóa nhầm người dùng do hạn đăng nhập | Vừa | Khóa tạm, thử NAT/proxy, ghi thống kê để hiệu chỉnh ngưỡng.
+Tràn màn hình chỉ xảy ra ở một số bài | Vừa | Bộ dữ liệu ảnh đa tỉ lệ, chuỗi dài, code và nhiều kích thước.
+Tiến độ thiếu do chưa chốt lịch nhóm | Vừa | Theo dõi công sức thực tế và ưu tiên P0 trước P1/P2.
+
+Điều kiện hoàn thành: tất cả ca bắt buộc của 9 yêu cầu đạt, không còn lỗi P0/P1 chưa xử lý, có minh chứng trước/sau và ma trận truy vết đầy đủ. Kết quả chưa chạy không được đánh dấu đạt. Khi nộp, bổ sung bảng phân công gồm MSSV, thành viên, công việc, mức hoàn thành và trách nhiệm theo yêu cầu môn học.
+
+Cập nhật thực hiện ngày 17 tháng 11 năm 2026
+Đã sửa mã nguồn HC01, HC02, DP01, DP03 và thực thi 27 kịch bản API/CSDL/hộp trắng trên SQL Server riêng: 27 đạt, 0 không đạt ở lần chạy cuối. Bốn luồng giao diện đã có bằng chứng; drop dùng DragEvent có tệp. Kết quả giới hạn trong sandbox với FakeCloud, chưa phải nghiệm thu production.
+Mã | Thực hiện trong mã nguồn | Kết quả và giới hạn
+HC01 | JWT role, 401/403, chủ sở hữu, cấp tài khoản chỉ Admin; token gửi thống nhất ở FE. | 6 ca API đạt; cấp role cũ cần lệnh offline đúng tài khoản.
+HC02 | Upload chung toolbar/paste/drop; chặn base64 và giới hạn body; chuyển bài cũ có checkpoint. | API và chuyển ảnh đạt; toolbar/paste thật; drop mô phỏng.
+DP01 | MediaAsset/MediaReference, khóa SQL, dry-run, claim Deleting, retry tối đa 3 lần. | Race/retry trên SQL thật đạt; dịch vụ xóa giả lập.
+DP03 | 20/60 giây theo IP; 5 sai khóa 15 phút trong SQL; chống mất bộ đếm đồng thời. | Hạn IP và khóa SQL đạt; limiter một instance.
+Phạm vi đợt thực hiện này là bốn mục HC01, HC02, DP01, DP03. Các mục HC03, HC04, HT01, HT02, HT03 còn trong kế hoạch, chưa được tuyên bố hoàn thành.
+Sản phẩm thực tế gồm mã sửa, migration, harness, báo cáo Markdown, kết quả JSON và ảnh. Giờ công/chi phí thực tế, người phê duyệt và mốc phát hành chưa có dữ liệu để điền.
+NFR07: sau làm nóng, 50 GET đồng thời một POST 20 URL; p95 trước 7,6 ms, sau 7,0 ms; cả hai 50×200 và POST 200. CPU tiến trình trước/sau 180/170 ms; RSS lấy mẫu 183,98/199,08 MiB. Mẫu nhỏ trên máy local, không suy ra năng lực hosting production.
+Giới hạn bằng chứng: chưa xóa ảnh trên tài khoản Cloudinary thật, chưa chạy nhiều instance/proxy thật. Ảnh API trực tiếp và bảng DP01/DP03 chưa chụp đủ do chính sách trình duyệt chặn localhost:5191/5180 dù đã được người dùng xác nhận. Không thay bằng ảnh dựng rồi gọi là màn hình thật.
+Nguồn thực thi: tuanduy_bao_tri/BAO_CAO_KIEM_THU_BAO_TRI.md; results.json; browser-results.json; baseline-results.json; performance.json; sandbox/test-execution.log; mã maintenance-tests/Runner.cs. Các nguồn không chứa mật khẩu hoặc JWT. Mã sửa chưa commit/push/deploy.
+Cập nhật thực hiện ngày 17 tháng 11 năm 2026 (HC03, HC04, HT02)
+Đã sửa mã nguồn HC03, HC04, HT02 và thực thi 18 kịch bản API/giao diện/hộp trắng trên sandbox (6 ca xUnit backend với EF Core InMemory, 12 ca Vitest frontend với JSDOM): 18 đạt, 0 không đạt ở lần chạy cuối. Các luồng giao diện 404/timeout, responsive đa viewport (320px..390px) và tìm kiếm/phân trang đã có bằng chứng tự động.
+Mã | Thực hiện trong mã nguồn | Kết quả và giới hạn
+HC03 | Thêm state isLoading, errorType, errorMessage; khối finally bảo đảm tắt spinner; AbortController hủy request timeout 15s và khi đổi route; bọc try/catch riêng cho AboutMe. | 4 ca UI đạt; kiểm thử thành công trạng thái 404, timeout hủy request và chuyển trang không bị race condition.
+HC04 | Header background-position: center; mobile background-attachment: scroll; box-sizing: border-box; overflow-wrap: anywhere; word-break: break-word; pre/code overflow-x: auto; ảnh max-inline-size: 100% !important; height/block-size: auto. | 4 ca CSS/Layout đạt; scrollWidth <= clientWidth + 1px trên các viewport 320px..390px; chống tràn ngang triệt để.
+HT02 | Backend validate tham số PageNumber >= 1, PageSize 1..50 trả 400 Bad Request; sắp xếp ổn định CreatedAt DESC, Id DESC; Frontend dùng Axios params, phân trang đầy đủ, tự lùi trang khi xóa bài cuối. | 10 ca đạt (6 ca xUnit backend, 4 ca Vitest frontend); mã hóa an toàn ký tự đặc biệt (&, +, ?), phân trang chính xác.
+Phạm vi đợt thực hiện: Ba mục HC03, HC04, HT02. Các mục HT01, HT03 còn trong kế hoạch, chưa được tuyên bố hoàn thành.
+Sản phẩm thực tế: Mã nguồn đã sửa, test harness xUnit/Vitest, báo cáo Markdown, kết quả JSON và nhật ký thực thi.
+Yêu cầu phi chức năng (NFR): Tải dữ liệu có timeout 15 giây ngắt kết nối an toàn (NFR03); giao diện không tràn ngang (scrollWidth <= clientWidth + 1px) trên toàn bộ các viewport 320px..1366px (NFR04).
+Giới hạn kiểm thử: Thực hiện và xác nhận trong môi trường sandbox cô lập (JSDOM và EF Core InMemory).
+Nguồn thực thi: tandat_bao_tri/BAO_CAO_KIEM_THU_BAO_TRI.md; results.json; performance.json; test-execution.log; mã BackEnd.Tests/PostControllerTests.cs và front-end/tests/.

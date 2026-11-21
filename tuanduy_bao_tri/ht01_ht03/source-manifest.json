@@ -1,0 +1,28 @@
+{
+  "baseline": "ca6d16452998d197a707abb5ec9e9df556931664",
+  "branch": "baotri_pm",
+  "after": "working tree, chưa commit",
+  "sha256": {
+    "BackEnd/Controllers/PostController.cs": "c427369273d91be7c08510dc1c34d739613babead594ef0028023fd137362810",
+    "BackEnd/DTOs/PostDTOs/GetAllPost.cs": "fc073fbfde968d5190a1de14ddcdc2ed810e0b86b8ba759bd9d641e8c3352b72",
+    "BackEnd/DTOs/PostDTOs/ReadPostDTO.cs": "931bd80fae53822da800966ef03ec51f26418b0faa93780947be50e274054d47",
+    "BackEnd/DTOs/PostDTOs/UpdatePostDTO.cs": "bb182b81416067dfeedc19f7541c6ca7499636c40c9ab41d6ccf1ee3ec83775a",
+    "front-end/components/ListPost/ListPost.jsx": "5312c361d53cb832c5a96ccd5b317d6efccb75888aed0c5cc8c5831c193afcb6",
+    "front-end/page/Admin/manage/Post/CreatePost.jsx": "5b744c4c9c3a9fbc18d2f76fa82527d2553056ddffe74f7ba8064c79272aa3e7",
+    "front-end/page/Admin/manage/Post/PostManager.jsx": "a78a4cf6245cb30c7aae3c41f07ea054ee69fda7412e95d1fd0ae5b677cf6cf1",
+    "front-end/page/Admin/manage/Post/PostPreview.jsx": "315f1367f47ee78df6521bf53a5353b8f0d2fa78cf8ebe166955be5ac86cf98f",
+    "front-end/page/Admin/manage/Post/UpdatePost.jsx": "0002b1ece2b63e43702acb4706b87129fd7fff9d8ee45cafce2b3e0cff4fb759",
+    "front-end/page/PostDetail/PostDetail.jsx": "f54936f00492bce946339d47864e7fd7459380bb981e0142f693574c3f6aec37",
+    "front-end/src/App.jsx": "773d5be486c45d825c56e39002866a428a447cba478a2a534f4c7e2cdd5a754a",
+    "front-end/tests/HC03.test.jsx": "7e7801da5340676f82fb2122e86e44ae9e64ab65d42cf811f3ecf97c3dc4d980",
+    "front-end/tests/HC04.test.jsx": "5453d37825e37e0762ebe32795e72b4e28050b17cda5c5516a4df41faf316e72",
+    "front-end/tests/HT01.test.jsx": "7b6b1f6f4d2a83ba25958dcfab4ed675410e5c24bb90b15b15b6662e55cca469",
+    "front-end/tests/HT03.test.jsx": "5191686b40e585e8a020bbe024815137ccc47850540141d26df21391f00c066b",
+    "front-end/vite.sandbox.config.js": "4faafa6de1a26cfa4a6ee022f4c54aed21cef6f322f8324d68130eb028f77120",
+    "maintenance-tests/HT01_HT03.md": "5a391622409aa4a3066cf15dccc2e1d8f072de8bd7078b6b51130f1719a2facd",
+    "maintenance-tests/PublicationChecks.cs": "e115877cfc6600400bd176b749efc9d26812d57e3ae0f276fa7abf85fa7d30f5",
+    "maintenance-tests/Runner.cs": "0793af21b3908a6d521ce64ee006f254bc1a8bee237a91bb69c5d70cc4aef34e",
+    "maintenance-tests/check-publication-proxy.py": "cad70174c6aaa1cf2c6ca3a18d13d86760f710a5cdea16cede18ad2ab4ea52ee",
+    "maintenance-tests/run-publication.py": "7e64cbb55850c8e42d9373cb99e55741a3bdbe186a46b39b869278ea7531f1c1"
+  }
+}

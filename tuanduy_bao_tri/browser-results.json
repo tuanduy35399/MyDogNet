@@ -1,0 +1,22 @@
+[
+  {
+    "id": "UI-HC02-TOOLBAR",
+    "status": "PASS",
+    "detail": "Chọn PNG 64×64 trên toolbar; thấy URL nội bộ của fake store, Save bị khóa khi upload."
+  },
+  {
+    "id": "UI-HC02-PASTE",
+    "status": "PASS",
+    "detail": "Dán HTML có PNG base64 bằng clipboard; ảnh được thay bằng URL và văn bản còn nguyên."
+  },
+  {
+    "id": "UI-HC02-DROP-MOCK",
+    "status": "PASS",
+    "detail": "Bấm harness phát DragEvent có File PNG; handler drop upload và chèn URL. Chưa xác nhận kéo file từ hệ điều hành."
+  },
+  {
+    "id": "UI-HC02-SAVE",
+    "status": "PASS",
+    "detail": "Tạo bài bằng giao diện, mở lại trang sửa còn ảnh; thêm toolbar/paste thành 3 URL rồi PATCH thành công, quay lại Post Manager."
+  }
+]

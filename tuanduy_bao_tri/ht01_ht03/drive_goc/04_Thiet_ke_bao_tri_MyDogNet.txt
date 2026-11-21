@@ -1,0 +1,218 @@
+ĐẠI HỌC CẦN THƠ
+TRƯỜNG CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
+
+
+THIẾT KẾ PHẦN MỀM BẢO TRÌ
+BẢO TRÌ PHẦN MỀM MYDOGNET
+Phiên bản 0.2   Ngày 17/11/2026
+Nhóm thực hiện  ........................................................
+Giảng viên hướng dẫn  .............................................
+Học kỳ và năm học  ....................................................
+Cần Thơ   Tháng 11 năm 2026
+
+Thông tin tài liệu
+Phiên bản | Ngày | Nội dung | Người cập nhật
+0.1 | 12/11/2026 | Thiết lập phạm vi và nội dung bảo trì MyDogNet | ................
+0.2 | 17/11/2026 | Cập nhật thực hiện HC01 HC02 DP01 DP03 và bằng chứng kiểm thử | ................
+
+Thiết kế giữ kiến trúc React và ASP.NET Core hiện có, tập trung thay đổi đúng các điểm chịu trách nhiệm cho 9 yêu cầu. Các mô hình và giao diện dưới đây mô tả phương án đề xuất để triển khai, đối chiếu được với hiện trạng và các ca kiểm thử.
+Phạm vi đã thống nhất 9 yêu cầu gồm 4 hiệu chỉnh, 3 hoàn thiện và 2 dự phòng. Không có yêu cầu thích ứng trong đợt này. DP02 về lọc HTML đã được rút; giữ mã DP03 để tránh nhầm tham chiếu.
+MỤC LỤC
+1 Giới thiệu	3
+2 Kiến trúc hệ thống	4
+3 Thiết kế dữ liệu	5
+4 Hợp đồng API và tương thích	6
+5 Thiết kế theo chức năng	7
+6 Migration triển khai và phục hồi	14
+7 Bảng tham khảo tới các yêu cầu	14
+Cập nhật thực hiện ngày 17 tháng 11 năm 2026	16
+
+1 Giới thiệu
+Người phát triển dùng tài liệu để triển khai API, luồng giao diện và dữ liệu. Người kiểm thử đối chiếu mã TK với yêu cầu và ca kiểm thử. Mốc hiện trạng là commit 1d0ddc344d3be4c9297831cc1875ea8acb8f5ace. Nền tảng vẫn là .NET 6 và EF Core 6; không dùng API chỉ có ở phiên bản mới mà chưa xác minh tương thích.
+Dùng nhãn Hiện có, Điều chỉnh và Bổ sung trong sơ đồ, bảng và đoạn mô tả. Các thay đổi dữ liệu và endpoint là thiết kế đích, chưa được áp dụng. HC02 đã chuyển sang xử lý ảnh base64; HC04 là lỗi điện thoại; DP02 đã rút và không có thiết kế triển khai trong tài liệu này.
+Tài liệu tham khảo
+Đề bài và mẫu môn học Yeucau_Project2.pdf; KehoachBT.pdf; Phantichsutacdong.pdf; DactaYCTD.pdf; ThietkeYCTD.pdf; Tài liệu kiểm thử.docx; Vidu_Dacta_Thietke.pdf.
+Mã nguồn MyDogNet https://github.com/tuanduy35399/MyDogNet; mốc 1d0ddc344d3be4c9297831cc1875ea8acb8f5ace; truy cập 12/11/2026.
+Website được cung cấp https://mydognet.vercel.app/; quan sát chỉ đọc ngày 12/11/2026.
+Sơ đồ tham khảo https://gitdiagram.com/tuanduy35399/mydognet; dùng để định hướng, xác minh lại bằng mã nguồn.
+Quill Toolbar https://quilljs.com/docs/modules/toolbar; cơ chế handler tùy chỉnh.
+Microsoft Upload files https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-6.0; giới hạn và kiểm tra tệp.
+Cloudinary .NET upload https://cloudinary.com/documentation/dotnet_image_and_video_upload; tham chiếu upload và định danh tài nguyên.
+Microsoft Identity https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.signinmanager-1.passwordsigninasync?view=aspnetcore-6.0; tham số lockoutOnFailure.
+OWASP Authentication https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html; giới hạn đăng nhập, khóa tạm và phản hồi chung.
+2 Kiến trúc hệ thống
+Thiết kế kiến trúc và phân rã
+
+Hình 1 Kiến trúc hiện tại và các thành phần điều chỉnh hoặc bổ sung
+Hiện trạng gồm React gọi HTTP client lấy dữ liệu; API đăng nhập ủy quyền cho AccountRepository, còn phần lớn nghiệp vụ bài viết truy cập DbContext trực tiếp. CloudinaryService upload ảnh nhưng chỉ trả URL. Không mô tả toàn bộ backend như đã tuân thủ Repository Pattern vì PostController vẫn chứa truy vấn và cập nhật.
+Thiết kế đề xuất giữ các controller làm điểm nhận request, gom logic quyền, lưu bài/ảnh và lượt xem vào dịch vụ có thể kiểm thử. Không tạo lớp trừu tượng chung cho mọi thao tác nếu chưa có nhu cầu. Upload dùng chung cho các trang và ba cách đưa ảnh vào Quill. Tác vụ dọn là thành phần độc lập, chỉ làm việc với bản ghi MediaAsset/MediaReference được quản lý.
+Cơ sở lựa chọn
+Thay toàn bộ kiến trúc hoặc đổi nền tảng làm tăng phạm vi mà không cần thiết cho các lỗi đã chọn. Thay đổi theo luồng giúp HC02 và DP01 chia sẻ dữ liệu ảnh, HT01 và HT03 chia sẻ điều kiện bài công khai, còn HC01 và DP03 chia sẻ nền tảng Identity. Giải pháp giảm phụ thuộc vào việc nhớ thêm token hoặc kiểm tra quyền ở từng nút giao diện.
+3 Thiết kế dữ liệu
+
+Hình 2 Các bảng hiện có và hai bảng ảnh đề xuất bổ sung
+Thực thể | Trường chính | Vai trò và ràng buộc
+Admin hiện có | Id, Avatar, BackGroundImg; các trường Identity | Không tạo CSDL tài khoản mới. Vai trò dùng bảng Identity sẵn có; xác nhận quyền chủ hệ thống trước áp dụng.
+Post hiện có | Id, AuthorId, Content, Thumbnail, IsPublished, ViewCount, UpdatedAt | Lưu HTML tham chiếu URL. ViewCount không âm, tăng nguyên tử. IsPublished điều khiển mọi điểm đọc công khai.
+MediaAsset mới | Id UUID; PublicId nvarchar(512); Url nvarchar(2048); OwnerId; Status; CreatedAt; DeleteAttempts; LastError | PublicId duy nhất. OwnerId tham chiếu Admin. Status thuộc Temp, Used, Deleting, Deleted; thời điểm theo UTC.
+MediaReference mới | AssetId; PostId nullable; AdminId nullable; Kind | AssetId là FK; chỉ một trong PostId/AdminId có giá trị. Unique cho cùng ảnh, đối tượng và Kind; hỗ trợ ảnh dùng nhiều nơi.
+
+Từ điển dữ liệu bổ sung
+Thuộc tính | Kiểu đề xuất | Null | Ý nghĩa
+MediaAsset.Id | uniqueidentifier | Không | ID nội bộ đưa về frontend, tách khỏi PublicId của dịch vụ.
+MediaAsset.PublicId | nvarchar(512) | Không | Giá trị SDK trả; không suy ra bằng cắt URL.
+MediaAsset.Status | nvarchar(16) | Không | Trạng thái vòng đời ảnh.
+MediaAsset.CreatedAt | datetime2 | Không | Tuổi ảnh để xét dọn Temp.
+MediaAsset.DeleteAttempts | int | Không | Số lần đã gọi xóa để kiểm soát retry.
+MediaAsset.LastError | nvarchar(1000) | Có | Lỗi đã lược bỏ thông tin bí mật.
+MediaReference.Kind | nvarchar(16) | Không | Content, Thumbnail, Avatar hoặc Background.
+MediaReference.PostId | int | Có | Bài viết tham chiếu ảnh, bao gồm nháp.
+MediaReference.AdminId | nvarchar theo Identity | Có | Hồ sơ tham chiếu avatar hoặc background.
+
+Trước migration: sao lưu, kiểm tra kiểu khóa Identity thực tế và dữ liệu không hợp lệ. Thêm bảng/index trước, chưa xóa cột. Sau khi triển khai, lập danh sách URL ảnh cũ; ảnh chưa có PublicId đối soát được thì đánh dấu ngoài phạm vi tự dọn. Không quét và xóa toàn bộ folder temp vì ảnh đang dùng có thể vẫn nằm trong folder này.
+4 Hợp đồng API và tương thích
+API | Quyền | Thay đổi và phản hồi
+POST /Account/signIn | Công khai có hạn tần suất | Giữ phản hồi JWT thành công để tương thích. Sai/khóa trả 401 chung; quá hạn IP trả 429 và Retry-After.
+POST /Account/signUp | Chỉ Admin | Không còn đăng ký quản trị công khai. Vai trò chỉ lấy từ yêu cầu được Admin cấp, không cho khách tự chọn.
+GET /Account và /Account/{id} | Theo chính sách Admin hoặc bản thân | Danh sách chỉ Admin; chi tiết riêng tư chỉ bản thân hoặc Admin. Dữ liệu portfolio công khai vẫn qua AboutMe.
+POST /Upload | Admin hoặc Editor | Multipart file; thêm assetId bên cạnh url hiện có. PublicId được lưu phía máy chủ; không gửi khóa Cloudinary ra trình duyệt.
+GET /Post và /Post/{id} | Công khai | Chỉ bài đã xuất bản; validate phân trang. Trả Id và ViewCount đúng dữ liệu; không tăng lượt trong GET.
+GET /Post/manage và /Post/manage/{id} | Admin hoặc Editor có quyền | Danh sách/xem trước quản trị, có IsPublished; Editor chỉ lấy bài của mình.
+POST /Post và PATCH /Post/{id} | Admin hoặc Editor có quyền | Giữ title/content/thumbnail; hỗ trợ IsPublished và assetIds. PATCH chỉ cho phép các trường định trước, kiểm tra lại dữ liệu sau apply.
+DELETE /Post/{id} | Admin hoặc chủ bài Editor | Gửi token và kiểm tra quyền; cập nhật tham chiếu trong giao dịch, không xóa ảnh Cloudinary trực tiếp khi xóa bài.
+POST /Post/{id}/view | Công khai, bài đang xuất bản | Tăng 1 nguyên tử và trả {viewCount}; không nhận số tăng từ khách. Bài không tồn tại hoặc nháp trả 404.
+
+Request tạo/sửa bài tối đa 1 MiB UTF-8; riêng endpoint upload tối đa 5 MiB tệp cộng phần bao multipart nhỏ được cấu hình rõ. Phản hồi 400 cho dữ liệu không hợp lệ, 413 cho body/tệp quá giới hạn, 415 cho loại tệp không được hỗ trợ, 401/403 theo xác thực/quyền. Các giới hạn tại proxy/IIS và ứng dụng phải khớp; không nâng mọi endpoint lên mức không giới hạn.
+5 Thiết kế theo chức năng
+TK-HC01 Sửa thiếu xác thực và kiểm tra quyền tại API quản trị
+Mục đích Ngăn khách chưa đăng nhập và tài khoản không đủ quyền thực hiện thao tác quản trị qua giao diện hoặc gọi API trực tiếp.
+Hiện trạng cần điều chỉnh PostController.DeletePost chưa có [Authorize]; PostManager gọi DELETE không kèm token. Đăng ký tài khoản và đọc danh sách tài khoản chưa giới hạn quyền; các thao tác PATCH mới kiểm tra đăng nhập, chưa kiểm tra chủ sở hữu. ProtectedRoute ở giao diện dùng aud để nhận diện quản trị, trong khi audience không phải vai trò.
+Xử lý đề xuất Áp dụng policy RequireRole ở API và kiểm tra AuthorId hoặc id hồ sơ. Token mang role claim do máy chủ lấy từ Identity. Ẩn nút chỉ giúp giao diện; quyết định cuối cùng luôn ở API.
+Giao diện và điều khiển Nút thao tác theo quyền; thông báo phiên hết hạn hoặc không đủ quyền, không coi trang 404 là cơ chế xác thực.
+Dữ liệu sử dụng Dùng bảng vai trò và quan hệ người dùng của Identity đang có. Bổ sung vai trò bằng migration hoặc script cấp quyền được kiểm soát; không tự động coi mọi tài khoản cũ là Admin.
+Ngoại lệ và ràng buộc Có thể khóa nhầm quyền của chủ hệ thống nếu gán vai trò cũ sai. Cần xuất danh sách người dùng, xác nhận tài khoản chủ và kiểm thử trước khi áp dụng.
+Thao tác | Khách | Editor | Admin
+Đọc bài công khai | Có | Có | Có
+Đọc/sửa/xóa bài của mình | Không | Có | Có
+Sửa/xóa bài của người khác | Không | Không | Có
+Đọc danh sách hoặc cấp tài khoản | Không | Không | Có
+Sửa hồ sơ của mình | Không | Có | Có
+
+Cấp vai trò cho tài khoản chủ bằng thao tác được kiểm soát ngoài đăng ký công khai. Role claim lấy từ Identity khi phát token; token cũ cần đăng nhập lại. Không dùng aud=Admin để thay kiểm tra role; aud vẫn được xác minh như thông tin đối tượng nhận token.
+TK-HC02 Sửa ảnh base64 trong bài viết gây quá tải khi đăng bài
+Mục đích Ảnh chèn trong bài được tải lên Cloudinary và nội dung chỉ lưu URL, tránh đưa dữ liệu ảnh base64 vào request tạo hoặc cập nhật bài.
+Hiện trạng cần điều chỉnh Người vận hành phản ánh khi chèn nhiều ảnh vào nội dung, ảnh được lưu thành base64, máy chủ xử lý rất lâu và trang chủ không tải được. CreatePost và UpdatePost đã có upload ảnh đại diện qua /upload nhưng toolbar Quill chưa có image handler riêng cho ảnh nội dung. API tạo và sửa bài lưu Content mà chưa chặn ảnh data URI.
+Xử lý đề xuất Dùng một thành phần upload ảnh dùng chung cho toolbar, paste và drop; mỗi tệp tối đa 5 MiB, chỉ JPEG/PNG/WebP đã kiểm tra chữ ký tệp; tối đa 20 ảnh mỗi bài. Không mở rộng vô hạn request body. Xử lý cũ theo từng bài và từng ảnh có checkpoint, không giải mã tất cả bài vào RAM.
+Giao diện và điều khiển Hiện trạng thái đang tải từng ảnh, lỗi có thể thử lại; giữ vị trí con trỏ và nội dung. Khóa nút lưu trong lúc upload.
+Dữ liệu sử dụng Không đổi kiểu Content. Đổi giá trị src của ảnh từ base64 sang URL. Khi ghép với DP01, lưu PublicId và AssetId riêng, không suy ra bằng cách cắt chuỗi URL.
+Ngoại lệ và ràng buộc Paste hoặc drop có thể bỏ qua image handler. Chuyển dữ liệu cũ có thể tải ảnh trùng hoặc mất tham chiếu khi thất bại. Cần backup, checkpoint, đối chiếu số ảnh và chỉ cập nhật bài sau khi đủ ảnh được chuyển.
+
+Hình 3 Luồng ảnh nội dung sau bảo trì HC02 và liên kết DP01
+Handler toolbar giữ selection trước upload; clipboard và drop chuyển tệp ảnh về cùng hàm. Khi người dùng dán HTML có data:image, trích ảnh thành tệp có giới hạn rồi upload hoặc báo từ chối; không chèn data URI trung gian vào HTML lưu. Chỉ giữ preview blob URL trong trình duyệt và thu hồi URL khi không dùng nữa.
+Trình tự kiểm tra tại API: hạn body → quyền → kiểu tệp/chữ ký → kích thước → upload stream → ghi MediaAsset. Khi lưu bài: parse HTML bằng parser, từ chối data:image, đối chiếu URL/assetIds và owner, kiểm tra trạng thái ảnh, ghi bài và MediaReference trong một giao dịch. Không coi kiểm tra ở frontend là đủ.
+Chuyển bài cũ: backup; dry-run đếm data URI và byte giải mã theo từng ảnh; upload từng ảnh vào tài khoản thử; lưu mapping bài/ảnh/checksum/PublicId; thay src trên bản sao HTML; chỉ cập nhật Content và tham chiếu khi đủ ảnh của bài đã thành công. Dừng giữa chừng có thể chạy tiếp từ checkpoint. Đối chiếu ảnh, định dạng và kích thước request trước/sau; không đưa job chuyển đổi vào request mở trang chủ.
+TK-HC03 Sửa trạng thái tải không kết thúc khi lấy dữ liệu thất bại
+Mục đích Mọi yêu cầu lấy dữ liệu đều kết thúc bằng thành công, không tìm thấy, lỗi có thể thử lại hoặc hết thời gian chờ.
+Hiện trạng cần điều chỉnh PostDetail chỉ đổi isLoading sang false khi request thành công; nhánh catch chỉ ghi console. Trang chủ phụ thuộc user nhưng UserContext khi lỗi không cung cấp trạng thái thất bại. Khi mở /post/2147483647 trên website, khung chờ vẫn hiển thị mà không có thông báo không tìm thấy bài.
+Xử lý đề xuất Tách trạng thái tải hồ sơ và tải danh sách; dữ liệu hồ sơ lỗi không được khóa vĩnh viễn toàn bộ trang. Dùng AbortController và finally; loại bỏ độ trễ giả 800 ms.
+Giao diện và điều khiển Thông báo Không tìm thấy bài viết, Kết nối thất bại và nút Thử lại hoặc Về trang chủ.
+Dữ liệu sử dụng Không thay đổi CSDL. Bổ sung trạng thái loading/error/notFound ở giao diện và timeout/cancel ở HTTP client.
+Ngoại lệ và ràng buộc finally của request cũ có thể tắt trạng thái tải của request mới. Dùng định danh request hoặc hủy request và kiểm tra trạng thái hủy.
+TK-HC04 Sửa ảnh và nội dung bị lệch hoặc tràn ngang trên điện thoại
+Mục đích Ảnh và nội dung giữ trong khung trên điện thoại, không kéo giãn trang hoặc che các nút điều hướng.
+Hiện trạng cần điều chỉnh Người vận hành phản ánh ảnh bị lệch trên điện thoại. Kiểm tra /post/16 ở viewport 360 × 800 cho thấy document rộng khoảng 587 px. Trong mẫu này, ảnh nội dung rộng khoảng 295 px và vẫn nằm trong khung; các span chứa chuỗi JWT và code không ngắt dòng tạo phần tràn. Ảnh nền header bị cắt lệch; CSS chưa đặt background-position và đang dùng background-attachment: fixed. Đã có max-width:100% cho ảnh chi tiết, nên không thể kết luận thiếu toàn bộ CSS responsive.
+Xử lý đề xuất Đặt max-inline-size:100% và block-size:auto cho img; overflow-wrap:anywhere cho nội dung văn bản, pre có max-width:100% và overflow-x:auto. Kiểm tra min-width của flex item và ảnh có inline style trước khi áp dụng override có phạm vi.
+Giao diện và điều khiển Không thay đổi cấu trúc nội dung; hiệu chỉnh khung ảnh, căn ảnh nền, xuống dòng và khối code theo kích thước màn hình.
+Dữ liệu sử dụng Không đổi API hoặc CSDL. Kiểm tra style width/height cũ trong HTML, tránh dùng !important đại trà làm hỏng canh lề.
+Ngoại lệ và ràng buộc Ép object-fit:cover lên ảnh bài viết làm mất nội dung ảnh; chỉ dùng cover cho thumbnail hoặc ảnh nền khi có chủ đích. Cần giữ ảnh bài viết theo tỉ lệ tự nhiên.
+Đối tượng | Quy tắc | Kiểm tra
+Ảnh bài viết | max-inline-size:100%; block-size:auto; giới hạn ở container nội dung | Ảnh ngang/dọc, inline width, canh lề Quill.
+Header và thumbnail | Header căn giữa, scroll trên màn hình nhỏ; cover chỉ cho vùng ảnh có chủ đích | Không cắt mất nội dung ảnh bài bằng object-fit:cover đại trà.
+Chuỗi dài | overflow-wrap:anywhere trong văn bản | URL và JWT dài không giãn toàn trang.
+Code hoặc iframe | max-width:100%; cuộn trong khối code, video theo tỉ lệ | Cuộn ngang nội bộ được phép, cuộn toàn trang không được phép.
+Khung flex | min-width:0; width:100% và max-width phù hợp | Không chỉ che lỗi bằng overflow-x:hidden ở body.
+
+TK-HT01 Hoàn chỉnh luồng lưu nháp và xuất bản bài viết
+Mục đích Người biên tập chủ động lưu nháp, xuất bản hoặc thu hồi bài; khách chỉ xem được bài đã xuất bản.
+Hiện trạng cần điều chỉnh Model và CreatePostDTO đã có IsPublished, nhưng CreatePost mặc định true và chưa có nút chọn lưu nháp. UpdatePostDTO chưa hỗ trợ đổi trạng thái; API danh sách và chi tiết công khai chưa lọc IsPublished.
+Xử lý đề xuất Thêm GET /Post/manage và GET /Post/manage/{id} có kiểm tra quyền; API công khai chỉ trả bài xuất bản. PATCH có danh sách trường cho phép và nhận IsPublished. Bỏ cache chi tiết cần kiểm tra trạng thái hoặc có cơ chế vô hiệu hóa đã kiểm thử.
+Giao diện và điều khiển Nút Lưu nháp, Xuất bản, Thu hồi; badge trạng thái; màn hình xem trước chỉ dành cho người có quyền.
+Dữ liệu sử dụng Tái sử dụng Posts.IsPublished. ReadPostDTO cần trả đúng Id, IsPublished cho API quản trị; sửa setter phù hợp. Giữ nguyên trạng thái bài cũ, không tự động xuất bản.
+Ngoại lệ và ràng buộc Nếu chỉ ẩn bài ở danh sách thì URL chi tiết vẫn lộ. Cache trình duyệt/proxy có thể tiếp tục trả bài sau khi thu hồi; cần kiểm thử URL trực tiếp và response header.
+Sơ đồ trạng thái: Tạo mới → Nháp hoặc Đã xuất bản; Nháp → Đã xuất bản khi người có quyền chọn xuất bản; Đã xuất bản → Nháp khi thu hồi. Khách không đọc được nháp ở cả danh sách và URL chi tiết. API xem trước chỉ dành cho chủ bài hoặc Admin. Vô hiệu hóa cache nội dung công khai khi đổi trạng thái; kiểm thử response header ở cả origin và proxy.
+TK-HT02 Hoàn thiện tìm kiếm và phân trang bài viết
+Mục đích Tìm đúng tiêu đề với ký tự đặc biệt, có thông báo rõ khi rỗng và duyệt đủ các trang công khai hoặc quản trị.
+Hiện trạng cần điều chỉnh Tìm kiếm hiện chỉ kích hoạt bằng Enter và ghép searchTerm trực tiếp vào URL. Khi không có kết quả, website chỉ để trống danh sách. PostManager quản lý state page và tổng trang nhưng chưa hiển thị thanh phân trang trong phần giao diện hiện tại; API chưa kiểm tra giới hạn pageNumber/pageSize.
+Xử lý đề xuất Dùng axios params thay nối chuỗi. Nút tìm có nhãn tiếng Việt và trạng thái tải; giữ một hàm dựng phân trang dùng lại. Không mở rộng sang tìm toàn văn nội dung trong đợt này.
+Giao diện và điều khiển Ô Tìm theo tiêu đề, nút Tìm, Xóa lọc, tổng kết quả và các nút Trang trước, Trang sau.
+Dữ liệu sử dụng Giữ cấu trúc phân trang hiện có; totalRecords được đếm trên cùng truy vấn đã lọc. Thứ tự ổn định CreatedAt giảm dần rồi Id giảm dần.
+Ngoại lệ và ràng buộc Tổng số trang đổi sau thao tác xóa hoặc lọc; cần xử lý trang rỗng và phản hồi request cũ khi tìm liên tiếp.
+TK-HT03 Thêm bộ đếm lượt xem cho từng bài
+Mục đích Thêm bộ đếm lượt xem cho từng bài: tăng khi đọc bài công khai hợp lệ, cập nhật đồng thời an toàn và hiển thị số lượt xem.
+Hiện trạng cần điều chỉnh Model và DTO đã có ViewCount, model có IncreaseView, nhưng luồng đọc chi tiết hiện tại không gọi cập nhật bộ đếm và giao diện chưa hiển thị lượt xem.
+Xử lý đề xuất Với EF Core 6, dùng câu UPDATE có tham số SET ViewCount = ViewCount + 1, không đọc rồi ghi lại đối tượng cũ. Giao dịch cập nhật và đọc số mới phải tránh ảnh hưởng logic xuất bản. Giao diện gắn một eventId cho mỗi lần điều hướng để kiểm soát gửi lặp trong phiên.
+Giao diện và điều khiển Hiển thị Lượt xem và số đếm dưới tiêu đề, cạnh ngày đăng; thất bại ghi lượt không được làm mất nội dung bài.
+Dữ liệu sử dụng Dùng Posts.ViewCount hiện có; kiểm tra dữ liệu null/âm trước khi đưa vào dùng. Không thêm bảng thống kê người dùng hoặc ghi IP cho mục đích lượt xem trong đợt này.
+Ngoại lệ và ràng buộc React StrictMode, retry và prefetch có thể tăng dư; khóa trong một vòng đời điều hướng và không tự retry POST tăng lượt. Chỉ cam kết lượt mở trang, không cam kết số người xem duy nhất hay chống mọi bot.
+Ví dụ phép cập nhật trên SQL Server: UPDATE Posts SET ViewCount = ViewCount + 1 WHERE Id = @id AND IsPublished = 1. Dùng tham số, kiểm tra số dòng bị tác động và đọc giá trị mới trong giao dịch phù hợp. Không dùng phép đọc ViewCount cũ rồi gán ViewCount+1 ở nhiều request cạnh tranh.
+Giao diện tạo định danh lần mở theo lần điều hướng và gắn cờ đã gửi trước khi phát request, để effect chạy lặp không gửi hai lần. Không retry POST tự động khi không biết request trước đã được ghi hay chưa. Việc chống retry trên mạng ở mức exactly-once hoặc chống gian lận không thuộc cam kết đợt này; cần ghi rõ giới hạn khi báo cáo số lượt.
+TK-DP01 Quản lý vòng đời và dọn ảnh Cloudinary không được sử dụng
+Mục đích Ngăn ảnh bỏ dở tích lũy trên Cloudinary mà không xóa nhầm ảnh bài viết, bài nháp hoặc hồ sơ đang dùng.
+Hiện trạng cần điều chỉnh CloudinaryService tải ảnh vào folder temp và chỉ trả SecureUrl; chưa thấy lưu PublicId, đánh dấu ảnh đã dùng hoặc tác vụ dọn trong cây mã nguồn đã rà soát. Việc đăng bài có thể bị hủy sau khi ảnh đã lên Cloudinary.
+Xử lý đề xuất Dùng bản ghi tham chiếu thay cờ IsUsed đơn lẻ để hỗ trợ một ảnh xuất hiện nhiều nơi. Giữ nguyên PublicId và URL khi đổi trạng thái, không đổi URL bằng thay chuỗi temp thành posts. Trạng thái Deleting không được gắn tham chiếu mới.
+Giao diện và điều khiển Không cần trang quản trị mới trong đợt đầu; báo cáo job gồm số ứng viên, số đã xóa và số lỗi, không đưa khóa dịch vụ vào log.
+Dữ liệu sử dụng Thêm MediaAsset và MediaReference, chỉ lưu PublicId thực do SDK trả. Dữ liệu ảnh cũ chưa xác định nguồn được giữ nguyên và đối soát trước; không xóa hàng loạt theo folder.
+Ngoại lệ và ràng buộc Xóa Cloudinary là tác động không thể hoàn tác bằng rollback CSDL. Bắt buộc dry-run và duyệt danh sách ứng viên; bản đầu chỉ tự dọn Temp, chưa dọn ảnh từng Published rồi bị gỡ.
+Lưu bài/hồ sơ và worker dùng giao dịch/khóa CSDL để phân xử trạng thái ảnh. Worker chuyển Temp sang Deleting với điều kiện quá tuổi và không có tham chiếu; thao tác lưu không được gắn ảnh Deleting/Deleted. Sau khi claim, worker kiểm tra tham chiếu lần cuối trước lời gọi Cloudinary. Mỗi lần chạy có batch giới hạn, tối đa 3 lần thử cho một ảnh và log để người vận hành xử lý lỗi kéo dài.
+Chỉ bật dọn Temp sau khi dry-run được duyệt. Không tự xóa ảnh trạng thái Used chỉ vì vừa mất một tham chiếu; việc dọn ảnh đã từng sử dụng cần chính sách riêng. Giữ nguyên PublicId và URL khi đánh dấu sử dụng, tránh ảnh bị vỡ do đổi folder. Nếu app host không bảo đảm chạy nền liên tục, dùng lịch gọi worker được xác thực; không mở endpoint dọn cho khách.
+TK-DP03 Phòng ngừa dò mật khẩu tại API đăng nhập quản trị
+Mục đích Giảm khả năng thử mật khẩu tự động và phát hiện đăng nhập bất thường mà vẫn cho người dùng hợp lệ đăng nhập.
+Hiện trạng cần điều chỉnh Route đăng nhập nằm trong bundle giao diện và mã nguồn công khai. PasswordSignInAsync đang truyền lockoutOnFailure=false; chưa thấy cơ chế giới hạn tần suất theo IP trong cấu hình đã đọc. Biết URL chưa đồng nghĩa vượt qua xác thực, nhưng cho phép kẻ tấn công tiếp cận điểm thử mật khẩu.
+Xử lý đề xuất Đặt giới hạn trước thao tác băm mật khẩu, kiểm tra LockoutEnabled cho tài khoản cũ và truyền lockoutOnFailure:true. Với .NET 6, chọn bộ giới hạn tương thích sau khi kiểm chứng; không dùng AddRateLimiter có sẵn của các phiên bản mới như thể nó có trong .NET 6.
+Giao diện và điều khiển Hiển thị thông báo chung khi đăng nhập thất bại, thông báo chờ khi 429; không tiết lộ tên tài khoản đúng/sai hoặc chi tiết khóa.
+Dữ liệu sử dụng Tái sử dụng AccessFailedCount, LockoutEnd, LockoutEnabled của Identity. Bộ đếm IP phải dùng kho chung khi có nhiều instance; bản triển khai một instance có thể dùng cache trong bộ nhớ và phải ghi rõ giới hạn khi khởi động lại.
+Ngoại lệ và ràng buộc Kẻ tấn công có thể cố tình gây khóa tài khoản; dùng khóa có thời hạn thay vì khóa vĩnh viễn. Nhiều người chung NAT có thể chạm hạn IP; cần theo dõi để điều chỉnh ngưỡng, không chặn toàn site.
+Mốc kiểm thử mặc định một instance API, limiter là dịch vụ dùng cache có giới hạn kích thước và cửa sổ trượt 60 giây; khóa thao tác tăng bộ đếm theo IP để request song song không vượt ngưỡng. Bộ đếm IP này có thể đặt lại khi tiến trình khởi động; khóa tài khoản vẫn nằm trong Identity. Nếu triển khai nhiều instance thì thay bằng kho hạn mức dùng chung và chạy lại kiểm thử trước khi phát hành.
+Đọc IP từ kết nối hoặc forwarded header do proxy tin cậy thiết lập; cấu hình KnownProxies/KnownNetworks theo hạ tầng đã xác minh. Không tin X-Forwarded-For khách tự gửi. Phạm vi hạn chế là POST đăng nhập, không phải toàn bộ website hoặc endpoint lượt xem. Không phân biệt lỗi tên người dùng và mật khẩu qua nội dung phản hồi; đo thời gian để tránh chênh lệch quá lớn, không cam kết thời gian tuyệt đối bằng nhau.
+6 Migration triển khai và phục hồi
+• Tạo backup CSDL và danh sách tài nguyên trước đợt thay đổi. Bản thử dùng tài khoản Cloudinary riêng, không sao chép khóa thật vào mã hoặc tài liệu.
+• Triển khai schema bổ sung, cấp vai trò đúng chủ, kiểm tra token mới. Cập nhật backend chấp nhận phản hồi upload mở rộng rồi cập nhật frontend.
+• Bật luồng ảnh URL và giới hạn, chạy chuyển dữ liệu cũ theo lô nhỏ. Đo kích thước Content và request trước/sau.
+• Kiểm thử nháp/xuất bản, cache, lượt xem và hiển thị ở các viewport. Bật chống dò mật khẩu sau xác minh proxy.
+• DP01 chạy dry-run trước, chỉ xóa thật sau duyệt. Nếu có lỗi bất thường, dừng lịch dọn và khoanh vùng; không cố khôi phục ảnh đã xóa chỉ bằng rollback CSDL.
+• Sau triển khai theo dõi lỗi API, timeout, kích thước request bị từ chối, đăng nhập bị giới hạn và số ảnh dọn lỗi. Ghi người phụ trách và thời gian kiểm tra theo lịch nhóm.
+7 Bảng tham khảo tới các yêu cầu
+Thiết kế | Yêu cầu | Thành phần chính | Nhóm kiểm thử
+TK-HC01 | HC01 | AccountController, PostController, AccountRepository, cấu hình Identity và JWT, API client, ProtectedRoute, trang quản lý tài khoản và bài viết | TC-HC01
+TK-HC02 | HC02 | CreatePost, UpdatePost, toolbar và clipboard của Quill, UploadController, CloudinaryService, DTO tạo/sửa bài, PostController, cấu hình giới hạn request và dữ liệu Content cũ | TC-HC02
+TK-HC03 | HC03 | PostDetail, Home, UserContext, API client và màn hình lỗi hoặc thành phần thông báo dùng chung | TC-HC03
+TK-HC04 | HC04 | Header | TC-HC04
+TK-HT01 | HT01 | DTO bài viết, PostController, CreatePost, UpdatePost, PostManager và cấu hình cache cho dữ liệu bài | TC-HT01
+TK-HT02 | HT02 | ListPost, PostManager, API client, truy vấn bài công khai và quản trị, PagedResponse | TC-HT02
+TK-HT03 | HT03 | PostController hoặc dịch vụ lượt xem, Post model, PostDetail, DTO phản hồi và bộ xử lý sự kiện mở bài | TC-HT03
+TK-DP01 | DP01 | CloudinaryService, UploadController, ApplicationDbContext, MediaAsset và MediaReference mới, dịch vụ lưu bài/hồ sơ, tác vụ nền | TC-DP01
+TK-DP03 | DP03 | AccountController, AccountRepository, Identity options, dịch vụ hạn chế đăng nhập, cấu hình trusted proxy và nhật ký sự kiện | TC-DP03
+
+
+Cập nhật thực hiện ngày 17 tháng 11 năm 2026
+Đã sửa mã nguồn HC01, HC02, DP01, DP03 và thực thi 27 kịch bản API/CSDL/hộp trắng trên SQL Server riêng: 27 đạt, 0 không đạt ở lần chạy cuối. Bốn luồng giao diện đã có bằng chứng; drop dùng DragEvent có tệp. Kết quả giới hạn trong sandbox với FakeCloud, chưa phải nghiệm thu production.
+Mã | Thực hiện trong mã nguồn | Kết quả và giới hạn
+HC01 | JWT role, 401/403, chủ sở hữu, cấp tài khoản chỉ Admin; token gửi thống nhất ở FE. | 6 ca API đạt; cấp role cũ cần lệnh offline đúng tài khoản.
+HC02 | Upload chung toolbar/paste/drop; chặn base64 và giới hạn body; chuyển bài cũ có checkpoint. | API và chuyển ảnh đạt; toolbar/paste thật; drop mô phỏng.
+DP01 | MediaAsset/MediaReference, khóa SQL, dry-run, claim Deleting, retry tối đa 3 lần. | Race/retry trên SQL thật đạt; dịch vụ xóa giả lập.
+DP03 | 20/60 giây theo IP; 5 sai khóa 15 phút trong SQL; chống mất bộ đếm đồng thời. | Hạn IP và khóa SQL đạt; limiter một instance.
+Triển khai thực tế: MediaAsset dùng PublicId nvarchar(200), Url nvarchar(2048), OwnerId nvarchar(450), State, CreatedAt, ClaimedAt, Attempts; MediaReference có PostId hoặc AdminId. Không lưu khóa Cloudinary trong các bảng này.
+Lưu và claim dọn dùng UPDLOCK trong SQL; hậu kiểm URL legacy trước xóa; Deleting cấm gắn mới; claim quá 1 giờ có thể thử lại; tối đa 3 lần. Worker lịch 24 giờ, batch 100; AllowDelete=false là dry-run. Limiter dùng dictionary bounded 10000 IP, khóa admission; đếm sai tài khoản được tuần tự hóa bằng hàng Identity SQL.
+NFR07: sau làm nóng, 50 GET đồng thời một POST 20 URL; p95 trước 7,6 ms, sau 7,0 ms; cả hai 50×200 và POST 200. CPU tiến trình trước/sau 180/170 ms; RSS lấy mẫu 183,98/199,08 MiB. Mẫu nhỏ trên máy local, không suy ra năng lực hosting production.
+Giới hạn bằng chứng: chưa xóa ảnh trên tài khoản Cloudinary thật, chưa chạy nhiều instance/proxy thật. Ảnh API trực tiếp và bảng DP01/DP03 chưa chụp đủ do chính sách trình duyệt chặn localhost:5191/5180 dù đã được người dùng xác nhận. Không thay bằng ảnh dựng rồi gọi là màn hình thật.
+Nguồn thực thi: tuanduy_bao_tri/BAO_CAO_KIEM_THU_BAO_TRI.md; results.json; browser-results.json; baseline-results.json; performance.json; sandbox/test-execution.log; mã maintenance-tests/Runner.cs. Các nguồn không chứa mật khẩu hoặc JWT. Mã sửa chưa commit/push/deploy.
+Cập nhật thực hiện ngày 17 tháng 11 năm 2026 (HC03, HC04, HT02)
+Đã sửa mã nguồn HC03, HC04, HT02 và thực thi 18 kịch bản API/giao diện/hộp trắng trên sandbox (6 ca xUnit backend với EF Core InMemory, 12 ca Vitest frontend với JSDOM): 18 đạt, 0 không đạt ở lần chạy cuối. Các luồng giao diện 404/timeout, responsive đa viewport (320px..390px) và tìm kiếm/phân trang đã có bằng chứng tự động.
+Mã | Thực hiện trong mã nguồn | Kết quả và giới hạn
+HC03 | Thêm state isLoading, errorType, errorMessage; khối finally bảo đảm tắt spinner; AbortController hủy request timeout 15s và khi đổi route; bọc try/catch riêng cho AboutMe. | 4 ca UI đạt; kiểm thử thành công trạng thái 404, timeout hủy request và chuyển trang không bị race condition.
+HC04 | Header background-position: center; mobile background-attachment: scroll; box-sizing: border-box; overflow-wrap: anywhere; word-break: break-word; pre/code overflow-x: auto; ảnh max-inline-size: 100% !important; height/block-size: auto. | 4 ca CSS/Layout đạt; scrollWidth <= clientWidth + 1px trên các viewport 320px..390px; chống tràn ngang triệt để.
+HT02 | Backend validate tham số PageNumber >= 1, PageSize 1..50 trả 400 Bad Request; sắp xếp ổn định CreatedAt DESC, Id DESC; Frontend dùng Axios params, phân trang đầy đủ, tự lùi trang khi xóa bài cuối. | 10 ca đạt (6 ca xUnit backend, 4 ca Vitest frontend); mã hóa an toàn ký tự đặc biệt (&, +, ?), phân trang chính xác.
+Hiện thực thiết kế: State Machine quản lý lỗi 404/TIMEOUT/ERROR; AbortController tích hợp trong hook useEffect; CSS override max-inline-size: 100% !important; LINQ OrderByDescending(CreatedAt).ThenByDescending(Id).
+Giao thức và định dạng: API giữ nguyên URL; bổ sung kiểm tra hợp lệ HTTP 400; Axios params mã hóa query string an toàn theo chuẩn RFC 3986.
+Yêu cầu phi chức năng (NFR): Đáp ứng NFR03 và NFR04.
+Nguồn thực thi: tandat_bao_tri/BAO_CAO_KIEM_THU_BAO_TRI.md; results.json; performance.json; test-execution.log; mã BackEnd.Tests/PostControllerTests.cs và front-end/tests/.

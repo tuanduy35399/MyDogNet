@@ -1,0 +1,206 @@
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS TC-HC01-01: DELETE/Account 401; bài còn nguyên
+PASS TC-HC01-02: 401 cho JWT hết hạn
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS TC-HC01-03: Editor khác chủ nhận 403 ở bài và hồ sơ
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS TC-HC01-04: Chủ bài và Admin sửa thành công
+PASS TC-HC01-05: Khách 401; Editor 403; Admin cấp Editor thành công
+PASS TC-HC01-06: 401 khi sửa role giữ chữ ký cũ
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS API-HC02-BOUNDARY: 5 MiB nhận; +1 byte từ chối; tệp giả 400 (dịch vụ ảnh giả lập)
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS TC-HC02-07: POST/PATCH 400; không lưu data URI
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS API-HC02-STORE: Content URL và MediaReference được lưu trong SQL thật
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS TC-HC02-05: 20 ảnh nhận, 21 ảnh 400, JSON >1 MiB 413
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS API-HC02-OUTAGE: Cloud timeout giả lập → 502 chung
+PASS TC-HC02-08: Dry-run không ghi; chuyển 1 bài; chạy lại không upload trùng; giữ strong/text
+PASS TC-DP01-01: Dry-run giữ dữ liệu; chạy thật trên fake store đánh dấu Deleted
+PASS TC-DP01-02-03: Giữ Temp 23h, Used, ảnh có tham chiếu bài
+PASS TC-DP01-05: DeleteFailed, Attempts=3; không đánh dấu Deleted giả
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS TC-DP01-04: 10 tranh chấp: không có tham chiếu tới ảnh Deleted
+PASS DP01-PROFILE-DRAFT: Giữ ảnh content/thumbnail/nháp/avatar/background, gồm URL cũ chưa có MediaReference
+PASS DP01-TWO-WORKERS: Hai worker: đúng một lần gọi xóa asset
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS DP01-FOREIGN-ASSET: Editor B dùng ảnh A nhận 403, giao dịch rollback
+PASS HC02-MIGRATION-RESUME: Lỗi ảnh thứ hai: bài cũ còn nguyên; chạy lại chỉ upload ảnh còn thiếu
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.UserManager[0]
+      Invalid password for user.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[2]
+      User failed to provide the correct password.
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.UserManager[0]
+      Invalid password for user.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[2]
+      User failed to provide the correct password.
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.UserManager[0]
+      Invalid password for user.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[2]
+      User failed to provide the correct password.
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.UserManager[0]
+      Invalid password for user.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[2]
+      User failed to provide the correct password.
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.UserManager[0]
+      Invalid password for user.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[2]
+      User failed to provide the correct password.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.UserManager[12]
+      User is locked out.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[3]
+      User is currently locked out.
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[3]
+      User is currently locked out.
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+PASS TC-DP03-02: 5 sai: khóa lưu SQL >14 phút; mật khẩu đúng vẫn 401
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.UserManager[0]
+      Invalid password for user.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[2]
+      User failed to provide the correct password.
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.UserManager[0]
+      Invalid password for user.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[2]
+      User failed to provide the correct password.
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.UserManager[0]
+      Invalid password for user.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[2]
+      User failed to provide the correct password.
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.UserManager[0]
+      Invalid password for user.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[2]
+      User failed to provide the correct password.
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.UserManager[0]
+      Invalid password for user.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[2]
+      User failed to provide the correct password.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.UserManager[12]
+      User is locked out.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[3]
+      User is currently locked out.
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+PASS DP03-ACCOUNT-CONCURRENT: 5 yêu cầu sai đồng thời vẫn khóa tài khoản 15 phút trong SQL
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Identity.SignInManager[3]
+      User is currently locked out.
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+PASS DP03-RESTART: Host/limiter mới vẫn nhận 401 vì khóa tài khoản lưu SQL
+PASS TC-DP03-03: Đặt LockoutEnd quá khứ trong fixture (mô phỏng 15 phút); đăng nhập được, đếm sai=0
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Repositories.AccountRepository[0]
+      Login failed or account locked
+[40m[1m[33mwarn[39m[22m[49m: BackEnd.Security.LoginThrottleMiddleware[0]
+      Login IP limit exceeded
+PASS TC-DP03-04-05: 20×401 rồi 429 + Retry-After; đổi XFF không qua được hạn
+PASS WB-DP03-CONCURRENT: 40 tác vụ: đúng 20 được nhận
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+PASS RG03: AboutMe/Post 200 sau các ca lỗi/race
+RESULTS 27

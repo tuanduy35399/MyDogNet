@@ -1,0 +1,98 @@
+[
+  {
+    "id": "TC-HT01-01",
+    "name": "T\u1EA1o nh\u00E1p v\u00E0 c\u00F4 l\u1EADp c\u00F4ng khai",
+    "status": "PASS",
+    "detail": "Nh\u00E1p m\u1EB7c \u0111\u1ECBnh false; qu\u1EA3n tr\u1ECB th\u1EA5y; danh s\u00E1ch c\u00F4ng khai kh\u00F4ng c\u00F3; chi ti\u1EBFt 404."
+  },
+  {
+    "id": "TC-HT01-02",
+    "name": "Xu\u1EA5t b\u1EA3n b\u1EDFi ch\u1EE7 b\u00E0i",
+    "status": "PASS",
+    "detail": "PATCH true th\u00E0nh c\u00F4ng; kh\u00E1ch \u0111\u1ECDc \u0111\u01B0\u1EE3c danh s\u00E1ch v\u00E0 chi ti\u1EBFt."
+  },
+  {
+    "id": "TC-HT01-03-ORIGIN",
+    "name": "Thu h\u1ED3i v\u00E0 cache t\u1EA1i API",
+    "status": "PASS",
+    "detail": "GET no-store; sau thu h\u1ED3i GET c\u00F3 \u0111i\u1EC1u ki\u1EC7n tr\u1EA3 404, danh s\u00E1ch b\u1ECF b\u00E0i. Proxy ki\u1EC3m tra ri\u00EAng."
+  },
+  {
+    "id": "TC-HT01-04",
+    "name": "Tr\u1EA1ng th\u00E1i t\u00E1c gi\u1EA3 v\u00E0 th\u1EDDi gian UTC",
+    "status": "PASS",
+    "detail": "\u0110\u1ECDc l\u1EA1i \u0111\u00FAng Id, true, editorA, CreatedAt gi\u1EEF nguy\u00EAn; UpdatedAt UTC t\u0103ng."
+  },
+  {
+    "id": "TC-HT01-05",
+    "name": "Quy\u1EC1n xem tr\u01B0\u1EDBc v\u00E0 \u0111\u1ED5i tr\u1EA1ng th\u00E1i",
+    "status": "PASS",
+    "detail": "Kh\u00E1ch 401; Editor kh\u00E1c ch\u1EE7 403; b\u00E0i nh\u00E1p kh\u00F4ng \u0111\u1ED5i."
+  },
+  {
+    "id": "API-HT01-FILTER",
+    "name": "L\u1ECDc tr\u1EA1ng th\u00E1i c\u00F9ng quy\u1EC1n t\u00ECm v\u00E0 ph\u00E2n trang",
+    "status": "PASS",
+    "detail": "all/draft/published, t\u1ED5ng s\u1ED1 v\u00E0 t\u00ECm ki\u1EBFm kh\u1EDBp; kh\u00F4ng l\u1ED9 b\u00E0i B; tr\u1EA1ng th\u00E1i sai 400."
+  },
+  {
+    "id": "API-HT01-ADMIN",
+    "name": "Admin \u0111\u1ED5i tr\u1EA1ng th\u00E1i b\u00E0i c\u1EE7a Editor",
+    "status": "PASS",
+    "detail": "Admin xu\u1EA5t b\u1EA3n/thu h\u1ED3i b\u00E0i c\u1EE7a Editor B th\u00E0nh c\u00F4ng."
+  },
+  {
+    "id": "API-HT01-VALIDATION",
+    "name": "Boolean v\u00E0 whitelist PATCH",
+    "status": "PASS",
+    "detail": "Chu\u1ED7i/null/s\u1ED1 b\u1ECB ch\u1EB7n; kh\u00F4ng s\u1EEDa tr\u1EF1c ti\u1EBFp ViewCount; tr\u1EA1ng th\u00E1i gi\u1EEF nguy\u00EAn."
+  },
+  {
+    "id": "API-HT01-PRESERVE",
+    "name": "S\u1EEDa n\u1ED9i dung kh\u00F4ng t\u1EF1 \u0111\u1ED5i tr\u1EA1ng th\u00E1i",
+    "status": "PASS",
+    "detail": "PATCH n\u1ED9i dung gi\u1EEF IsPublished=true."
+  },
+  {
+    "id": "API-HT03-ATOMIC",
+    "name": "M\u1ED9t l\u01B0\u1EE3t v\u00E0 GET ch\u1EC9 \u0111\u1ECDc",
+    "status": "PASS",
+    "detail": "Ba GET kh\u00F4ng t\u0103ng; m\u1ED9t POST t\u0103ng \u0111\u00FAng 1, tr\u1EA3 s\u1ED1 m\u1EDBi; UpdatedAt kh\u00F4ng \u0111\u1ED5i."
+  },
+  {
+    "id": "TC-HT03-02",
+    "name": "Nh\u00E1p kh\u00F4ng t\u1ED3n t\u1EA1i v\u00E0 preview",
+    "status": "PASS",
+    "detail": "POST nh\u00E1p/id thi\u1EBFu 404; ba l\u1EA7n GET preview kh\u00F4ng t\u0103ng l\u01B0\u1EE3t."
+  },
+  {
+    "id": "TC-HT03-03",
+    "name": "20 l\u01B0\u1EE3t \u0111\u1ED3ng th\u1EDDi tr\u00EAn SQL th\u1EADt",
+    "status": "PASS",
+    "detail": "20\u00D7200; V0=8, V1=28; 20 gi\u00E1 tr\u1ECB tr\u1EA3 v\u1EC1 kh\u00E1c nhau."
+  },
+  {
+    "id": "API-HT03-UNTRUSTED",
+    "name": "Kh\u00F4ng nh\u1EADn s\u1ED1 \u0111\u1EBFm do kh\u00E1ch truy\u1EC1n",
+    "status": "PASS",
+    "detail": "Body viewCount=999999 v\u1EABn ch\u1EC9 t\u0103ng \u0111\u00FAng 1."
+  },
+  {
+    "id": "API-HT03-WITHDRAW-RACE",
+    "name": "Ghi l\u01B0\u1EE3t v\u00E0 thu h\u1ED3i tranh ch\u1EA5p",
+    "status": "PASS",
+    "detail": "20 l\u01B0\u1EE3t tranh ch\u1EA5p ch\u1EC9 200/404; sau commit thu h\u1ED3i, POST 404 v\u00E0 s\u1ED1 \u0111\u1EBFm gi\u1EEF nguy\u00EAn."
+  },
+  {
+    "id": "RG-HT02",
+    "name": "H\u1ED3i quy tham s\u1ED1 v\u00E0 k\u00FD t\u1EF1 t\u00ECm ki\u1EBFm",
+    "status": "PASS",
+    "detail": "page/size bi\u00EAn sai 400; \u0026, \u002B, ? t\u00ECm \u0111\u00FAng m\u1ED9t b\u00E0i c\u00F4ng khai."
+  },
+  {
+    "id": "RG-HT01-MEDIA",
+    "name": "Nh\u00E1p gi\u1EEF tham chi\u1EBFu \u1EA3nh DP01",
+    "status": "PASS",
+    "detail": "T\u1EA1o nh\u00E1p c\u00F3 URL FakeCloud v\u1EABn ghi MediaReference trong SQL."
+  }
+]

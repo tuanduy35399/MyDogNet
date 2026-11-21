@@ -1,0 +1,7 @@
+{
+  "database": "MyDogNetMaintenanceAfter_HTAfter_20261121111036407107",
+  "sql": "localhost:14333",
+  "cloud": "FakeCloud",
+  "source": "working tree",
+  "mode": "integration"
+}

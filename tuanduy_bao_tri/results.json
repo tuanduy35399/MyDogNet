@@ -1,0 +1,164 @@
+[
+  {
+    "id": "TC-HC01-01",
+    "name": "Kh\u00E1ch kh\u00F4ng qu\u1EA3n tr\u1ECB",
+    "status": "PASS",
+    "detail": "DELETE/Account 401; b\u00E0i c\u00F2n nguy\u00EAn"
+  },
+  {
+    "id": "TC-HC01-02",
+    "name": "Token h\u1EBFt h\u1EA1n",
+    "status": "PASS",
+    "detail": "401 cho JWT h\u1EBFt h\u1EA1n"
+  },
+  {
+    "id": "TC-HC01-03",
+    "name": "Sai ch\u1EE7 s\u1EDF h\u1EEFu",
+    "status": "PASS",
+    "detail": "Editor kh\u00E1c ch\u1EE7 nh\u1EADn 403 \u1EDF b\u00E0i v\u00E0 h\u1ED3 s\u01A1"
+  },
+  {
+    "id": "TC-HC01-04",
+    "name": "Quy\u1EC1n \u0111\u00FAng",
+    "status": "PASS",
+    "detail": "Ch\u1EE7 b\u00E0i v\u00E0 Admin s\u1EEDa th\u00E0nh c\u00F4ng"
+  },
+  {
+    "id": "TC-HC01-05",
+    "name": "C\u1EA5p t\u00E0i kho\u1EA3n",
+    "status": "PASS",
+    "detail": "Kh\u00E1ch 401; Editor 403; Admin c\u1EA5p Editor th\u00E0nh c\u00F4ng"
+  },
+  {
+    "id": "TC-HC01-06",
+    "name": "JWT b\u1ECB s\u1EEDa",
+    "status": "PASS",
+    "detail": "401 khi s\u1EEDa role gi\u1EEF ch\u1EEF k\u00FD c\u0169"
+  },
+  {
+    "id": "API-HC02-BOUNDARY",
+    "name": "Bi\u00EAn \u1EA3nh v\u00E0 t\u1EC7p gi\u1EA3",
+    "status": "PASS",
+    "detail": "5 MiB nh\u1EADn; \u002B1 byte t\u1EEB ch\u1ED1i; t\u1EC7p gi\u1EA3 400 (d\u1ECBch v\u1EE5 \u1EA3nh gi\u1EA3 l\u1EADp)"
+  },
+  {
+    "id": "TC-HC02-07",
+    "name": "Ch\u1EB7n base64",
+    "status": "PASS",
+    "detail": "POST/PATCH 400; kh\u00F4ng l\u01B0u data URI"
+  },
+  {
+    "id": "API-HC02-STORE",
+    "name": "Upload v\u00E0 l\u01B0u URL",
+    "status": "PASS",
+    "detail": "Content URL v\u00E0 MediaReference \u0111\u01B0\u1EE3c l\u01B0u trong SQL th\u1EADt"
+  },
+  {
+    "id": "TC-HC02-05",
+    "name": "20/21 \u1EA3nh v\u00E0 JSON l\u1EDBn",
+    "status": "PASS",
+    "detail": "20 \u1EA3nh nh\u1EADn, 21 \u1EA3nh 400, JSON \u003E1 MiB 413"
+  },
+  {
+    "id": "API-HC02-OUTAGE",
+    "name": "L\u1ED7i upload",
+    "status": "PASS",
+    "detail": "Cloud timeout gi\u1EA3 l\u1EADp \u2192 502 chung"
+  },
+  {
+    "id": "TC-HC02-08",
+    "name": "Chuy\u1EC3n d\u1EEF li\u1EC7u c\u0169",
+    "status": "PASS",
+    "detail": "Dry-run kh\u00F4ng ghi; chuy\u1EC3n 1 b\u00E0i; ch\u1EA1y l\u1EA1i kh\u00F4ng upload tr\u00F9ng; gi\u1EEF strong/text"
+  },
+  {
+    "id": "TC-DP01-01",
+    "name": "D\u1ECDn Temp 25 gi\u1EDD",
+    "status": "PASS",
+    "detail": "Dry-run gi\u1EEF d\u1EEF li\u1EC7u; ch\u1EA1y th\u1EADt tr\u00EAn fake store \u0111\u00E1nh d\u1EA5u Deleted"
+  },
+  {
+    "id": "TC-DP01-02-03",
+    "name": "Gi\u1EEF \u1EA3nh \u0111ang d\u00F9ng v\u00E0 \u1EA3nh m\u1EDBi",
+    "status": "PASS",
+    "detail": "Gi\u1EEF Temp 23h, Used, \u1EA3nh c\u00F3 tham chi\u1EBFu b\u00E0i"
+  },
+  {
+    "id": "TC-DP01-05",
+    "name": "L\u1ED7i x\u00F3a v\u00E0 retry gi\u1EDBi h\u1EA1n",
+    "status": "PASS",
+    "detail": "DeleteFailed, Attempts=3; kh\u00F4ng \u0111\u00E1nh d\u1EA5u Deleted gi\u1EA3"
+  },
+  {
+    "id": "TC-DP01-04",
+    "name": "Race l\u01B0u v\u00E0 d\u1ECDn",
+    "status": "PASS",
+    "detail": "10 tranh ch\u1EA5p: kh\u00F4ng c\u00F3 tham chi\u1EBFu t\u1EDBi \u1EA3nh Deleted"
+  },
+  {
+    "id": "DP01-PROFILE-DRAFT",
+    "name": "B\u1EA3o v\u1EC7 \u0111\u1EE7 v\u1ECB tr\u00ED \u1EA3nh",
+    "status": "PASS",
+    "detail": "Gi\u1EEF \u1EA3nh content/thumbnail/nh\u00E1p/avatar/background, g\u1ED3m URL c\u0169 ch\u01B0a c\u00F3 MediaReference"
+  },
+  {
+    "id": "DP01-TWO-WORKERS",
+    "name": "Hai worker c\u00F9ng d\u1ECDn",
+    "status": "PASS",
+    "detail": "Hai worker: \u0111\u00FAng m\u1ED9t l\u1EA7n g\u1ECDi x\u00F3a asset"
+  },
+  {
+    "id": "DP01-FOREIGN-ASSET",
+    "name": "Kh\u00F4ng chi\u1EBFm \u1EA3nh ng\u01B0\u1EDDi kh\u00E1c",
+    "status": "PASS",
+    "detail": "Editor B d\u00F9ng \u1EA3nh A nh\u1EADn 403, giao d\u1ECBch rollback"
+  },
+  {
+    "id": "HC02-MIGRATION-RESUME",
+    "name": "Gi\u00E1n \u0111o\u1EA1n v\u00E0 checkpoint",
+    "status": "PASS",
+    "detail": "L\u1ED7i \u1EA3nh th\u1EE9 hai: b\u00E0i c\u0169 c\u00F2n nguy\u00EAn; ch\u1EA1y l\u1EA1i ch\u1EC9 upload \u1EA3nh c\u00F2n thi\u1EBFu"
+  },
+  {
+    "id": "TC-DP03-02",
+    "name": "5 sai kh\u00F3a t\u00E0i kho\u1EA3n",
+    "status": "PASS",
+    "detail": "5 sai: kh\u00F3a l\u01B0u SQL \u003E14 ph\u00FAt; m\u1EADt kh\u1EA9u \u0111\u00FAng v\u1EABn 401"
+  },
+  {
+    "id": "DP03-ACCOUNT-CONCURRENT",
+    "name": "5 sai \u0111\u1ED3ng th\u1EDDi",
+    "status": "PASS",
+    "detail": "5 y\u00EAu c\u1EA7u sai \u0111\u1ED3ng th\u1EDDi v\u1EABn kh\u00F3a t\u00E0i kho\u1EA3n 15 ph\u00FAt trong SQL"
+  },
+  {
+    "id": "DP03-RESTART",
+    "name": "Kh\u00F3a c\u00F2n sau t\u1EA1o l\u1EA1i host",
+    "status": "PASS",
+    "detail": "Host/limiter m\u1EDBi v\u1EABn nh\u1EADn 401 v\u00EC kh\u00F3a t\u00E0i kho\u1EA3n l\u01B0u SQL"
+  },
+  {
+    "id": "TC-DP03-03",
+    "name": "H\u1EBFt kh\u00F3a",
+    "status": "PASS",
+    "detail": "\u0110\u1EB7t LockoutEnd qu\u00E1 kh\u1EE9 trong fixture (m\u00F4 ph\u1ECFng 15 ph\u00FAt); \u0111\u0103ng nh\u1EADp \u0111\u01B0\u1EE3c, \u0111\u1EBFm sai=0"
+  },
+  {
+    "id": "TC-DP03-04-05",
+    "name": "21 l\u1EA7n v\u00E0 gi\u1EA3 IP",
+    "status": "PASS",
+    "detail": "20\u00D7401 r\u1ED3i 429 \u002B Retry-After; \u0111\u1ED5i XFF kh\u00F4ng qua \u0111\u01B0\u1EE3c h\u1EA1n"
+  },
+  {
+    "id": "WB-DP03-CONCURRENT",
+    "name": "H\u1EA1n IP \u0111\u1ED3ng th\u1EDDi",
+    "status": "PASS",
+    "detail": "40 t\u00E1c v\u1EE5: \u0111\u00FAng 20 \u0111\u01B0\u1EE3c nh\u1EADn"
+  },
+  {
+    "id": "RG03",
+    "name": "H\u1ED3 s\u01A1 v\u00E0 b\u00E0i c\u00F4ng khai",
+    "status": "PASS",
+    "detail": "AboutMe/Post 200 sau c\u00E1c ca l\u1ED7i/race"
+  }
+]

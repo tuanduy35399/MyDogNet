@@ -1,0 +1,98 @@
+[
+  {
+    "id": "TC-HT01-01",
+    "name": "T\u1EA1o nh\u00E1p v\u00E0 c\u00F4 l\u1EADp c\u00F4ng khai",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "TC-HT01-02",
+    "name": "Xu\u1EA5t b\u1EA3n b\u1EDFi ch\u1EE7 b\u00E0i",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "TC-HT01-03-ORIGIN",
+    "name": "Thu h\u1ED3i v\u00E0 cache t\u1EA1i API",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "TC-HT01-04",
+    "name": "Tr\u1EA1ng th\u00E1i t\u00E1c gi\u1EA3 v\u00E0 th\u1EDDi gian UTC",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "TC-HT01-05",
+    "name": "Quy\u1EC1n xem tr\u01B0\u1EDBc v\u00E0 \u0111\u1ED5i tr\u1EA1ng th\u00E1i",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "API-HT01-FILTER",
+    "name": "L\u1ECDc tr\u1EA1ng th\u00E1i c\u00F9ng quy\u1EC1n t\u00ECm v\u00E0 ph\u00E2n trang",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "API-HT01-ADMIN",
+    "name": "Admin \u0111\u1ED5i tr\u1EA1ng th\u00E1i b\u00E0i c\u1EE7a Editor",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "API-HT01-VALIDATION",
+    "name": "Boolean v\u00E0 whitelist PATCH",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "API-HT01-PRESERVE",
+    "name": "S\u1EEDa n\u1ED9i dung kh\u00F4ng t\u1EF1 \u0111\u1ED5i tr\u1EA1ng th\u00E1i",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "API-HT03-ATOMIC",
+    "name": "M\u1ED9t l\u01B0\u1EE3t v\u00E0 GET ch\u1EC9 \u0111\u1ECDc",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "TC-HT03-02",
+    "name": "Nh\u00E1p kh\u00F4ng t\u1ED3n t\u1EA1i v\u00E0 preview",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "TC-HT03-03",
+    "name": "20 l\u01B0\u1EE3t \u0111\u1ED3ng th\u1EDDi tr\u00EAn SQL th\u1EADt",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "API-HT03-UNTRUSTED",
+    "name": "Kh\u00F4ng nh\u1EADn s\u1ED1 \u0111\u1EBFm do kh\u00E1ch truy\u1EC1n",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "API-HT03-WITHDRAW-RACE",
+    "name": "Ghi l\u01B0\u1EE3t v\u00E0 thu h\u1ED3i tranh ch\u1EA5p",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "RG-HT02",
+    "name": "H\u1ED3i quy tham s\u1ED1 v\u00E0 k\u00FD t\u1EF1 t\u00ECm ki\u1EBFm",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  },
+  {
+    "id": "RG-HT01-MEDIA",
+    "name": "Nh\u00E1p gi\u1EEF tham chi\u1EBFu \u1EA3nh DP01",
+    "status": "FAIL",
+    "detail": "Multiple constructors accepting all given argument types have been found in type \u0027BackEnd.Controllers.PostController\u0027. There should only be one applicable constructor."
+  }
+]

@@ -1,0 +1,20 @@
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+FAIL TC-HT01-01: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL TC-HT01-02: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL TC-HT01-03-ORIGIN: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL TC-HT01-04: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL TC-HT01-05: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL API-HT01-FILTER: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL API-HT01-ADMIN: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL API-HT01-VALIDATION: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL API-HT01-PRESERVE: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL API-HT03-ATOMIC: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL TC-HT03-02: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL TC-HT03-03: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL API-HT03-UNTRUSTED: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL API-HT03-WITHDRAW-RACE: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+FAIL RG-HT02: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+FAIL RG-HT01-MEDIA: Multiple constructors accepting all given argument types have been found in type 'BackEnd.Controllers.PostController'. There should only be one applicable constructor.

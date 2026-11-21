@@ -1,0 +1,7 @@
+{
+  "database": "MyDogNetMaintenanceAfter_HTBefore_20261121110604991003",
+  "sql": "localhost:14333",
+  "cloud": "FakeCloud",
+  "source": "ca6d164",
+  "mode": "serve"
+}

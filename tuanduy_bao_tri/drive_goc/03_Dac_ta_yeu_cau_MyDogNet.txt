@@ -1,0 +1,254 @@
+ĐẠI HỌC CẦN THƠ
+TRƯỜNG CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
+
+
+ĐẶC TẢ YÊU CẦU BẢO TRÌ
+BẢO TRÌ PHẦN MỀM MYDOGNET
+Phiên bản 0.1   Ngày 12/11/2026
+Nhóm thực hiện  ........................................................
+Giảng viên hướng dẫn  .............................................
+Học kỳ và năm học  ....................................................
+Cần Thơ   Tháng 11 năm 2026
+
+Thông tin tài liệu
+
+Đặc tả mô tả hành vi cần đạt sau bảo trì MyDogNet cho 9 yêu cầu đã chọn. Phần hiện trạng là mốc để đối chiếu, phần điều chỉnh hoặc bổ sung là mục tiêu cho người phát triển và người kiểm thử, chưa phải mô tả sản phẩm đã được sửa.
+Phạm vi đã thống nhất 9 yêu cầu gồm 4 hiệu chỉnh, 3 hoàn thiện và 2 dự phòng. Không có yêu cầu thích ứng trong đợt này. DP02 về lọc HTML đã được rút; giữ mã DP03 để tránh nhầm tham chiếu.
+MỤC LỤC
+1 Giới thiệu	3
+2 Yêu cầu chức năng điều chỉnh và bổ sung	4
+3 Yêu cầu phi chức năng và giới hạn	12
+4 Tổ chức các tính năng và tình huống sử dụng	13
+5 Ma trận yêu cầu và nghiệm thu	13
+
+1 Giới thiệu
+Mục đích và nhóm người đọc
+Người phát triển dùng tài liệu để biết hành vi, giới hạn và ngoại lệ; người kiểm thử dùng tiêu chí nghiệm thu để xây ca; người điều phối dùng phạm vi để kiểm soát thay đổi. Nguồn tham chiếu gồm mã nguồn tại commit 1d0ddc344d3be4c9297831cc1875ea8acb8f5ace và các mẫu môn học trong thư mục dự án.
+Phạm vi sản phẩm
+Phạm vi gồm xác thực/quyền thao tác, ảnh nội dung, trạng thái tải, hiển thị trên điện thoại, bài nháp/xuất bản, tìm kiếm/phân trang, lượt xem, dọn ảnh và hạn đăng nhập. Chọn ba loại bảo trì theo xác nhận của người thực hiện. Nâng nền tảng và yêu cầu lọc HTML đã rút không nằm trong danh mục.
+Thuật ngữ và quy ước trình bày
+
+Nhãn Hiện trạng chỉ hành vi đọc từ mã hoặc quan sát. Điều chỉnh áp dụng cho luồng đang có; Bổ sung áp dụng cho khả năng còn thiếu. Dùng nhãn chữ và mã yêu cầu thay vì chỉ dùng màu để người đọc bản in đen trắng vẫn phân biệt được. Chưa có mã yêu cầu gốc được cung cấp; không tự tạo quan hệ với mã cũ.
+Tài liệu tham khảo
+Đề bài và mẫu môn học Yeucau_Project2.pdf; KehoachBT.pdf; Phantichsutacdong.pdf; DactaYCTD.pdf; ThietkeYCTD.pdf; Tài liệu kiểm thử.docx; Vidu_Dacta_Thietke.pdf.
+Mã nguồn MyDogNet https://github.com/tuanduy35399/MyDogNet; mốc 1d0ddc344d3be4c9297831cc1875ea8acb8f5ace; truy cập 12/11/2026.
+Website được cung cấp https://mydognet.vercel.app/; quan sát chỉ đọc ngày 12/11/2026.
+Sơ đồ tham khảo https://gitdiagram.com/tuanduy35399/mydognet; dùng để định hướng, xác minh lại bằng mã nguồn.
+2 Yêu cầu chức năng điều chỉnh và bổ sung
+
+HC01 Sửa thiếu xác thực và kiểm tra quyền tại API quản trị
+Loại thay đổi Điều chỉnh luồng hiện có; bảo trì hiệu chỉnh.
+Hiện trạng PostController.DeletePost chưa có [Authorize]; PostManager gọi DELETE không kèm token. Đăng ký tài khoản và đọc danh sách tài khoản chưa giới hạn quyền; các thao tác PATCH mới kiểm tra đăng nhập, chưa kiểm tra chủ sở hữu. ProtectedRoute ở giao diện dùng aud để nhận diện quản trị, trong khi audience không phải vai trò.
+Mục đích Ngăn khách chưa đăng nhập và tài khoản không đủ quyền thực hiện thao tác quản trị qua giao diện hoặc gọi API trực tiếp.
+Đối tượng sử dụng Quản trị hệ thống và người biên tập đã được cấp quyền.
+Tiền điều kiện Có tài khoản kiểm thử thuộc các vai trò khác nhau và dữ liệu bài viết có chủ sở hữu xác định.
+Cách xử lý 
+1. Máy chủ xác minh chữ ký, hạn dùng, issuer và audience của token trước thao tác được bảo vệ.
+2. Kiểm tra vai trò Admin hoặc Editor, rồi kiểm tra quyền trên tài nguyên. Admin quản lý toàn hệ thống; Editor chỉ quản lý bài và hồ sơ của mình.
+3. Chặn tạo tài khoản quản trị công khai; chỉ Admin được cấp tài khoản và vai trò. Giao diện gửi token thống nhất và xử lý 401/403.
+Kết quả 401 khi thiếu hoặc sai token; 403 khi đã xác thực nhưng thiếu quyền; dữ liệu không đổi nếu bị từ chối.
+Giao diện liên quan Nút thao tác theo quyền; thông báo phiên hết hạn hoặc không đủ quyền, không coi trang 404 là cơ chế xác thực.
+Ngoại lệ và ghi chú Có thể khóa nhầm quyền của chủ hệ thống nếu gán vai trò cũ sai. Cần xuất danh sách người dùng, xác nhận tài khoản chủ và kiểm thử trước khi áp dụng.
+Tiêu chí nghiệm thu 
+• AC-HC01-01: Khách không thể xóa bài hoặc lấy danh sách tài khoản quản trị.
+• AC-HC01-02: Editor không sửa hoặc xóa bài, hồ sơ của người khác; Admin được phép theo chính sách.
+• AC-HC01-03: Sửa trường aud hoặc tự tạo token không vượt qua kiểm tra chữ ký và quyền phía máy chủ.
+HC02 Sửa ảnh base64 trong bài viết gây quá tải khi đăng bài
+Loại thay đổi Điều chỉnh luồng hiện có; bảo trì hiệu chỉnh.
+Hiện trạng Người vận hành phản ánh khi chèn nhiều ảnh vào nội dung, ảnh được lưu thành base64, máy chủ xử lý rất lâu và trang chủ không tải được. CreatePost và UpdatePost đã có upload ảnh đại diện qua /upload nhưng toolbar Quill chưa có image handler riêng cho ảnh nội dung. API tạo và sửa bài lưu Content mà chưa chặn ảnh data URI.
+Mục đích Ảnh chèn trong bài được tải lên Cloudinary và nội dung chỉ lưu URL, tránh đưa dữ liệu ảnh base64 vào request tạo hoặc cập nhật bài.
+Đối tượng sử dụng Quản trị viên hoặc người biên tập có quyền soạn bài.
+Tiền điều kiện Đã đăng nhập, Cloudinary được cấu hình ở máy chủ và có API upload ảnh hợp lệ.
+Cách xử lý 
+1. Khi chọn ảnh từ toolbar, dán ảnh hoặc kéo thả ảnh, giao diện đưa tệp qua cùng một luồng upload multipart tới /upload.
+2. Máy chủ kiểm tra quyền, định dạng thực, dung lượng và chuyển tệp sang Cloudinary; trả URL HTTPS và định danh ảnh.
+3. Chèn URL vào Quill sau khi upload thành công; không tạo data URI. Chưa upload xong thì không cho gửi bài.
+4. API tạo và sửa bài từ chối data:image và nội dung quá giới hạn bằng lỗi rõ ràng. Có quy trình riêng chuyển ảnh base64 trong dữ liệu cũ.
+Kết quả Bài mới hoặc bài đã chuyển đổi chỉ tham chiếu ảnh bằng URL; upload thất bại không làm mất phần văn bản đang soạn.
+Giao diện liên quan Hiện trạng thái đang tải từng ảnh, lỗi có thể thử lại; giữ vị trí con trỏ và nội dung. Khóa nút lưu trong lúc upload.
+Ngoại lệ và ghi chú Paste hoặc drop có thể bỏ qua image handler. Chuyển dữ liệu cũ có thể tải ảnh trùng hoặc mất tham chiếu khi thất bại. Cần backup, checkpoint, đối chiếu số ảnh và chỉ cập nhật bài sau khi đủ ảnh được chuyển.
+Tiêu chí nghiệm thu 
+• AC-HC02-01: Thử đủ ba đường chọn, dán, kéo thả; nội dung gửi lên và Content lưu trong CSDL không có data:image.
+• AC-HC02-02: Ảnh sai loại, quá 5 MiB hoặc số ảnh vượt 20 được từ chối; body JSON tạo/sửa bài tối đa 1 MiB UTF-8.
+• AC-HC02-03: Trên môi trường riêng, gửi bài 20 ảnh hợp lệ không làm request trang chủ chờ tới khi xử lý xong bài; ghi lại p95 và tài nguyên thực tế.
+HC03 Sửa trạng thái tải không kết thúc khi lấy dữ liệu thất bại
+Loại thay đổi Điều chỉnh luồng hiện có; bảo trì hiệu chỉnh.
+Hiện trạng PostDetail chỉ đổi isLoading sang false khi request thành công; nhánh catch chỉ ghi console. Trang chủ phụ thuộc user nhưng UserContext khi lỗi không cung cấp trạng thái thất bại. Khi mở /post/2147483647 trên website, khung chờ vẫn hiển thị mà không có thông báo không tìm thấy bài.
+Mục đích Mọi yêu cầu lấy dữ liệu đều kết thúc bằng thành công, không tìm thấy, lỗi có thể thử lại hoặc hết thời gian chờ.
+Đối tượng sử dụng Khách đọc website và người biên tập mở bài để sửa.
+Tiền điều kiện Có bài hợp lệ và mã bài không tồn tại; môi trường kiểm thử có thể mô phỏng mất mạng và API lỗi.
+Cách xử lý 
+1. Bắt đầu tải thì xóa lỗi cũ và đặt trạng thái loading.
+2. Thành công thì hiển thị dữ liệu; 404 hiển thị trang không tìm thấy; lỗi mạng hoặc 5xx hiển thị thử lại.
+3. Dùng finally để kết thúc loading, timeout 15 giây và hủy request khi đổi route; không ghi đè dữ liệu bằng phản hồi cũ.
+Kết quả Không có vòng chờ vô hạn; người dùng biết trạng thái và có lối quay lại hoặc thử lại.
+Giao diện liên quan Thông báo Không tìm thấy bài viết, Kết nối thất bại và nút Thử lại hoặc Về trang chủ.
+Ngoại lệ và ghi chú finally của request cũ có thể tắt trạng thái tải của request mới. Dùng định danh request hoặc hủy request và kiểm tra trạng thái hủy.
+Tiêu chí nghiệm thu 
+• AC-HC03-01: 404 không còn khung chờ sau khi nhận phản hồi.
+• AC-HC03-02: Mất mạng hoặc API không phản hồi hiện thông báo trong tối đa 16 giây theo timeout 15 giây.
+• AC-HC03-03: Đổi nhanh giữa hai bài không hiển thị nội dung của bài trước.
+HC04 Sửa ảnh và nội dung bị lệch hoặc tràn ngang trên điện thoại
+Loại thay đổi Điều chỉnh luồng hiện có; bảo trì hiệu chỉnh.
+Hiện trạng Người vận hành phản ánh ảnh bị lệch trên điện thoại. Kiểm tra /post/16 ở viewport 360 × 800 cho thấy document rộng khoảng 587 px. Trong mẫu này, ảnh nội dung rộng khoảng 295 px và vẫn nằm trong khung; các span chứa chuỗi JWT và code không ngắt dòng tạo phần tràn. Ảnh nền header bị cắt lệch; CSS chưa đặt background-position và đang dùng background-attachment: fixed. Đã có max-width:100% cho ảnh chi tiết, nên không thể kết luận thiếu toàn bộ CSS responsive.
+Mục đích Ảnh và nội dung giữ trong khung trên điện thoại, không kéo giãn trang hoặc che các nút điều hướng.
+Đối tượng sử dụng Khách đọc website trên điện thoại, máy tính bảng và máy tính.
+Tiền điều kiện Có bài ảnh ngang/dọc, ảnh kích thước lớn, chuỗi dài và nội dung code để đối chiếu.
+Cách xử lý 
+1. Áp dụng container co giãn với min-width:0 và quy tắc ảnh không vượt chiều rộng nội dung, chiều cao theo tỉ lệ.
+2. Ngắt chuỗi dài trong văn bản; khối code được cuộn ngang trong chính khối đó, không làm tràn toàn trang.
+3. Căn giữa ảnh nền header, dùng background-attachment:scroll trên thiết bị nhỏ; kiểm tra crop của ảnh đại diện và thumbnail.
+4. Đối chiếu các trang ở 320, 360, 390, 768 và 1366 px.
+Kết quả Không có cuộn ngang toàn trang; ảnh nội dung không bị kéo méo, header và các nút không lệch khỏi màn hình.
+Giao diện liên quan Không thay đổi cấu trúc nội dung; hiệu chỉnh khung ảnh, căn ảnh nền, xuống dòng và khối code theo kích thước màn hình.
+Ngoại lệ và ghi chú Ép object-fit:cover lên ảnh bài viết làm mất nội dung ảnh; chỉ dùng cover cho thumbnail hoặc ảnh nền khi có chủ đích. Cần giữ ảnh bài viết theo tỉ lệ tự nhiên.
+Tiêu chí nghiệm thu 
+• AC-HC04-01: documentElement.scrollWidth không vượt clientWidth quá 1 px ở các viewport đã quy định.
+• AC-HC04-02: Ảnh ngang, dọc, nhỏ và ảnh lỗi không làm vỡ khung; hình nội dung giữ đúng tỉ lệ.
+• AC-HC04-03: Định dạng canh trái/giữa/phải và ảnh nằm trong đoạn Quill vẫn hiển thị hợp lệ.
+HT01 Hoàn chỉnh luồng lưu nháp và xuất bản bài viết
+Loại thay đổi Bổ sung hoặc hoàn chỉnh khả năng còn thiếu; bảo trì hoàn thiện.
+Hiện trạng Model và CreatePostDTO đã có IsPublished, nhưng CreatePost mặc định true và chưa có nút chọn lưu nháp. UpdatePostDTO chưa hỗ trợ đổi trạng thái; API danh sách và chi tiết công khai chưa lọc IsPublished.
+Mục đích Người biên tập chủ động lưu nháp, xuất bản hoặc thu hồi bài; khách chỉ xem được bài đã xuất bản.
+Đối tượng sử dụng Admin và Editor có quyền trên bài; khách chỉ đọc bài công khai.
+Tiền điều kiện Quyền truy cập HC01 đã hoạt động; ảnh trong nội dung đã hoàn tất upload theo HC02.
+Cách xử lý 
+1. Tạo bài với lựa chọn Lưu nháp hoặc Xuất bản; sửa bài có thể đổi trạng thái theo quyền.
+2. Danh sách quản trị hiển thị trạng thái và bộ lọc Tất cả, Nháp, Đã xuất bản.
+3. Danh sách và chi tiết công khai chỉ lấy IsPublished=true. Bài nháp trả 404 cho khách; người có quyền dùng API quản trị để xem trước.
+4. Cập nhật UpdatedAt bằng UTC khi sửa nội dung hoặc đổi trạng thái.
+Kết quả Trạng thái được lưu nhất quán và việc thu hồi ngăn truy cập công khai cả qua URL trực tiếp.
+Giao diện liên quan Nút Lưu nháp, Xuất bản, Thu hồi; badge trạng thái; màn hình xem trước chỉ dành cho người có quyền.
+Ngoại lệ và ghi chú Nếu chỉ ẩn bài ở danh sách thì URL chi tiết vẫn lộ. Cache trình duyệt/proxy có thể tiếp tục trả bài sau khi thu hồi; cần kiểm thử URL trực tiếp và response header.
+Tiêu chí nghiệm thu 
+• AC-HT01-01: Bài lưu nháp xuất hiện ở trang quản trị nhưng không có trong danh sách công khai.
+• AC-HT01-02: Xuất bản và thu hồi cập nhật ngay quyền đọc, không bị cache cũ tiếp tục phát bài.
+• AC-HT01-03: Mở lại trang sửa giữ đúng trạng thái, tác giả và thời gian cập nhật.
+HT02 Hoàn thiện tìm kiếm và phân trang bài viết
+Loại thay đổi Điều chỉnh luồng hiện có; bảo trì hoàn thiện.
+Hiện trạng Tìm kiếm hiện chỉ kích hoạt bằng Enter và ghép searchTerm trực tiếp vào URL. Khi không có kết quả, website chỉ để trống danh sách. PostManager quản lý state page và tổng trang nhưng chưa hiển thị thanh phân trang trong phần giao diện hiện tại; API chưa kiểm tra giới hạn pageNumber/pageSize.
+Mục đích Tìm đúng tiêu đề với ký tự đặc biệt, có thông báo rõ khi rỗng và duyệt đủ các trang công khai hoặc quản trị.
+Đối tượng sử dụng Khách đọc và người quản trị bài viết.
+Tiền điều kiện Có hơn một trang dữ liệu, tiêu đề chứa &, +, ?, tiếng Việt và tập kết quả rỗng.
+Cách xử lý 
+1. Nhập từ khóa rồi chọn Tìm hoặc Enter; gửi query bằng params của HTTP client.
+2. Tìm từ khóa mới đặt pageNumber=1, có nút xóa bộ lọc và thông báo không tìm thấy.
+3. Hiển thị phân trang ở cả danh sách công khai và quản trị, khóa nút trước/sau ở biên.
+4. Sau khi xóa bài cuối của trang, lùi về trang hợp lệ và tải lại danh sách.
+Kết quả Danh sách, tổng số bản ghi và số trang phản ánh cùng điều kiện lọc; không bỏ sót bài do thiếu điều hướng.
+Giao diện liên quan Ô Tìm theo tiêu đề, nút Tìm, Xóa lọc, tổng kết quả và các nút Trang trước, Trang sau.
+Ngoại lệ và ghi chú Tổng số trang đổi sau thao tác xóa hoặc lọc; cần xử lý trang rỗng và phản hồi request cũ khi tìm liên tiếp.
+Tiêu chí nghiệm thu 
+• AC-HT02-01: Ký tự & và + được gửi đúng như từ khóa, không bị tách thành tham số mới.
+• AC-HT02-02: Không có dữ liệu hiện thông báo; nút điều hướng không dẫn tới trang âm hoặc vượt biên.
+• AC-HT02-03: API từ chối pageNumber<1 hoặc pageSize ngoài 1–50 bằng 400.
+HT03 Thêm bộ đếm lượt xem cho từng bài
+Loại thay đổi Bổ sung hoặc hoàn chỉnh khả năng còn thiếu; bảo trì hoàn thiện.
+Hiện trạng Model và DTO đã có ViewCount, model có IncreaseView, nhưng luồng đọc chi tiết hiện tại không gọi cập nhật bộ đếm và giao diện chưa hiển thị lượt xem.
+Mục đích Thêm bộ đếm lượt xem cho từng bài: tăng khi đọc bài công khai hợp lệ, cập nhật đồng thời an toàn và hiển thị số lượt xem.
+Đối tượng sử dụng Khách mở bài công khai; quản trị viên xem thống kê trên bài.
+Tiền điều kiện Bài tồn tại và đang xuất bản; luồng đọc đã hoàn tất thành công.
+Cách xử lý 
+1. Giao diện tải bài công khai thành công rồi gọi POST /Post/{id}/view một lần cho lần mở bài đó.
+2. Máy chủ tăng ViewCount bằng phép cập nhật nguyên tử tại CSDL với điều kiện bài đang xuất bản.
+3. Trả số mới cho giao diện và hiển thị cạnh thông tin bài. GET chi tiết không tự tăng để tránh tác động do cache hoặc prefetch.
+4. Rerender không gửi thêm lượt; 404, nháp và xem trước quản trị không tăng.
+Kết quả Bộ đếm tăng đúng theo các sự kiện mở bài hợp lệ và không mất lượt khi có nhiều yêu cầu đồng thời.
+Giao diện liên quan Hiển thị Lượt xem và số đếm dưới tiêu đề, cạnh ngày đăng; thất bại ghi lượt không được làm mất nội dung bài.
+Ngoại lệ và ghi chú React StrictMode, retry và prefetch có thể tăng dư; khóa trong một vòng đời điều hướng và không tự retry POST tăng lượt. Chỉ cam kết lượt mở trang, không cam kết số người xem duy nhất hay chống mọi bot.
+Tiêu chí nghiệm thu 
+• AC-HT03-01: Một lần mở bài hợp lệ tăng 1; rerender hoặc StrictMode không tạo hai lượt cho cùng lần mở.
+• AC-HT03-02: Gửi 20 yêu cầu hợp lệ đồng thời trên môi trường riêng thì kết quả tăng đúng 20.
+• AC-HT03-03: Bài nháp hoặc không tồn tại không tăng; không nhận giá trị đếm do khách tự truyền.
+DP01 Quản lý vòng đời và dọn ảnh Cloudinary không được sử dụng
+Loại thay đổi Bổ sung hoặc hoàn chỉnh khả năng còn thiếu; bảo trì dự phòng.
+Hiện trạng CloudinaryService tải ảnh vào folder temp và chỉ trả SecureUrl; chưa thấy lưu PublicId, đánh dấu ảnh đã dùng hoặc tác vụ dọn trong cây mã nguồn đã rà soát. Việc đăng bài có thể bị hủy sau khi ảnh đã lên Cloudinary.
+Mục đích Ngăn ảnh bỏ dở tích lũy trên Cloudinary mà không xóa nhầm ảnh bài viết, bài nháp hoặc hồ sơ đang dùng.
+Đối tượng sử dụng Tác vụ nền và người quản trị theo dõi vận hành.
+Tiền điều kiện Ảnh upload được cấp định danh do máy chủ quản lý và lưu trạng thái; có tài khoản Cloudinary thử nghiệm.
+Cách xử lý 
+1. Upload tạo bản ghi MediaAsset với PublicId, Url, OwnerId và trạng thái Temp.
+2. Lưu bài hoặc hồ sơ thành công thì cập nhật tham chiếu ảnh trong cùng giao dịch CSDL; ảnh bài nháp cũng được bảo vệ.
+3. Tác vụ chạy mỗi 24 giờ, chọn ảnh Temp không có tham chiếu và quá 24 giờ, giành quyền xử lý bằng trạng thái Deleting.
+4. Kiểm tra tham chiếu lần cuối rồi gọi xóa Cloudinary; thành công đánh dấu Deleted, lỗi giữ để thử lại có giới hạn.
+Kết quả Ảnh bỏ dở được thu hồi; ảnh đang dùng không bị xóa, kể cả khi nhiều thao tác lưu hoặc dọn diễn ra gần nhau.
+Giao diện liên quan Không cần trang quản trị mới trong đợt đầu; báo cáo job gồm số ứng viên, số đã xóa và số lỗi, không đưa khóa dịch vụ vào log.
+Ngoại lệ và ghi chú Xóa Cloudinary là tác động không thể hoàn tác bằng rollback CSDL. Bắt buộc dry-run và duyệt danh sách ứng viên; bản đầu chỉ tự dọn Temp, chưa dọn ảnh từng Published rồi bị gỡ.
+Tiêu chí nghiệm thu 
+• AC-DP01-01: Ảnh Temp quá 24 giờ và không có tham chiếu được xử lý, ảnh mới hơn được giữ.
+• AC-DP01-02: Ảnh nằm trong nội dung, thumbnail, avatar, background hoặc bài nháp không bị dọn.
+• AC-DP01-03: Lỗi Cloudinary không đánh dấu Deleted giả; chạy lại không xóa hai lần hoặc mất ảnh đã sử dụng.
+DP03 Phòng ngừa dò mật khẩu tại API đăng nhập quản trị
+Loại thay đổi Bổ sung hoặc hoàn chỉnh khả năng còn thiếu; bảo trì dự phòng.
+Hiện trạng Route đăng nhập nằm trong bundle giao diện và mã nguồn công khai. PasswordSignInAsync đang truyền lockoutOnFailure=false; chưa thấy cơ chế giới hạn tần suất theo IP trong cấu hình đã đọc. Biết URL chưa đồng nghĩa vượt qua xác thực, nhưng cho phép kẻ tấn công tiếp cận điểm thử mật khẩu.
+Mục đích Giảm khả năng thử mật khẩu tự động và phát hiện đăng nhập bất thường mà vẫn cho người dùng hợp lệ đăng nhập.
+Đối tượng sử dụng Người quản trị đăng nhập và bộ phận vận hành theo dõi sự kiện.
+Tiền điều kiện Có tài khoản thử, CSDL Identity và đường đi proxy được xác minh trên môi trường riêng.
+Cách xử lý 
+1. Giới hạn POST /Account/signIn tại API theo IP tin cậy: 20 yêu cầu mỗi cửa sổ trượt 60 giây.
+2. Bật đếm lần sai của Identity; 5 lần sai liên tiếp khóa tài khoản 15 phút, bộ đếm khóa lưu trong CSDL.
+3. Dùng phản hồi 401 chung cho tài khoản không tồn tại, sai mật khẩu hoặc đang khóa; vượt hạn IP trả 429 với Retry-After.
+4. Ghi sự kiện thất bại, khóa và vượt ngưỡng; tuyệt đối không ghi mật khẩu hoặc JWT.
+Kết quả Gọi trực tiếp API cũng bị kiểm soát; đổi IP không bỏ qua khóa tài khoản, và đổi tên route không được coi là lớp bảo vệ chính.
+Giao diện liên quan Hiển thị thông báo chung khi đăng nhập thất bại, thông báo chờ khi 429; không tiết lộ tên tài khoản đúng/sai hoặc chi tiết khóa.
+Ngoại lệ và ghi chú Kẻ tấn công có thể cố tình gây khóa tài khoản; dùng khóa có thời hạn thay vì khóa vĩnh viễn. Nhiều người chung NAT có thể chạm hạn IP; cần theo dõi để điều chỉnh ngưỡng, không chặn toàn site.
+Tiêu chí nghiệm thu 
+• AC-DP03-01: Yêu cầu thứ 21 trong cửa sổ 60 giây của cùng IP bị từ chối bằng 429.
+• AC-DP03-02: Năm lần sai khóa đúng tài khoản 15 phút; tài khoản khác dưới hạn IP vẫn hoạt động.
+• AC-DP03-03: Không giả mạo được IP qua header tùy ý; đăng nhập đúng sau hết khóa thành công và đặt lại bộ đếm sai.
+3 Yêu cầu phi chức năng và giới hạn
+
+Các ngưỡng dung lượng, thời gian và tần suất là cấu hình đề xuất ban đầu cho môi trường thử, không phải kết quả đo. Nếu chưa đạt, ghi kết quả và điều chỉnh có lý do trong hồ sơ thay đổi; không sửa số liệu để đánh dấu đạt.
+4 Tổ chức các tính năng và tình huống sử dụng
+
+Ở tình huống soạn bài, các ngoại lệ bắt buộc gồm hết phiên, upload lỗi, lưu thất bại sau upload và hủy soạn. Ở tình huống đọc, phải kiểm tra bài vừa bị thu hồi trước khi ghi lượt. Ở tình huống dọn, phải chặn race giữa thao tác gắn ảnh và tác vụ xóa.
+5 Ma trận yêu cầu và nghiệm thu
+
+Phiên bản | Ngày | Nội dung | Người cập nhật
+0.1 | 12/11/2026 | Thiết lập phạm vi và nội dung bảo trì MyDogNet | ................
+Thuật ngữ | Giải thích
+API | Giao diện giao tiếp giữa trình duyệt và máy chủ.
+JWT | Token có chữ ký dùng trong xác thực; aud là đối tượng nhận token, không phải vai trò.
+DTO | Đối tượng giới hạn dữ liệu nhận vào hoặc trả ra API.
+Base64 và data URI | Cách nhúng dữ liệu ảnh trực tiếp vào chuỗi HTML, thường bắt đầu bằng data:image.
+Cloudinary | Dịch vụ lưu trữ và phân phối ảnh đang được dự án sử dụng.
+PublicId | Định danh ảnh do Cloudinary trả về để quản lý tài nguyên.
+Migration | Thay đổi có phiên bản đối với cấu trúc CSDL.
+Responsive | Bố cục thích nghi theo kích thước màn hình.
+P0 và P1 và P2 | P0 xử lý trước; P1 quan trọng; P2 cải tiến sau khi luồng chính ổn định.
+Chưa thực hiện | Ca kiểm thử hoặc hoạt động chưa có kết quả thực nghiệm; không tương đương đạt.
+Mã | Loại | Yêu cầu | Ưu tiên
+HC01 | Hiệu chỉnh | Sửa thiếu xác thực và kiểm tra quyền tại API quản trị | P0
+HC02 | Hiệu chỉnh | Sửa ảnh base64 trong bài viết gây quá tải khi đăng bài | P0
+HC03 | Hiệu chỉnh | Sửa trạng thái tải không kết thúc khi lấy dữ liệu thất bại | P1
+HC04 | Hiệu chỉnh | Sửa ảnh và nội dung bị lệch hoặc tràn ngang trên điện thoại | P1
+HT01 | Hoàn thiện | Hoàn chỉnh luồng lưu nháp và xuất bản bài viết | P1
+HT02 | Hoàn thiện | Hoàn thiện tìm kiếm và phân trang bài viết | P2
+HT03 | Hoàn thiện | Thêm bộ đếm lượt xem cho từng bài | P2
+DP01 | Dự phòng | Quản lý vòng đời và dọn ảnh Cloudinary không được sử dụng | P1
+DP03 | Dự phòng | Phòng ngừa dò mật khẩu tại API đăng nhập quản trị | P1
+Mã | Yêu cầu | Cách kiểm chứng
+NFR01 | Từ chối hành vi quản trị không đúng quyền tại API, không phụ thuộc việc ẩn route. | Ma trận quyền Admin/Editor/khách và token giả hoặc hết hạn.
+NFR02 | Ảnh tối đa 5 MiB/tệp, 20 ảnh/bài; JSON tạo/sửa bài tối đa 1 MiB UTF-8. | Kiểm tra ngưỡng trước và sau, xác nhận API có giới hạn độc lập với frontend.
+NFR03 | Tải dữ liệu có timeout 15 giây; lỗi hiện trạng thái trong tối đa 16 giây. | Mô phỏng request không phản hồi và chuyển route khi đang tải.
+NFR04 | Không tràn ngang toàn trang quá 1 px ở 320/360/390/768/1366 px. | Đo scrollWidth/clientWidth, ảnh và video hoặc code trong container riêng.
+NFR05 | Không mất cập nhật lượt xem khi 20 yêu cầu hợp lệ chạy đồng thời. | Đối chiếu ViewCount trước/sau trên CSDL thử.
+NFR06 | Không ghi mật khẩu, JWT hoặc khóa Cloudinary vào phản hồi/log kiểm thử. | Rà nội dung phản hồi lỗi và nhật ký có che dữ liệu nhạy cảm.
+NFR07 | Đọc trang chủ vẫn phục vụ khi đang lưu bài nhiều ảnh hợp lệ trên môi trường riêng. | Sau làm nóng: p95 API danh sách ≤ 3 giây và ≤ 2 lần baseline; ghi CPU/RAM, không có 5xx do cạn tài nguyên.
+NFR08 | Chuyển ảnh cũ và thay schema có backup, nhật ký và khả năng tiếp tục. | Thử dừng job giữa chừng, chạy lại và đối chiếu số ảnh, nội dung và tham chiếu.
+Tình huống | Tác nhân | Yêu cầu liên quan | Đầu ra
+Đăng nhập và quản trị đúng quyền | Admin hoặc Editor | HC01, DP03 | Phiên hợp lệ hoặc từ chối có kiểm soát.
+Soạn bài có ảnh | Admin hoặc Editor | HC02, DP01, HT01 | Ảnh URL và bài nháp/xuất bản gắn đúng chủ.
+Đọc trên điện thoại | Khách | HC03, HC04, HT03 | Nội dung vừa khung, lỗi rõ, lượt xem được ghi.
+Tìm và duyệt bài | Khách hoặc quản trị | HT01, HT02 | Kết quả đúng phạm vi quyền, đủ điều hướng.
+Dọn ảnh bỏ dở | Tác vụ nền | DP01 | Thu hồi ảnh Temp an toàn, có thống kê lỗi.
+Yêu cầu | Thiết kế | Nhóm ca kiểm thử | Điều kiện hoàn tất
+HC01 | TK-HC01 | TC-HC01 | Đạt AC-HC01 và kiểm thử hồi quy liên quan
+HC02 | TK-HC02 | TC-HC02 | Đạt AC-HC02 và kiểm thử hồi quy liên quan
+HC03 | TK-HC03 | TC-HC03 | Đạt AC-HC03 và kiểm thử hồi quy liên quan
+HC04 | TK-HC04 | TC-HC04 | Đạt AC-HC04 và kiểm thử hồi quy liên quan
+HT01 | TK-HT01 | TC-HT01 | Đạt AC-HT01 và kiểm thử hồi quy liên quan
+HT02 | TK-HT02 | TC-HT02 | Đạt AC-HT02 và kiểm thử hồi quy liên quan
+HT03 | TK-HT03 | TC-HT03 | Đạt AC-HT03 và kiểm thử hồi quy liên quan
+DP01 | TK-DP01 | TC-DP01 | Đạt AC-DP01 và kiểm thử hồi quy liên quan
+DP03 | TK-DP03 | TC-DP03 | Đạt AC-DP03 và kiểm thử hồi quy liên quan

@@ -1,0 +1,71 @@
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/Controllers/AboutMeController.cs(11,7): warning CS0105: The using directive for 'Microsoft.AspNetCore.Identity' appeared previously in this namespace [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/PostDTOs/UpdatePostDTO.cs(5,23): warning CS8618: Non-nullable property 'Title' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/PostDTOs/UpdatePostDTO.cs(6,23): warning CS8618: Non-nullable property 'Content' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/PostDTOs/ReadPostDTO.cs(9,23): warning CS8618: Non-nullable property 'Title' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/PostDTOs/ReadPostDTO.cs(10,23): warning CS8618: Non-nullable property 'Content' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/PostDTOs/ReadPostDTO.cs(16,23): warning CS8618: Non-nullable property 'AuthorName' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/PostDTOs/GetAllPost.cs(9,23): warning CS8618: Non-nullable property 'Title' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/PostDTOs/GetAllPost.cs(15,23): warning CS8618: Non-nullable property 'AuthorName' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/PostDTOs/CreatePostDTO.cs(8,23): warning CS8618: Non-nullable property 'Title' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/PostDTOs/CreatePostDTO.cs(10,23): warning CS8618: Non-nullable property 'Content' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/PagedResponse.cs(5,24): warning CS8618: Non-nullable property 'Data' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/AdminDTOs/UpdateAdminDTO.cs(5,23): warning CS8618: Non-nullable property 'UserName' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/Models/Post.cs(13,23): warning CS8618: Non-nullable property 'Title' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/Models/Post.cs(15,23): warning CS8618: Non-nullable property 'Content' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/Models/Post.cs(26,23): warning CS8618: Non-nullable property 'AuthorId' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/AdminDTOs/ReadAdminDTO.cs(5,23): warning CS8618: Non-nullable property 'UserName' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/AdminDTOs/AllAccounts.cs(8,24): warning CS8618: Non-nullable property 'Id' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/DTOs/AdminDTOs/AllAccounts.cs(9,23): warning CS8618: Non-nullable property 'UserName' must contain a non-null value when exiting constructor. Consider declaring the property as nullable. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/Controllers/PostController.cs(104,26): warning CS8601: Possible null reference assignment. [/home/duypy/Documents/Project 2/source code/MyDogNet/BackEnd/BackEnd.csproj]
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS TC-HT01-01: Nháp mặc định false; quản trị thấy; danh sách công khai không có; chi tiết 404.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS TC-HT01-02: PATCH true thành công; khách đọc được danh sách và chi tiết.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS TC-HT01-03-ORIGIN: GET no-store; sau thu hồi GET có điều kiện trả 404, danh sách bỏ bài. Proxy kiểm tra riêng.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS TC-HT01-04: Đọc lại đúng Id, true, editorA, CreatedAt giữ nguyên; UpdatedAt UTC tăng.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS TC-HT01-05: Khách 401; Editor khác chủ 403; bài nháp không đổi.
+PASS API-HT01-FILTER: all/draft/published, tổng số và tìm kiếm khớp; không lộ bài B; trạng thái sai 400.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS API-HT01-ADMIN: Admin xuất bản/thu hồi bài của Editor B thành công.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS API-HT01-VALIDATION: Chuỗi/null/số bị chặn; không sửa trực tiếp ViewCount; trạng thái giữ nguyên.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS API-HT01-PRESERVE: PATCH nội dung giữ IsPublished=true.
+PASS API-HT03-ATOMIC: Ba GET không tăng; một POST tăng đúng 1, trả số mới; UpdatedAt không đổi.
+PASS TC-HT03-02: POST nháp/id thiếu 404; ba lần GET preview không tăng lượt.
+PASS TC-HT03-03: 20×200; V0=8, V1=28; 20 giá trị trả về khác nhau.
+PASS API-HT03-UNTRUSTED: Body viewCount=999999 vẫn chỉ tăng đúng 1.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS API-HT03-WITHDRAW-RACE: 20 lượt tranh chấp chỉ 200/404; sau commit thu hồi, POST 404 và số đếm giữ nguyên.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS RG-HT02: page/size biên sai 400; &, +, ? tìm đúng một bài công khai.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+[40m[1m[33mwarn[39m[22m[49m: Microsoft.AspNetCore.Mvc.Filters.RequestSizeLimitFilter[1]
+      A request body size limit could not be applied. This server does not support the IHttpRequestBodySizeFeature.
+PASS RG-HT01-MEDIA: Tạo nháp có URL FakeCloud vẫn ghi MediaReference trong SQL.

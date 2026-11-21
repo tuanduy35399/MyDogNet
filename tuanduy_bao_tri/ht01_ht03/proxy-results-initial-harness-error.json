@@ -1,0 +1,21 @@
+[
+  {
+    "id": "PROXY-HT01-PUBLIC",
+    "status": "FAIL",
+    "http": 200,
+    "cacheControl": null
+  },
+  {
+    "id": "PROXY-HT01-WITHDRAW",
+    "status": "FAIL",
+    "http": 404,
+    "cacheControl": null
+  },
+  {
+    "id": "PROXY-HT01-LIST",
+    "status": "FAIL",
+    "http": 200,
+    "total": 0,
+    "cacheControl": null
+  }
+]

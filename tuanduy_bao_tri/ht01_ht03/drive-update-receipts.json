@@ -1,0 +1,146 @@
+[
+  {
+    "id": "1yvZ_HwqFjUKD7FO-VGuPRx80-95DgRdc",
+    "name": "00_Huong_dan_bat_dau_MyDogNet.docx",
+    "success": true,
+    "accepted_input": "file_uri",
+    "title": "00_Huong_dan_bat_dau_MyDogNet.docx",
+    "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "url": "https://docs.google.com/document/d/1yvZ_HwqFjUKD7FO-VGuPRx80-95DgRdc/edit?usp=drivesdk&ouid=117870117085908575830&rtpof=true&sd=true",
+    "parent_ids": [
+      "1N3ONPEoH6a6mRVPIFL8hQlqFb7AXcKD3"
+    ],
+    "modified_time": "2026-11-21T11:33:08.630Z",
+    "size": "444334",
+    "readback": {
+      "id": "1yvZ_HwqFjUKD7FO-VGuPRx80-95DgRdc",
+      "name": "00_Huong_dan_bat_dau_MyDogNet.docx",
+      "isError": false,
+      "version": true,
+      "date": true,
+      "appendix": true,
+      "testCounts": true,
+      "contentLength": 27821
+    }
+  },
+  {
+    "id": "1v4VBWzmxwJB9HkTVma1huC5xCw_UQCw0",
+    "name": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+    "success": true,
+    "accepted_input": "file_uri",
+    "title": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+    "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "url": "https://docs.google.com/document/d/1v4VBWzmxwJB9HkTVma1huC5xCw_UQCw0/edit?usp=drivesdk&ouid=117870117085908575830&rtpof=true&sd=true",
+    "parent_ids": [
+      "1N3ONPEoH6a6mRVPIFL8hQlqFb7AXcKD3"
+    ],
+    "modified_time": "2026-11-21T11:33:12.221Z",
+    "size": "168679",
+    "readback": {
+      "id": "1v4VBWzmxwJB9HkTVma1huC5xCw_UQCw0",
+      "name": "01_Ke_hoach_bao_tri_MyDogNet.docx",
+      "isError": false,
+      "version": true,
+      "date": true,
+      "appendix": true,
+      "testCounts": true,
+      "contentLength": 30746
+    }
+  },
+  {
+    "id": "1fed-0WBDODdazamuCGHm52qmkvfGf15b",
+    "name": "02_Phan_tich_tac_dong_MyDogNet.docx",
+    "success": true,
+    "accepted_input": "file_uri",
+    "title": "02_Phan_tich_tac_dong_MyDogNet.docx",
+    "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "url": "https://docs.google.com/document/d/1fed-0WBDODdazamuCGHm52qmkvfGf15b/edit?usp=drivesdk&ouid=117870117085908575830&rtpof=true&sd=true",
+    "parent_ids": [
+      "1N3ONPEoH6a6mRVPIFL8hQlqFb7AXcKD3"
+    ],
+    "modified_time": "2026-11-21T11:33:15.972Z",
+    "size": "357975",
+    "readback": {
+      "id": "1fed-0WBDODdazamuCGHm52qmkvfGf15b",
+      "name": "02_Phan_tich_tac_dong_MyDogNet.docx",
+      "isError": false,
+      "version": true,
+      "date": true,
+      "appendix": true,
+      "testCounts": true,
+      "contentLength": 81132
+    }
+  },
+  {
+    "id": "1Qc9LwB7IpBGVxVgp1SnfxlFN5Tc7NDVu",
+    "name": "03_Dac_ta_yeu_cau_MyDogNet.docx",
+    "success": true,
+    "accepted_input": "file_uri",
+    "title": "03_Dac_ta_yeu_cau_MyDogNet.docx",
+    "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "url": "https://docs.google.com/document/d/1Qc9LwB7IpBGVxVgp1SnfxlFN5Tc7NDVu/edit?usp=drivesdk&ouid=117870117085908575830&rtpof=true&sd=true",
+    "parent_ids": [
+      "1N3ONPEoH6a6mRVPIFL8hQlqFb7AXcKD3"
+    ],
+    "modified_time": "2026-11-21T11:33:20.073Z",
+    "size": "359225",
+    "readback": {
+      "id": "1Qc9LwB7IpBGVxVgp1SnfxlFN5Tc7NDVu",
+      "name": "03_Dac_ta_yeu_cau_MyDogNet.docx",
+      "isError": false,
+      "version": true,
+      "date": true,
+      "appendix": true,
+      "testCounts": true,
+      "contentLength": 61928
+    }
+  },
+  {
+    "id": "1OFRIrmOaccojQhpQwcqeFbRQwDrP3KU3",
+    "name": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+    "success": true,
+    "accepted_input": "file_uri",
+    "title": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+    "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "url": "https://docs.google.com/document/d/1OFRIrmOaccojQhpQwcqeFbRQwDrP3KU3/edit?usp=drivesdk&ouid=117870117085908575830&rtpof=true&sd=true",
+    "parent_ids": [
+      "1N3ONPEoH6a6mRVPIFL8hQlqFb7AXcKD3"
+    ],
+    "modified_time": "2026-11-21T11:33:23.774Z",
+    "size": "572113",
+    "readback": {
+      "id": "1OFRIrmOaccojQhpQwcqeFbRQwDrP3KU3",
+      "name": "04_Thiet_ke_bao_tri_MyDogNet.docx",
+      "isError": false,
+      "version": true,
+      "date": true,
+      "appendix": true,
+      "testCounts": true,
+      "contentLength": 66024
+    }
+  },
+  {
+    "id": "1cOVEiLkLhx6qkbVe7ZtKE9eCzgqQnR-C",
+    "name": "05_Tai_lieu_kiem_thu_MyDogNet.docx",
+    "success": true,
+    "accepted_input": "file_uri",
+    "title": "05_Tai_lieu_kiem_thu_MyDogNet.docx",
+    "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "url": "https://docs.google.com/document/d/1cOVEiLkLhx6qkbVe7ZtKE9eCzgqQnR-C/edit?usp=drivesdk&ouid=117870117085908575830&rtpof=true&sd=true",
+    "parent_ids": [
+      "1N3ONPEoH6a6mRVPIFL8hQlqFb7AXcKD3"
+    ],
+    "modified_time": "2026-11-21T11:33:27.249Z",
+    "size": "569063",
+    "readback": {
+      "id": "1cOVEiLkLhx6qkbVe7ZtKE9eCzgqQnR-C",
+      "name": "05_Tai_lieu_kiem_thu_MyDogNet.docx",
+      "isError": false,
+      "version": true,
+      "date": true,
+      "appendix": true,
+      "testCounts": true,
+      "contentLength": 69287
+    }
+  }
+]

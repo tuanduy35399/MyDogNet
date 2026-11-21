@@ -1,0 +1,22 @@
+[
+  {
+    "id": "BASE-HT01-PATCH",
+    "actual": "400",
+    "observation": "PATCH tr\u1EA1ng th\u00E1i tr\u01B0\u1EDBc b\u1EA3o tr\u00EC"
+  },
+  {
+    "id": "BASE-HT01-LIST",
+    "actual": "False",
+    "observation": "Danh s\u00E1ch qu\u1EA3n tr\u1ECB c\u00F3 isPublished"
+  },
+  {
+    "id": "BASE-HT03-VIEW",
+    "actual": "404",
+    "observation": "Endpoint ghi l\u01B0\u1EE3t xem tr\u01B0\u1EDBc b\u1EA3o tr\u00EC"
+  },
+  {
+    "id": "BASE-HT01-CACHE",
+    "actual": "absent",
+    "observation": "Cache-Control b\u00E0i c\u00F4ng khai"
+  }
+]

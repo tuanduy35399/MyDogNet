@@ -1,0 +1,288 @@
+ĐẠI HỌC CẦN THƠ
+TRƯỜNG CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
+
+
+PHÂN TÍCH TÁC ĐỘNG CỦA THAY ĐỔI
+BẢO TRÌ PHẦN MỀM MYDOGNET
+Phiên bản 0.2   Ngày 17/11/2026
+Nhóm thực hiện  ........................................................
+Giảng viên hướng dẫn  .............................................
+Học kỳ và năm học  ....................................................
+Cần Thơ   Tháng 11 năm 2026
+
+Thông tin tài liệu
+Phiên bản | Ngày | Nội dung | Người cập nhật
+0.1 | 12/11/2026 | Thiết lập phạm vi và nội dung bảo trì MyDogNet | ................
+0.2 | 17/11/2026 | Cập nhật thực hiện HC01 HC02 DP01 DP03 và bằng chứng kiểm thử | ................
+
+Tài liệu phân tích 9 yêu cầu bảo trì MyDogNet, chỉ ra bằng chứng, thành phần bị ảnh hưởng và các phương án xử lý. Nhóm dùng phần phân tích và khuyến nghị để quyết định trước khi thực hiện; các ô phê duyệt dành cho người có trách nhiệm xác nhận.
+Phạm vi đã thống nhất 9 yêu cầu gồm 4 hiệu chỉnh, 3 hoàn thiện và 2 dự phòng. Không có yêu cầu thích ứng trong đợt này. DP02 về lọc HTML đã được rút; giữ mã DP03 để tránh nhầm tham chiếu.
+MỤC LỤC
+1 Giới thiệu	3
+2 Danh mục tiếp nhận và nguyên tắc đánh giá	3
+3 Hồ sơ phân tích từng yêu cầu	4
+4 Tổng hợp tác động và trình tự	17
+Cập nhật thực hiện ngày 17 tháng 11 năm 2026	18
+
+1 Giới thiệu
+Mục đích là xác định phạm vi và chi phí thay đổi trước khi chỉnh mã hoặc dữ liệu. Đối tượng đọc gồm người điều phối, người phát triển, người kiểm thử và người phê duyệt. Mốc khảo sát là commit 1d0ddc344d3be4c9297831cc1875ea8acb8f5ace và quan sát website ngày 12/11/2026. Không có tài liệu đặc tả gốc đã được phê duyệt trong bộ nguồn được cung cấp; phần hiện trạng được tái dựng từ mã, không tự gán mã yêu cầu cũ.
+Thuật ngữ và quy ước
+HC là hiệu chỉnh, HT là hoàn thiện, DP là dự phòng. P0 ưu tiên trước P1/P2. Giờ ước lượng là giờ người thực hiện có kỹ năng phù hợp, không phải thời gian đã bỏ ra. Mã thiết kế TK và ca kiểm thử TC được gắn với cùng mã yêu cầu.
+Tài liệu tham khảo
+Đề bài và mẫu môn học Yeucau_Project2.pdf; KehoachBT.pdf; Phantichsutacdong.pdf; DactaYCTD.pdf; ThietkeYCTD.pdf; Tài liệu kiểm thử.docx; Vidu_Dacta_Thietke.pdf.
+Mã nguồn MyDogNet https://github.com/tuanduy35399/MyDogNet; mốc 1d0ddc344d3be4c9297831cc1875ea8acb8f5ace; truy cập 12/11/2026.
+Website được cung cấp https://mydognet.vercel.app/; quan sát chỉ đọc ngày 12/11/2026.
+Sơ đồ tham khảo https://gitdiagram.com/tuanduy35399/mydognet; dùng để định hướng, xác minh lại bằng mã nguồn.
+2 Danh mục tiếp nhận và nguyên tắc đánh giá
+Mã | Loại | Yêu cầu | Ưu tiên
+HC01 | Hiệu chỉnh | Sửa thiếu xác thực và kiểm tra quyền tại API quản trị | P0
+HC02 | Hiệu chỉnh | Sửa ảnh base64 trong bài viết gây quá tải khi đăng bài | P0
+HC03 | Hiệu chỉnh | Sửa trạng thái tải không kết thúc khi lấy dữ liệu thất bại | P1
+HC04 | Hiệu chỉnh | Sửa ảnh và nội dung bị lệch hoặc tràn ngang trên điện thoại | P1
+HT01 | Hoàn thiện | Hoàn chỉnh luồng lưu nháp và xuất bản bài viết | P1
+HT02 | Hoàn thiện | Hoàn thiện tìm kiếm và phân trang bài viết | P2
+HT03 | Hoàn thiện | Thêm bộ đếm lượt xem cho từng bài | P2
+DP01 | Dự phòng | Quản lý vòng đời và dọn ảnh Cloudinary không được sử dụng | P1
+DP03 | Dự phòng | Phòng ngừa dò mật khẩu tại API đăng nhập quản trị | P1
+
+Mỗi hồ sơ dưới đây giữ đủ bốn bước của mẫu: đề xuất, tiếp nhận, phân tích và phê duyệt. Người đề xuất/người tiếp nhận/người phân tích: ................; ngày thực hiện từng vai trò: ................; địa chỉ hoặc email liên hệ: ................ . Thông tin này được điền theo thực tế, không suy ra từ tài khoản GitHub.
+Với mọi yêu cầu, mã yêu cầu gốc ghi Chưa có mã gốc được cung cấp. Phiên bản mới dùng mã HC/HT/DP hiện tại, không coi đó là mã đã tồn tại trong đặc tả cũ. Các phần bị ảnh hưởng trong tài liệu gồm mục yêu cầu tương ứng ở đặc tả, mục TK tương ứng ở thiết kế, nhóm TC tương ứng ở kiểm thử và gói việc WP03 trong kế hoạch.
+3 Hồ sơ phân tích từng yêu cầu
+HC01 Sửa thiếu xác thực và kiểm tra quyền tại API quản trị
+Phiếu đề xuất
+Hiện trạng PostController.DeletePost chưa có [Authorize]; PostManager gọi DELETE không kèm token. Đăng ký tài khoản và đọc danh sách tài khoản chưa giới hạn quyền; các thao tác PATCH mới kiểm tra đăng nhập, chưa kiểm tra chủ sở hữu. ProtectedRoute ở giao diện dùng aud để nhận diện quản trị, trong khi audience không phải vai trò.
+Căn cứ Đọc mã nguồn; chưa gọi thử thao tác thay đổi dữ liệu trên website thật.
+Thay đổi đề nghị Ngăn khách chưa đăng nhập và tài khoản không đủ quyền thực hiện thao tác quản trị qua giao diện hoặc gọi API trực tiếp.
+Phiếu tiếp nhận
+Phân loại và ưu tiên Hiệu chỉnh; P0. Mã gốc: chưa được cung cấp. Người và ngày tiếp nhận: ................ .
+Phân tích tác động
+Chương trình AccountController, PostController, AccountRepository, cấu hình Identity và JWT, API client, ProtectedRoute, trang quản lý tài khoản và bài viết.
+Dữ liệu Dùng bảng vai trò và quan hệ người dùng của Identity đang có. Bổ sung vai trò bằng migration hoặc script cấp quyền được kiểm soát; không tự động coi mọi tài khoản cũ là Admin.
+Tài liệu Đặc tả mục HC01; thiết kế TK-HC01; kiểm thử nhóm TC-HC01; kế hoạch và hướng dẫn sử dụng liên quan.
+Phương án A được khuyến nghị Áp dụng policy RequireRole ở API và kiểm tra AuthorId hoặc id hồ sơ. Token mang role claim do máy chủ lấy từ Identity. Ẩn nút chỉ giúp giao diện; quyết định cuối cùng luôn ở API.
+Nguồn lực phương án A Một người có kỹ năng React, ASP.NET Core, Identity hoặc EF Core theo thành phần; 12–18 giờ người. Công cụ: baseline React 19/Vite 8, .NET 6, SQL Server thử; Cloudinary thử với HC02/DP01.
+Phương án B Chỉ thêm [Authorize] cho các API ghi. Cách này ít thay đổi nhưng mọi tài khoản đăng nhập vẫn có thể thao tác ngoài quyền sở hữu.
+Nguồn lực phương án B Một người biết các thành phần hiện có; 4–8 giờ người; dùng cùng môi trường thử. Khoảng ước lượng có thể tăng khi gặp dữ liệu cũ hoặc thiếu cấu hình.
+Chi phí hai phương án Chi phí nhân công = giờ thực tế × đơn giá được chấp nhận; cộng chi phí dịch vụ phát sinh theo tài khoản thật. Chưa có đơn giá, quota và hóa đơn nên chưa xác định số tiền. Phương án ít giờ hơn không được chấp nhận nếu không đạt tiêu chí yêu cầu.
+Lý do chọn A Đáp ứng hành vi mong muốn và các ngoại lệ đã nêu, xử lý tại đúng tầng chịu trách nhiệm. Phương án B có giới hạn hoặc rủi ro như mô tả, dùng để so sánh chứ không phải một hoạt động đã thực hiện.
+Rủi ro và kiểm soát Có thể khóa nhầm quyền của chủ hệ thống nếu gán vai trò cũ sai. Cần xuất danh sách người dùng, xác nhận tài khoản chủ và kiểm thử trước khi áp dụng.
+Phụ thuộc Làm trước HT01, DP01 và DP03 để thống nhất người sở hữu và quyền quản trị.
+Tiêu chí xác nhận Khách không thể xóa bài hoặc lấy danh sách tài khoản quản trị.
+Phiếu phê duyệt
+Người hoặc nhóm phê duyệt: ................; ngày: ................ . Quyết định: □ Chấp nhận   □ Từ chối   □ Cần đánh giá thêm. Lý do và điều kiện kèm theo: ................................................................ . Chữ ký hoặc xác nhận: ................ .
+Định vị mã nguồn BackEnd/Controllers/PostController.cs và các thành phần nêu trên; đối chiếu commit đã ghi trong phần giới thiệu.
+HC02 Sửa ảnh base64 trong bài viết gây quá tải khi đăng bài
+Phiếu đề xuất
+Hiện trạng Người vận hành phản ánh khi chèn nhiều ảnh vào nội dung, ảnh được lưu thành base64, máy chủ xử lý rất lâu và trang chủ không tải được. CreatePost và UpdatePost đã có upload ảnh đại diện qua /upload nhưng toolbar Quill chưa có image handler riêng cho ảnh nội dung. API tạo và sửa bài lưu Content mà chưa chặn ảnh data URI.
+Căn cứ Phản ánh của người vận hành và đường đi dữ liệu trong mã nguồn. Chưa đo CPU, RAM, kích thước request hoặc log lúc sự cố; chưa kết luận máy chủ bị treo do một cơ chế cụ thể.
+Thay đổi đề nghị Ảnh chèn trong bài được tải lên Cloudinary và nội dung chỉ lưu URL, tránh đưa dữ liệu ảnh base64 vào request tạo hoặc cập nhật bài.
+Phiếu tiếp nhận
+Phân loại và ưu tiên Hiệu chỉnh; P0. Mã gốc: chưa được cung cấp. Người và ngày tiếp nhận: ................ .
+Phân tích tác động
+Chương trình CreatePost, UpdatePost, toolbar và clipboard của Quill, UploadController, CloudinaryService, DTO tạo/sửa bài, PostController, cấu hình giới hạn request và dữ liệu Content cũ.
+Dữ liệu Không đổi kiểu Content. Đổi giá trị src của ảnh từ base64 sang URL. Khi ghép với DP01, lưu PublicId và AssetId riêng, không suy ra bằng cách cắt chuỗi URL.
+Tài liệu Đặc tả mục HC02; thiết kế TK-HC02; kiểm thử nhóm TC-HC02; kế hoạch và hướng dẫn sử dụng liên quan.
+Phương án A được khuyến nghị Dùng một thành phần upload ảnh dùng chung cho toolbar, paste và drop; mỗi tệp tối đa 5 MiB, chỉ JPEG/PNG/WebP đã kiểm tra chữ ký tệp; tối đa 20 ảnh mỗi bài. Không mở rộng vô hạn request body. Xử lý cũ theo từng bài và từng ảnh có checkpoint, không giải mã tất cả bài vào RAM.
+Nguồn lực phương án A Một người có kỹ năng React, ASP.NET Core, Identity hoặc EF Core theo thành phần; 16–24 giờ người. Công cụ: baseline React 19/Vite 8, .NET 6, SQL Server thử; Cloudinary thử với HC02/DP01.
+Phương án B Giữ base64 trong HTML nhưng tăng giới hạn request và nén ảnh ở trình duyệt. Triển khai nhanh hơn nhưng CSDL và mỗi lần đọc chi tiết vẫn phải mang dữ liệu ảnh, không xử lý tận gốc.
+Nguồn lực phương án B Một người biết các thành phần hiện có; 4–8 giờ người; dùng cùng môi trường thử. Khoảng ước lượng có thể tăng khi gặp dữ liệu cũ hoặc thiếu cấu hình.
+Chi phí hai phương án Chi phí nhân công = giờ thực tế × đơn giá được chấp nhận; cộng chi phí dịch vụ phát sinh theo tài khoản thật. Chưa có đơn giá, quota và hóa đơn nên chưa xác định số tiền. Phương án ít giờ hơn không được chấp nhận nếu không đạt tiêu chí yêu cầu.
+Lý do chọn A Đáp ứng hành vi mong muốn và các ngoại lệ đã nêu, xử lý tại đúng tầng chịu trách nhiệm. Phương án B có giới hạn hoặc rủi ro như mô tả, dùng để so sánh chứ không phải một hoạt động đã thực hiện.
+Rủi ro và kiểm soát Paste hoặc drop có thể bỏ qua image handler. Chuyển dữ liệu cũ có thể tải ảnh trùng hoặc mất tham chiếu khi thất bại. Cần backup, checkpoint, đối chiếu số ảnh và chỉ cập nhật bài sau khi đủ ảnh được chuyển.
+Phụ thuộc Thiết kế API upload thống nhất với DP01. Làm luồng upload mới trước, sau đó mới chuyển dữ liệu cũ.
+Tiêu chí xác nhận Thử đủ ba đường chọn, dán, kéo thả; nội dung gửi lên và Content lưu trong CSDL không có data:image.
+Phiếu phê duyệt
+Người hoặc nhóm phê duyệt: ................; ngày: ................ . Quyết định: □ Chấp nhận   □ Từ chối   □ Cần đánh giá thêm. Lý do và điều kiện kèm theo: ................................................................ . Chữ ký hoặc xác nhận: ................ .
+Định vị mã nguồn front-end/page/Admin/manage/Post/CreatePost.jsx và các thành phần nêu trên; đối chiếu commit đã ghi trong phần giới thiệu.
+HC03 Sửa trạng thái tải không kết thúc khi lấy dữ liệu thất bại
+Phiếu đề xuất
+Hiện trạng PostDetail chỉ đổi isLoading sang false khi request thành công; nhánh catch chỉ ghi console. Trang chủ phụ thuộc user nhưng UserContext khi lỗi không cung cấp trạng thái thất bại. Khi mở /post/2147483647 trên website, khung chờ vẫn hiển thị mà không có thông báo không tìm thấy bài.
+Căn cứ Đọc mã nguồn và quan sát thao tác chỉ đọc trên website ngày 12/11/2026.
+Thay đổi đề nghị Mọi yêu cầu lấy dữ liệu đều kết thúc bằng thành công, không tìm thấy, lỗi có thể thử lại hoặc hết thời gian chờ.
+Phiếu tiếp nhận
+Phân loại và ưu tiên Hiệu chỉnh; P1. Mã gốc: chưa được cung cấp. Người và ngày tiếp nhận: ................ .
+Phân tích tác động
+Chương trình PostDetail, Home, UserContext, API client và màn hình lỗi hoặc thành phần thông báo dùng chung.
+Dữ liệu Không thay đổi CSDL. Bổ sung trạng thái loading/error/notFound ở giao diện và timeout/cancel ở HTTP client.
+Tài liệu Đặc tả mục HC03; thiết kế TK-HC03; kiểm thử nhóm TC-HC03; kế hoạch và hướng dẫn sử dụng liên quan.
+Phương án A được khuyến nghị Tách trạng thái tải hồ sơ và tải danh sách; dữ liệu hồ sơ lỗi không được khóa vĩnh viễn toàn bộ trang. Dùng AbortController và finally; loại bỏ độ trễ giả 800 ms.
+Nguồn lực phương án A Một người có kỹ năng React, ASP.NET Core, Identity hoặc EF Core theo thành phần; 4–6 giờ người. Công cụ: baseline React 19/Vite 8, .NET 6, SQL Server thử; Cloudinary thử với HC02/DP01.
+Phương án B Chỉ thêm setIsLoading(false) trong catch của PostDetail. Sửa nhanh nhưng còn các trang khác và phản hồi cũ khi chuyển route.
+Nguồn lực phương án B Một người biết các thành phần hiện có; 1–2 giờ người; dùng cùng môi trường thử. Khoảng ước lượng có thể tăng khi gặp dữ liệu cũ hoặc thiếu cấu hình.
+Chi phí hai phương án Chi phí nhân công = giờ thực tế × đơn giá được chấp nhận; cộng chi phí dịch vụ phát sinh theo tài khoản thật. Chưa có đơn giá, quota và hóa đơn nên chưa xác định số tiền. Phương án ít giờ hơn không được chấp nhận nếu không đạt tiêu chí yêu cầu.
+Lý do chọn A Đáp ứng hành vi mong muốn và các ngoại lệ đã nêu, xử lý tại đúng tầng chịu trách nhiệm. Phương án B có giới hạn hoặc rủi ro như mô tả, dùng để so sánh chứ không phải một hoạt động đã thực hiện.
+Rủi ro và kiểm soát finally của request cũ có thể tắt trạng thái tải của request mới. Dùng định danh request hoặc hủy request và kiểm tra trạng thái hủy.
+Phụ thuộc Không phụ thuộc migration; có thể làm ngay sau khi tạo môi trường kiểm thử.
+Tiêu chí xác nhận 404 không còn khung chờ sau khi nhận phản hồi.
+Phiếu phê duyệt
+Người hoặc nhóm phê duyệt: ................; ngày: ................ . Quyết định: □ Chấp nhận   □ Từ chối   □ Cần đánh giá thêm. Lý do và điều kiện kèm theo: ................................................................ . Chữ ký hoặc xác nhận: ................ .
+Định vị mã nguồn front-end/page/PostDetail/PostDetail.jsx và các thành phần nêu trên; đối chiếu commit đã ghi trong phần giới thiệu.
+HC04 Sửa ảnh và nội dung bị lệch hoặc tràn ngang trên điện thoại
+Phiếu đề xuất
+Hiện trạng Người vận hành phản ánh ảnh bị lệch trên điện thoại. Kiểm tra /post/16 ở viewport 360 × 800 cho thấy document rộng khoảng 587 px. Trong mẫu này, ảnh nội dung rộng khoảng 295 px và vẫn nằm trong khung; các span chứa chuỗi JWT và code không ngắt dòng tạo phần tràn. Ảnh nền header bị cắt lệch; CSS chưa đặt background-position và đang dùng background-attachment: fixed. Đã có max-width:100% cho ảnh chi tiết, nên không thể kết luận thiếu toàn bộ CSS responsive.
+Căn cứ Phản ánh người vận hành, đo DOM chỉ đọc ở 360 px và đối chiếu CSS. Chưa kiểm tra toàn bộ ảnh, bài và thiết bị thật.
+Thay đổi đề nghị Ảnh và nội dung giữ trong khung trên điện thoại, không kéo giãn trang hoặc che các nút điều hướng.
+Phiếu tiếp nhận
+Phân loại và ưu tiên Hiệu chỉnh; P1. Mã gốc: chưa được cung cấp. Người và ngày tiếp nhận: ................ .
+Phân tích tác động
+Chương trình Header.module.css, PostDetail.css, About.module.css, ListPost, CSS chung và lớp bao nội dung HTML từ Quill.
+Dữ liệu Không đổi API hoặc CSDL. Kiểm tra style width/height cũ trong HTML, tránh dùng !important đại trà làm hỏng canh lề.
+Tài liệu Đặc tả mục HC04; thiết kế TK-HC04; kiểm thử nhóm TC-HC04; kế hoạch và hướng dẫn sử dụng liên quan.
+Phương án A được khuyến nghị Đặt max-inline-size:100% và block-size:auto cho img; overflow-wrap:anywhere cho nội dung văn bản, pre có max-width:100% và overflow-x:auto. Kiểm tra min-width của flex item và ảnh có inline style trước khi áp dụng override có phạm vi.
+Nguồn lực phương án A Một người có kỹ năng CSS, React và kiểm tra đa kích thước; 6–10 giờ người. Công cụ: baseline React 19/Vite 8, .NET 6, SQL Server thử; Cloudinary thử với HC02/DP01.
+Phương án B Chỉ đặt overflow-x:hidden ở body. Che phần tràn nhanh nhưng có thể cắt mất nội dung hoặc nút, không sửa phần tử gây lỗi.
+Nguồn lực phương án B Một người biết các thành phần hiện có; 1–2 giờ người; dùng cùng môi trường thử. Khoảng ước lượng có thể tăng khi gặp dữ liệu cũ hoặc thiếu cấu hình.
+Chi phí hai phương án Chi phí nhân công = giờ thực tế × đơn giá được chấp nhận; cộng chi phí dịch vụ phát sinh theo tài khoản thật. Chưa có đơn giá, quota và hóa đơn nên chưa xác định số tiền. Phương án ít giờ hơn không được chấp nhận nếu không đạt tiêu chí yêu cầu.
+Lý do chọn A Đáp ứng hành vi mong muốn và các ngoại lệ đã nêu, xử lý tại đúng tầng chịu trách nhiệm. Phương án B có giới hạn hoặc rủi ro như mô tả, dùng để so sánh chứ không phải một hoạt động đã thực hiện.
+Rủi ro và kiểm soát Ép object-fit:cover lên ảnh bài viết làm mất nội dung ảnh; chỉ dùng cover cho thumbnail hoặc ảnh nền khi có chủ đích. Cần giữ ảnh bài viết theo tỉ lệ tự nhiên.
+Phụ thuộc Kiểm thử lại sau HC02 vì ảnh Cloudinary và ảnh cũ đều phải hiển thị đúng.
+Tiêu chí xác nhận documentElement.scrollWidth không vượt clientWidth quá 1 px ở các viewport đã quy định.
+Phiếu phê duyệt
+Người hoặc nhóm phê duyệt: ................; ngày: ................ . Quyết định: □ Chấp nhận   □ Từ chối   □ Cần đánh giá thêm. Lý do và điều kiện kèm theo: ................................................................ . Chữ ký hoặc xác nhận: ................ .
+Định vị mã nguồn front-end/page/PostDetail/PostDetail.css và các thành phần nêu trên; đối chiếu commit đã ghi trong phần giới thiệu.
+HT01 Hoàn chỉnh luồng lưu nháp và xuất bản bài viết
+Phiếu đề xuất
+Hiện trạng Model và CreatePostDTO đã có IsPublished, nhưng CreatePost mặc định true và chưa có nút chọn lưu nháp. UpdatePostDTO chưa hỗ trợ đổi trạng thái; API danh sách và chi tiết công khai chưa lọc IsPublished.
+Căn cứ Đọc model, DTO và luồng tạo/sửa/đọc bài; chưa thao tác bài nháp trên môi trường triển khai.
+Thay đổi đề nghị Người biên tập chủ động lưu nháp, xuất bản hoặc thu hồi bài; khách chỉ xem được bài đã xuất bản.
+Phiếu tiếp nhận
+Phân loại và ưu tiên Hoàn thiện; P1. Mã gốc: chưa được cung cấp. Người và ngày tiếp nhận: ................ .
+Phân tích tác động
+Chương trình DTO bài viết, PostController, CreatePost, UpdatePost, PostManager và cấu hình cache cho dữ liệu bài.
+Dữ liệu Tái sử dụng Posts.IsPublished. ReadPostDTO cần trả đúng Id, IsPublished cho API quản trị; sửa setter phù hợp. Giữ nguyên trạng thái bài cũ, không tự động xuất bản.
+Tài liệu Đặc tả mục HT01; thiết kế TK-HT01; kiểm thử nhóm TC-HT01; kế hoạch và hướng dẫn sử dụng liên quan.
+Phương án A được khuyến nghị Thêm GET /Post/manage và GET /Post/manage/{id} có kiểm tra quyền; API công khai chỉ trả bài xuất bản. PATCH có danh sách trường cho phép và nhận IsPublished. Bỏ cache chi tiết cần kiểm tra trạng thái hoặc có cơ chế vô hiệu hóa đã kiểm thử.
+Nguồn lực phương án A Một người có kỹ năng React, ASP.NET Core, Identity hoặc EF Core theo thành phần; 12–18 giờ người. Công cụ: baseline React 19/Vite 8, .NET 6, SQL Server thử; Cloudinary thử với HC02/DP01.
+Phương án B Tạo bảng Draft riêng và chép dữ liệu sang Posts khi xuất bản. Tách rõ dữ liệu nhưng tăng đồng bộ, migration và rủi ro mất ảnh khi chuyển.
+Nguồn lực phương án B Một người biết các thành phần hiện có; 20–30 giờ người; dùng cùng môi trường thử. Khoảng ước lượng có thể tăng khi gặp dữ liệu cũ hoặc thiếu cấu hình.
+Chi phí hai phương án Chi phí nhân công = giờ thực tế × đơn giá được chấp nhận; cộng chi phí dịch vụ phát sinh theo tài khoản thật. Chưa có đơn giá, quota và hóa đơn nên chưa xác định số tiền. Phương án ít giờ hơn không được chấp nhận nếu không đạt tiêu chí yêu cầu.
+Lý do chọn A Đáp ứng hành vi mong muốn và các ngoại lệ đã nêu, xử lý tại đúng tầng chịu trách nhiệm. Phương án B có giới hạn hoặc rủi ro như mô tả, dùng để so sánh chứ không phải một hoạt động đã thực hiện.
+Rủi ro và kiểm soát Nếu chỉ ẩn bài ở danh sách thì URL chi tiết vẫn lộ. Cache trình duyệt/proxy có thể tiếp tục trả bài sau khi thu hồi; cần kiểm thử URL trực tiếp và response header.
+Phụ thuộc Sau HC01 và HC02; phối hợp HT03 để bài nháp không tăng lượt xem.
+Tiêu chí xác nhận Bài lưu nháp xuất hiện ở trang quản trị nhưng không có trong danh sách công khai.
+Phiếu phê duyệt
+Người hoặc nhóm phê duyệt: ................; ngày: ................ . Quyết định: □ Chấp nhận   □ Từ chối   □ Cần đánh giá thêm. Lý do và điều kiện kèm theo: ................................................................ . Chữ ký hoặc xác nhận: ................ .
+Định vị mã nguồn BackEnd/Models/Post.cs và các thành phần nêu trên; đối chiếu commit đã ghi trong phần giới thiệu.
+HT02 Hoàn thiện tìm kiếm và phân trang bài viết
+Phiếu đề xuất
+Hiện trạng Tìm kiếm hiện chỉ kích hoạt bằng Enter và ghép searchTerm trực tiếp vào URL. Khi không có kết quả, website chỉ để trống danh sách. PostManager quản lý state page và tổng trang nhưng chưa hiển thị thanh phân trang trong phần giao diện hiện tại; API chưa kiểm tra giới hạn pageNumber/pageSize.
+Căn cứ Đọc mã nguồn và tìm kiếm không có kết quả trên website bằng thao tác chỉ đọc.
+Thay đổi đề nghị Tìm đúng tiêu đề với ký tự đặc biệt, có thông báo rõ khi rỗng và duyệt đủ các trang công khai hoặc quản trị.
+Phiếu tiếp nhận
+Phân loại và ưu tiên Hoàn thiện; P2. Mã gốc: chưa được cung cấp. Người và ngày tiếp nhận: ................ .
+Phân tích tác động
+Chương trình ListPost, PostManager, API client, truy vấn bài công khai và quản trị, PagedResponse.
+Dữ liệu Giữ cấu trúc phân trang hiện có; totalRecords được đếm trên cùng truy vấn đã lọc. Thứ tự ổn định CreatedAt giảm dần rồi Id giảm dần.
+Tài liệu Đặc tả mục HT02; thiết kế TK-HT02; kiểm thử nhóm TC-HT02; kế hoạch và hướng dẫn sử dụng liên quan.
+Phương án A được khuyến nghị Dùng axios params thay nối chuỗi. Nút tìm có nhãn tiếng Việt và trạng thái tải; giữ một hàm dựng phân trang dùng lại. Không mở rộng sang tìm toàn văn nội dung trong đợt này.
+Nguồn lực phương án A Một người có kỹ năng React, ASP.NET Core, Identity hoặc EF Core theo thành phần; 6–10 giờ người. Công cụ: baseline React 19/Vite 8, .NET 6, SQL Server thử; Cloudinary thử với HC02/DP01.
+Phương án B Tải mọi bài về rồi lọc và phân trang ở trình duyệt. Ít sửa API nhưng tải nhiều dữ liệu, sai phạm vi quyền và không phù hợp khi số bài tăng.
+Nguồn lực phương án B Một người biết các thành phần hiện có; 4–6 giờ người; dùng cùng môi trường thử. Khoảng ước lượng có thể tăng khi gặp dữ liệu cũ hoặc thiếu cấu hình.
+Chi phí hai phương án Chi phí nhân công = giờ thực tế × đơn giá được chấp nhận; cộng chi phí dịch vụ phát sinh theo tài khoản thật. Chưa có đơn giá, quota và hóa đơn nên chưa xác định số tiền. Phương án ít giờ hơn không được chấp nhận nếu không đạt tiêu chí yêu cầu.
+Lý do chọn A Đáp ứng hành vi mong muốn và các ngoại lệ đã nêu, xử lý tại đúng tầng chịu trách nhiệm. Phương án B có giới hạn hoặc rủi ro như mô tả, dùng để so sánh chứ không phải một hoạt động đã thực hiện.
+Rủi ro và kiểm soát Tổng số trang đổi sau thao tác xóa hoặc lọc; cần xử lý trang rỗng và phản hồi request cũ khi tìm liên tiếp.
+Phụ thuộc Dùng API quản trị của HT01, đồng thời giữ phân tách công khai và quản trị.
+Tiêu chí xác nhận Ký tự & và + được gửi đúng như từ khóa, không bị tách thành tham số mới.
+Phiếu phê duyệt
+Người hoặc nhóm phê duyệt: ................; ngày: ................ . Quyết định: □ Chấp nhận   □ Từ chối   □ Cần đánh giá thêm. Lý do và điều kiện kèm theo: ................................................................ . Chữ ký hoặc xác nhận: ................ .
+Định vị mã nguồn front-end/components/ListPost/ListPost.jsx và các thành phần nêu trên; đối chiếu commit đã ghi trong phần giới thiệu.
+HT03 Thêm bộ đếm lượt xem cho từng bài
+Phiếu đề xuất
+Hiện trạng Model và DTO đã có ViewCount, model có IncreaseView, nhưng luồng đọc chi tiết hiện tại không gọi cập nhật bộ đếm và giao diện chưa hiển thị lượt xem.
+Căn cứ Đọc Post model, GetDetail và PostDetail; chưa xác minh dữ liệu đếm trong CSDL triển khai.
+Thay đổi đề nghị Thêm bộ đếm lượt xem cho từng bài: tăng khi đọc bài công khai hợp lệ, cập nhật đồng thời an toàn và hiển thị số lượt xem.
+Phiếu tiếp nhận
+Phân loại và ưu tiên Hoàn thiện; P2. Mã gốc: chưa được cung cấp. Người và ngày tiếp nhận: ................ .
+Phân tích tác động
+Chương trình PostController hoặc dịch vụ lượt xem, Post model, PostDetail, DTO phản hồi và bộ xử lý sự kiện mở bài.
+Dữ liệu Dùng Posts.ViewCount hiện có; kiểm tra dữ liệu null/âm trước khi đưa vào dùng. Không thêm bảng thống kê người dùng hoặc ghi IP cho mục đích lượt xem trong đợt này.
+Tài liệu Đặc tả mục HT03; thiết kế TK-HT03; kiểm thử nhóm TC-HT03; kế hoạch và hướng dẫn sử dụng liên quan.
+Phương án A được khuyến nghị Với EF Core 6, dùng câu UPDATE có tham số SET ViewCount = ViewCount + 1, không đọc rồi ghi lại đối tượng cũ. Giao dịch cập nhật và đọc số mới phải tránh ảnh hưởng logic xuất bản. Giao diện gắn một eventId cho mỗi lần điều hướng để kiểm soát gửi lặp trong phiên.
+Nguồn lực phương án A Một người có kỹ năng React, ASP.NET Core, Identity hoặc EF Core theo thành phần; 6–10 giờ người. Công cụ: baseline React 19/Vite 8, .NET 6, SQL Server thử; Cloudinary thử với HC02/DP01.
+Phương án B Gọi IncreaseView rồi SaveChanges trên từng request sau khi đọc đối tượng. Dễ làm nhưng có thể mất cập nhật khi nhiều request đọc cùng giá trị.
+Nguồn lực phương án B Một người biết các thành phần hiện có; 2–4 giờ người; dùng cùng môi trường thử. Khoảng ước lượng có thể tăng khi gặp dữ liệu cũ hoặc thiếu cấu hình.
+Chi phí hai phương án Chi phí nhân công = giờ thực tế × đơn giá được chấp nhận; cộng chi phí dịch vụ phát sinh theo tài khoản thật. Chưa có đơn giá, quota và hóa đơn nên chưa xác định số tiền. Phương án ít giờ hơn không được chấp nhận nếu không đạt tiêu chí yêu cầu.
+Lý do chọn A Đáp ứng hành vi mong muốn và các ngoại lệ đã nêu, xử lý tại đúng tầng chịu trách nhiệm. Phương án B có giới hạn hoặc rủi ro như mô tả, dùng để so sánh chứ không phải một hoạt động đã thực hiện.
+Rủi ro và kiểm soát React StrictMode, retry và prefetch có thể tăng dư; khóa trong một vòng đời điều hướng và không tự retry POST tăng lượt. Chỉ cam kết lượt mở trang, không cam kết số người xem duy nhất hay chống mọi bot.
+Phụ thuộc Sau HT01 để có tiêu chí bài công khai hợp lệ; thử đồng thời trên CSDL riêng.
+Tiêu chí xác nhận Một lần mở bài hợp lệ tăng 1; rerender hoặc StrictMode không tạo hai lượt cho cùng lần mở.
+Phiếu phê duyệt
+Người hoặc nhóm phê duyệt: ................; ngày: ................ . Quyết định: □ Chấp nhận   □ Từ chối   □ Cần đánh giá thêm. Lý do và điều kiện kèm theo: ................................................................ . Chữ ký hoặc xác nhận: ................ .
+Định vị mã nguồn BackEnd/Models/Post.cs và các thành phần nêu trên; đối chiếu commit đã ghi trong phần giới thiệu.
+DP01 Quản lý vòng đời và dọn ảnh Cloudinary không được sử dụng
+Phiếu đề xuất
+Hiện trạng CloudinaryService tải ảnh vào folder temp và chỉ trả SecureUrl; chưa thấy lưu PublicId, đánh dấu ảnh đã dùng hoặc tác vụ dọn trong cây mã nguồn đã rà soát. Việc đăng bài có thể bị hủy sau khi ảnh đã lên Cloudinary.
+Căn cứ Đọc CloudinaryService, UploadController, model và cấu hình dịch vụ. Nội dung README nói tới phương án dọn ảnh nhưng không được coi là bằng chứng đã triển khai.
+Thay đổi đề nghị Ngăn ảnh bỏ dở tích lũy trên Cloudinary mà không xóa nhầm ảnh bài viết, bài nháp hoặc hồ sơ đang dùng.
+Phiếu tiếp nhận
+Phân loại và ưu tiên Dự phòng; P1. Mã gốc: chưa được cung cấp. Người và ngày tiếp nhận: ................ .
+Phân tích tác động
+Chương trình CloudinaryService, UploadController, ApplicationDbContext, MediaAsset và MediaReference mới, dịch vụ lưu bài/hồ sơ, tác vụ nền.
+Dữ liệu Thêm MediaAsset và MediaReference, chỉ lưu PublicId thực do SDK trả. Dữ liệu ảnh cũ chưa xác định nguồn được giữ nguyên và đối soát trước; không xóa hàng loạt theo folder.
+Tài liệu Đặc tả mục DP01; thiết kế TK-DP01; kiểm thử nhóm TC-DP01; kế hoạch và hướng dẫn sử dụng liên quan.
+Phương án A được khuyến nghị Dùng bản ghi tham chiếu thay cờ IsUsed đơn lẻ để hỗ trợ một ảnh xuất hiện nhiều nơi. Giữ nguyên PublicId và URL khi đổi trạng thái, không đổi URL bằng thay chuỗi temp thành posts. Trạng thái Deleting không được gắn tham chiếu mới.
+Nguồn lực phương án A Một người có kỹ năng React, ASP.NET Core, Identity hoặc EF Core theo thành phần; 12–20 giờ người. Công cụ: baseline React 19/Vite 8, .NET 6, SQL Server thử; Cloudinary thử với HC02/DP01.
+Phương án B Xóa tất cả ảnh trong folder temp có tuổi trên 24 giờ. Rất ít mã nhưng có thể xóa ảnh đã được đăng mà chưa đổi folder hoặc ảnh còn trong bài nháp.
+Nguồn lực phương án B Một người biết các thành phần hiện có; 3–5 giờ người; dùng cùng môi trường thử. Khoảng ước lượng có thể tăng khi gặp dữ liệu cũ hoặc thiếu cấu hình.
+Chi phí hai phương án Chi phí nhân công = giờ thực tế × đơn giá được chấp nhận; cộng chi phí dịch vụ phát sinh theo tài khoản thật. Chưa có đơn giá, quota và hóa đơn nên chưa xác định số tiền. Phương án ít giờ hơn không được chấp nhận nếu không đạt tiêu chí yêu cầu.
+Lý do chọn A Đáp ứng hành vi mong muốn và các ngoại lệ đã nêu, xử lý tại đúng tầng chịu trách nhiệm. Phương án B có giới hạn hoặc rủi ro như mô tả, dùng để so sánh chứ không phải một hoạt động đã thực hiện.
+Rủi ro và kiểm soát Xóa Cloudinary là tác động không thể hoàn tác bằng rollback CSDL. Bắt buộc dry-run và duyệt danh sách ứng viên; bản đầu chỉ tự dọn Temp, chưa dọn ảnh từng Published rồi bị gỡ.
+Phụ thuộc Thiết kế cùng HC02; chạy dry-run sau khi đã chuyển ảnh cũ và đối soát tham chiếu.
+Tiêu chí xác nhận Ảnh Temp quá 24 giờ và không có tham chiếu được xử lý, ảnh mới hơn được giữ.
+Phiếu phê duyệt
+Người hoặc nhóm phê duyệt: ................; ngày: ................ . Quyết định: □ Chấp nhận   □ Từ chối   □ Cần đánh giá thêm. Lý do và điều kiện kèm theo: ................................................................ . Chữ ký hoặc xác nhận: ................ .
+Định vị mã nguồn BackEnd/Services/CloudinaryService.cs và các thành phần nêu trên; đối chiếu commit đã ghi trong phần giới thiệu.
+DP03 Phòng ngừa dò mật khẩu tại API đăng nhập quản trị
+Phiếu đề xuất
+Hiện trạng Route đăng nhập nằm trong bundle giao diện và mã nguồn công khai. PasswordSignInAsync đang truyền lockoutOnFailure=false; chưa thấy cơ chế giới hạn tần suất theo IP trong cấu hình đã đọc. Biết URL chưa đồng nghĩa vượt qua xác thực, nhưng cho phép kẻ tấn công tiếp cận điểm thử mật khẩu.
+Căn cứ Đọc App.jsx, AccountRepository và Program.cs; không thử dò mật khẩu trên website thật.
+Thay đổi đề nghị Giảm khả năng thử mật khẩu tự động và phát hiện đăng nhập bất thường mà vẫn cho người dùng hợp lệ đăng nhập.
+Phiếu tiếp nhận
+Phân loại và ưu tiên Dự phòng; P1. Mã gốc: chưa được cung cấp. Người và ngày tiếp nhận: ................ .
+Phân tích tác động
+Chương trình AccountController, AccountRepository, Identity options, dịch vụ hạn chế đăng nhập, cấu hình trusted proxy và nhật ký sự kiện.
+Dữ liệu Tái sử dụng AccessFailedCount, LockoutEnd, LockoutEnabled của Identity. Bộ đếm IP phải dùng kho chung khi có nhiều instance; bản triển khai một instance có thể dùng cache trong bộ nhớ và phải ghi rõ giới hạn khi khởi động lại.
+Tài liệu Đặc tả mục DP03; thiết kế TK-DP03; kiểm thử nhóm TC-DP03; kế hoạch và hướng dẫn sử dụng liên quan.
+Phương án A được khuyến nghị Đặt giới hạn trước thao tác băm mật khẩu, kiểm tra LockoutEnabled cho tài khoản cũ và truyền lockoutOnFailure:true. Với .NET 6, chọn bộ giới hạn tương thích sau khi kiểm chứng; không dùng AddRateLimiter có sẵn của các phiên bản mới như thể nó có trong .NET 6.
+Nguồn lực phương án A Một người có kỹ năng React, ASP.NET Core, Identity hoặc EF Core theo thành phần; 10–16 giờ người. Công cụ: baseline React 19/Vite 8, .NET 6, SQL Server thử; Cloudinary thử với HC02/DP01.
+Phương án B Chỉ đổi tên route, thêm hậu tố khó đoán hoặc chặn ở React. Ít công nhưng route vẫn có thể đọc từ bundle và API đăng nhập vẫn gọi trực tiếp được.
+Nguồn lực phương án B Một người biết các thành phần hiện có; 1–2 giờ người; dùng cùng môi trường thử. Khoảng ước lượng có thể tăng khi gặp dữ liệu cũ hoặc thiếu cấu hình.
+Chi phí hai phương án Chi phí nhân công = giờ thực tế × đơn giá được chấp nhận; cộng chi phí dịch vụ phát sinh theo tài khoản thật. Chưa có đơn giá, quota và hóa đơn nên chưa xác định số tiền. Phương án ít giờ hơn không được chấp nhận nếu không đạt tiêu chí yêu cầu.
+Lý do chọn A Đáp ứng hành vi mong muốn và các ngoại lệ đã nêu, xử lý tại đúng tầng chịu trách nhiệm. Phương án B có giới hạn hoặc rủi ro như mô tả, dùng để so sánh chứ không phải một hoạt động đã thực hiện.
+Rủi ro và kiểm soát Kẻ tấn công có thể cố tình gây khóa tài khoản; dùng khóa có thời hạn thay vì khóa vĩnh viễn. Nhiều người chung NAT có thể chạm hạn IP; cần theo dõi để điều chỉnh ngưỡng, không chặn toàn site.
+Phụ thuộc HC01 thống nhất tài khoản và quyền; xác minh proxy trước khi bật giới hạn IP.
+Tiêu chí xác nhận Yêu cầu thứ 21 trong cửa sổ 60 giây của cùng IP bị từ chối bằng 429.
+Phiếu phê duyệt
+Người hoặc nhóm phê duyệt: ................; ngày: ................ . Quyết định: □ Chấp nhận   □ Từ chối   □ Cần đánh giá thêm. Lý do và điều kiện kèm theo: ................................................................ . Chữ ký hoặc xác nhận: ................ .
+Định vị mã nguồn front-end/src/App.jsx và các thành phần nêu trên; đối chiếu commit đã ghi trong phần giới thiệu.
+4 Tổng hợp tác động và trình tự
+Nhóm | Thành phần chính | Phụ thuộc cần kiểm soát
+Quyền và đăng nhập | Identity, JWT, policy, API client | HC01 xác định vai trò; DP03 dùng cùng tài khoản và kiểm tra proxy.
+Ảnh và dung lượng | Quill, upload, Cloudinary, MediaAsset | HC02 và DP01 dùng chung hợp đồng upload; HC04 kiểm tra lại hiển thị.
+Đọc và quản lý bài | PostController, DTO, trạng thái UI | HT01 tách API nháp; HT02 đếm trên cùng bộ lọc; HT03 chỉ ghi lượt bài công khai.
+Vận hành và dữ liệu cũ | Migration, job chuyển ảnh, tác vụ dọn | Backup trước chuyển đổi; dọn chỉ sau đối soát và dry-run.
+
+Thực hiện theo nhóm để giảm sửa đi sửa lại: quyền → ảnh và trạng thái tải → giao diện điện thoại → nháp/xuất bản → chống dò mật khẩu → đối soát ảnh và dọn thử → tìm kiếm/lượt xem → hồi quy. Mỗi yêu cầu chỉ chuyển sang hoàn tất khi có ca kiểm thử đạt và người rà soát xác nhận.
+
+Cập nhật thực hiện ngày 17 tháng 11 năm 2026
+Đã sửa mã nguồn HC01, HC02, DP01, DP03 và thực thi 27 kịch bản API/CSDL/hộp trắng trên SQL Server riêng: 27 đạt, 0 không đạt ở lần chạy cuối. Bốn luồng giao diện đã có bằng chứng; drop dùng DragEvent có tệp. Kết quả giới hạn trong sandbox với FakeCloud, chưa phải nghiệm thu production.
+Mã | Thực hiện trong mã nguồn | Kết quả và giới hạn
+HC01 | JWT role, 401/403, chủ sở hữu, cấp tài khoản chỉ Admin; token gửi thống nhất ở FE. | 6 ca API đạt; cấp role cũ cần lệnh offline đúng tài khoản.
+HC02 | Upload chung toolbar/paste/drop; chặn base64 và giới hạn body; chuyển bài cũ có checkpoint. | API và chuyển ảnh đạt; toolbar/paste thật; drop mô phỏng.
+DP01 | MediaAsset/MediaReference, khóa SQL, dry-run, claim Deleting, retry tối đa 3 lần. | Race/retry trên SQL thật đạt; dịch vụ xóa giả lập.
+DP03 | 20/60 giây theo IP; 5 sai khóa 15 phút trong SQL; chống mất bộ đếm đồng thời. | Hạn IP và khóa SQL đạt; limiter một instance.
+Tác động thực tế: tài khoản cũ thiếu role bị chặn quản trị, cần cấp đúng quyền và đăng nhập lại; API quản trị đổi sang /Post/manage; FE gửi token thống nhất. Dữ liệu công khai vẫn qua AboutMe và Post.
+Schema thêm MediaAsset/MediaReference; FK hồ sơ dùng Restrict để tránh multiple cascade paths SQL Server. URL/PublicId cũ không đổi. Rollback CSDL không phục hồi được ảnh đã xóa ở dịch vụ ngoài; job xóa thật mặc định tắt.
+NFR07: sau làm nóng, 50 GET đồng thời một POST 20 URL; p95 trước 7,6 ms, sau 7,0 ms; cả hai 50×200 và POST 200. CPU tiến trình trước/sau 180/170 ms; RSS lấy mẫu 183,98/199,08 MiB. Mẫu nhỏ trên máy local, không suy ra năng lực hosting production.
+Giới hạn bằng chứng: chưa xóa ảnh trên tài khoản Cloudinary thật, chưa chạy nhiều instance/proxy thật. Ảnh API trực tiếp và bảng DP01/DP03 chưa chụp đủ do chính sách trình duyệt chặn localhost:5191/5180 dù đã được người dùng xác nhận. Không thay bằng ảnh dựng rồi gọi là màn hình thật.
+Nguồn thực thi: tuanduy_bao_tri/BAO_CAO_KIEM_THU_BAO_TRI.md; results.json; browser-results.json; baseline-results.json; performance.json; sandbox/test-execution.log; mã maintenance-tests/Runner.cs. Các nguồn không chứa mật khẩu hoặc JWT. Mã sửa chưa commit/push/deploy.
+Cập nhật thực hiện ngày 17 tháng 11 năm 2026 (HC03, HC04, HT02)
+Đã sửa mã nguồn HC03, HC04, HT02 và thực thi 18 kịch bản API/giao diện/hộp trắng trên sandbox (6 ca xUnit backend với EF Core InMemory, 12 ca Vitest frontend với JSDOM): 18 đạt, 0 không đạt ở lần chạy cuối. Các luồng giao diện 404/timeout, responsive đa viewport (320px..390px) và tìm kiếm/phân trang đã có bằng chứng tự động.
+Mã | Thực hiện trong mã nguồn | Kết quả và giới hạn
+HC03 | Thêm state isLoading, errorType, errorMessage; khối finally bảo đảm tắt spinner; AbortController hủy request timeout 15s và khi đổi route; bọc try/catch riêng cho AboutMe. | 4 ca UI đạt; kiểm thử thành công trạng thái 404, timeout hủy request và chuyển trang không bị race condition.
+HC04 | Header background-position: center; mobile background-attachment: scroll; box-sizing: border-box; overflow-wrap: anywhere; word-break: break-word; pre/code overflow-x: auto; ảnh max-inline-size: 100% !important; height/block-size: auto. | 4 ca CSS/Layout đạt; scrollWidth <= clientWidth + 1px trên các viewport 320px..390px; chống tràn ngang triệt để.
+HT02 | Backend validate tham số PageNumber >= 1, PageSize 1..50 trả 400 Bad Request; sắp xếp ổn định CreatedAt DESC, Id DESC; Frontend dùng Axios params, phân trang đầy đủ, tự lùi trang khi xóa bài cuối. | 10 ca đạt (6 ca xUnit backend, 4 ca Vitest frontend); mã hóa an toàn ký tự đặc biệt (&, +, ?), phân trang chính xác.
+Tác động mã nguồn: Sửa đổi cục bộ tại PostDetail.jsx, UserContext.jsx, Header.module.css, ListPost.jsx, PostManager.jsx và PostController.cs; không thêm bảng CSDL mới; không ảnh hưởng API công khai AboutMe/GetPost cũ.
+Tác động dữ liệu & API: Schema giữ nguyên. Backend bổ sung ràng buộc tham số phân trang (trả về 400 Bad Request khi không hợp lệ) và sắp xếp ổn định hai cấp.
+Yêu cầu phi chức năng (NFR): Đáp ứng timeout 15s (NFR03) và responsive không tràn khung ngang (NFR04).
+Nguồn thực thi: tandat_bao_tri/BAO_CAO_KIEM_THU_BAO_TRI.md; results.json; performance.json; test-execution.log; mã BackEnd.Tests/PostControllerTests.cs và front-end/tests/.

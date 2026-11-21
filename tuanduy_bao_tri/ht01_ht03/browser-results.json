@@ -1,0 +1,32 @@
+[
+  {
+    "id": "UI-HT01-CREATE",
+    "status": "PASS",
+    "detail": "Admin đăng nhập bằng UI; soạn Quill thật, Lưu nháp tạo Id=4; danh sách có Nháp và 0 lượt."
+  },
+  {
+    "id": "UI-HT01-FILTER-PREVIEW",
+    "status": "PASS",
+    "detail": "Chọn Nháp bỏ bài công khai; preview Id=4 đọc được; public URL trả màn 404; số đếm=0."
+  },
+  {
+    "id": "UI-HT01-PUBLISH",
+    "status": "PASS",
+    "detail": "Mở lại editor đủ nội dung, trạng thái và tác giả; Xuất bản chuyển badge; public đọc được."
+  },
+  {
+    "id": "UI-HT03-REOPEN",
+    "status": "PASS",
+    "detail": "Id=4: lần mở công khai đầu=1, reload=2; reload preview vẫn=2. Id=2: từ7 thành8 và GET độc lập sau đó vẫn8."
+  },
+  {
+    "id": "UI-HT01-WITHDRAW",
+    "status": "PASS",
+    "detail": "Mở editor bài published, Thu hồi về nháp; preview còn2; reload public trả404."
+  },
+  {
+    "id": "UI-MOBILE",
+    "status": "NOT_VERIFIED",
+    "detail": "Yêu cầu viewport390x844 không được áp dụng thực tế (DOM vẫn1280px); không xác nhận điện thoại thật hoặc responsive trong đợt này."
+  }
+]

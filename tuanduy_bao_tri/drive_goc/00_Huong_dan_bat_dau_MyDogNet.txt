@@ -1,0 +1,101 @@
+ĐẠI HỌC CẦN THƠ
+TRƯỜNG CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG
+
+
+HƯỚNG DẪN BẮT ĐẦU BẢO TRÌ
+BẢO TRÌ PHẦN MỀM MYDOGNET
+Phiên bản 0.1   Ngày 12/11/2026
+Nhóm thực hiện  ........................................................
+Giảng viên hướng dẫn  .............................................
+Học kỳ và năm học  ....................................................
+Cần Thơ   Tháng 11 năm 2026
+
+Thông tin tài liệu
+
+Bắt đầu bằng việc dựng môi trường riêng và kiểm tra quyền truy cập cùng luồng ảnh base64. Tài liệu này giải thích vai trò của các mẫu, chỉ ra nơi đọc mã nguồn và sắp thứ tự công việc để các báo cáo thống nhất với sản phẩm.
+Phạm vi đã thống nhất 9 yêu cầu gồm 4 hiệu chỉnh, 3 hoàn thiện và 2 dự phòng. Không có yêu cầu thích ứng trong đợt này. DP02 về lọc HTML đã được rút; giữ mã DP03 để tránh nhầm tham chiếu.
+MỤC LỤC
+1 Bạn nên bắt đầu từ đâu	3
+2 Các tệp trong thư mục dự án	3
+3 Những gì đã kiểm tra	4
+4 Danh sách và thứ tự bảo trì	5
+5 Đọc và chạy mã nguồn	5
+6 Bằng chứng cần thu thập và cách hoàn tất báo cáo	6
+7 Tài liệu tham khảo	6
+
+1 Bạn nên bắt đầu từ đâu
+Việc đầu tiên là cố định phiên bản mã nguồn và dựng môi trường kiểm thử riêng. Sau đó xử lý HC01 để khóa đúng quyền API và HC02 để ảnh nội dung không còn đi kèm dạng base64 trong request lưu bài. Hai việc này tác động trực tiếp tới quyền quản trị và khả năng vận hành của website.
+
+2 Các tệp trong thư mục dự án
+
+Các tệp hiện có chủ yếu là mẫu chưa điền. Sáu bản Word mới được đặt trong output/word; tài liệu nguồn được giữ nguyên. Khi nộp báo cáo cuối, cần ghép năm tài liệu bảo trì theo thứ tự đề bài, bổ sung bìa chung, phân công nhóm và kết quả thực hiện.
+3 Những gì đã kiểm tra
+
+Mốc mã nguồn là 1d0ddc344d3be4c9297831cc1875ea8acb8f5ace. Chưa xác nhận mã trên Vercel và backend triển khai hoàn toàn trùng mốc này. Không gọi thử API xóa/sửa, không tạo tài khoản và không tái hiện tình trạng quá tải trên hệ thống đang phục vụ.
+
+Hình 1 Các thành phần hiện tại và vị trí tác động của yêu cầu bảo trì
+4 Danh sách và thứ tự bảo trì
+
+Thứ tự đề xuất HC01 → HC02 → HC03 và HC04 → HT01 → DP03 → DP01 chạy dry-run → HT02 và HT03 → kiểm thử hồi quy. Thiết kế HC02 và DP01 cùng lúc để API upload không phải sửa lại hai lần.
+DP02 về lọc HTML đã được rút khỏi phạm vi theo quyết định của người thực hiện. Không đổi DP03 thành DP02 vì các trao đổi và tham chiếu đã dùng mã DP03. Chức năng nháp vẫn phải giới hạn đọc công khai trong HT01; đây là một phần của luồng nháp/xuất bản, không phải yêu cầu HC02 cũ.
+5 Đọc và chạy mã nguồn
+
+Chuẩn bị Node tương thích Vite 8 theo khai báo engines của gói thực tế, .NET SDK 6 cho baseline và SQL Server riêng. Chạy npm ci rồi npm run dev trong front-end. Với backend, cấu hình ConnectionStrings:DefaultConnection, JWT:SecretKey/ValidIssuer/ValidAudience, Cors:AllowedOrigins và CloudinaryConfig bằng user-secrets hoặc biến môi trường; không đưa khóa thật vào báo cáo.
+Khôi phục gói backend, rà migration và chỉ áp dụng vào CSDL thử nghiệm trước khi chạy. VITE_API_URL phải trỏ backend thử hoặc proxy đã thiết lập; không mặc định trỏ dịch vụ thật. Các lệnh build hoặc migration chưa được thực hiện trong lần rà soát tài liệu này.
+Dự án đang nhắm .NET 6. Việc nâng nền tảng không thuộc phạm vi đã chọn; ghi nhận riêng kế hoạch nâng cấp vì phiên bản này đã hết hỗ trợ. Không nâng phụ thuộc tùy tiện trong lúc đang đo baseline.
+6 Bằng chứng cần thu thập và cách hoàn tất báo cáo
+• Ảnh hoặc video tái hiện từng lỗi trước sửa trên môi trường riêng; kèm route, thiết bị, dữ liệu và thời điểm.
+• Với HC02: kích thước request lưu bài, số ảnh, thời gian phản hồi, CPU/RAM, log có correlation ID; không cần cố gây treo để làm bằng chứng.
+• Với HC04: ảnh 320/360/390/768/1366 px, số đo scrollWidth/clientWidth và ảnh thực tế trên ít nhất một điện thoại.
+• Với DP03: bảng lần thử, phản hồi 401/429, thời điểm khóa/mở lại; không ghi mật khẩu hoặc token.
+• Sau mỗi yêu cầu: commit, ca kiểm thử đã chạy, kết quả thực tế, lỗi còn lại và ảnh trước sau.
+• Trước nộp: điền thành viên/MSSV/giảng viên/học kỳ, đối chiếu mục lục và ghép báo cáo; chuẩn bị slide và demo từ các ca đã đạt.
+7 Tài liệu tham khảo
+Đề bài và mẫu môn học Yeucau_Project2.pdf; KehoachBT.pdf; Phantichsutacdong.pdf; DactaYCTD.pdf; ThietkeYCTD.pdf; Tài liệu kiểm thử.docx; Vidu_Dacta_Thietke.pdf.
+Mã nguồn MyDogNet https://github.com/tuanduy35399/MyDogNet; mốc 1d0ddc344d3be4c9297831cc1875ea8acb8f5ace; truy cập 12/11/2026.
+Website được cung cấp https://mydognet.vercel.app/; quan sát chỉ đọc ngày 12/11/2026.
+Sơ đồ tham khảo https://gitdiagram.com/tuanduy35399/mydognet; dùng để định hướng, xác minh lại bằng mã nguồn.
+Quill Toolbar https://quilljs.com/docs/modules/toolbar; cơ chế handler tùy chỉnh.
+Microsoft Upload files https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-6.0; giới hạn và kiểm tra tệp.
+Cloudinary .NET upload https://cloudinary.com/documentation/dotnet_image_and_video_upload; tham chiếu upload và định danh tài nguyên.
+Microsoft Identity https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.signinmanager-1.passwordsigninasync?view=aspnetcore-6.0; tham số lockoutOnFailure.
+OWASP Authentication https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html; giới hạn đăng nhập, khóa tạm và phản hồi chung.
+Phiên bản | Ngày | Nội dung | Người cập nhật
+0.1 | 12/11/2026 | Thiết lập phạm vi và nội dung bảo trì MyDogNet | ................
+STT | Việc cần làm | Sản phẩm để kiểm tra
+1 | Ghi commit, sao lưu CSDL, tách tài khoản và Cloudinary thử nghiệm | Mốc trước bảo trì và dữ liệu có thể phục hồi
+2 | Hoàn thiện bảng 9 yêu cầu và phân tích tác động | Mỗi yêu cầu có bằng chứng, giải pháp và tiêu chí nghiệm thu
+3 | Đọc đặc tả và thiết kế trước khi sửa từng phần | Hiểu API, dữ liệu, giao diện và ngoại lệ bị ảnh hưởng
+4 | Thực hiện trên nhánh riêng, viết kiểm thử tương ứng | Thay đổi có commit và kết quả kiểm thử thật
+5 | Cập nhật báo cáo, chụp ảnh trước sau và dựng kịch bản demo | Báo cáo phản ánh đúng những gì đã hoàn thành
+Tệp nguồn | Vai trò | Cách sử dụng
+Yeucau_Project2.pdf | Đề bài | Giữ làm căn cứ; phạm vi chọn 3 loại theo xác nhận mới của người thực hiện.
+KehoachBT.pdf | Mẫu kế hoạch | Điền tên phần mềm, tổ chức, lịch, quy trình và quản lý chất lượng.
+Phantichsutacdong.pdf | Mẫu phân tích | Điền đề xuất, tiếp nhận, tác động, ít nhất hai giải pháp và phần phê duyệt.
+DactaYCTD.pdf | Mẫu đặc tả | Điền hành vi mong muốn và phân biệt điều chỉnh với bổ sung.
+ThietkeYCTD.pdf | Mẫu thiết kế | Điền kiến trúc, dữ liệu, giao diện, luồng xử lý và bảng tham chiếu yêu cầu.
+Tài liệu kiểm thử.docx | Mẫu kiểm thử | Điền kế hoạch và ca kiểm thử, để kết quả sau sửa ở trạng thái chưa thực hiện.
+Vidu_Dacta_Thietke.pdf | Ví dụ của hệ thống điện lực | Chỉ tham khảo cách trình bày; không chép nghiệp vụ, bảng dữ liệu hoặc quyền của ví dụ sang MyDogNet.
+Mã | Nội dung | Phát hiện | Căn cứ
+OBS01 | Trang chủ và bài công khai | Trang chủ hiển thị danh sách; mở /post/16 đọc được nội dung. | Quan sát chỉ đọc trên website ngày 12/11/2026
+OBS02 | Bài không tồn tại | /post/2147483647 vẫn hiển thị khung đang tải sau khi quan sát lại. | Quan sát chỉ đọc; chưa lấy log máy chủ
+OBS03 | Tìm kiếm không có kết quả | Danh sách trống, chưa có thông báo không tìm thấy bài. | Từ khóa thử không trùng tiêu đề trên website
+OBS04 | Nhiều ảnh base64 | Người vận hành phản ánh đăng nhiều ảnh làm máy chủ xử lý lâu và ảnh hưởng trang chủ. | Chưa tái hiện sự cố hoặc đo tài nguyên
+OBS05 | Màn hình điện thoại | Viewport 360 px có document rộng khoảng 587 px; các chuỗi dài gây tràn, ảnh nội dung mẫu vẫn nằm trong khung. | Đo DOM bài /post/16; không đại diện mọi ảnh và thiết bị
+Mã | Loại | Yêu cầu | Ưu tiên
+HC01 | Hiệu chỉnh | Sửa thiếu xác thực và kiểm tra quyền tại API quản trị | P0
+HC02 | Hiệu chỉnh | Sửa ảnh base64 trong bài viết gây quá tải khi đăng bài | P0
+HC03 | Hiệu chỉnh | Sửa trạng thái tải không kết thúc khi lấy dữ liệu thất bại | P1
+HC04 | Hiệu chỉnh | Sửa ảnh và nội dung bị lệch hoặc tràn ngang trên điện thoại | P1
+HT01 | Hoàn thiện | Hoàn chỉnh luồng lưu nháp và xuất bản bài viết | P1
+HT02 | Hoàn thiện | Hoàn thiện tìm kiếm và phân trang bài viết | P2
+HT03 | Hoàn thiện | Thêm bộ đếm lượt xem cho từng bài | P2
+DP01 | Dự phòng | Quản lý vòng đời và dọn ảnh Cloudinary không được sử dụng | P1
+DP03 | Dự phòng | Phòng ngừa dò mật khẩu tại API đăng nhập quản trị | P1
+Điểm bắt đầu | Nội dung cần nắm
+front-end/src/App.jsx và components/ReactRouter.jsx | Route công khai, route quản trị và kiểm tra token ở giao diện.
+front-end/api.js và vercel.json | VITE_API_URL và khả năng chuyển tiếp /api; phải xác minh biến môi trường thực tế.
+CreatePost.jsx và UpdatePost.jsx | Tách ảnh thumbnail được upload với ảnh nhúng qua Quill; theo dõi request có data:image.
+BackEnd/Program.cs | SQL Server, Identity, JWT, CORS, đăng ký dịch vụ và pipeline xử lý request.
+PostController và AccountRepository | Quyền thao tác bài, lưu HTML, phân trang và tham số lockoutOnFailure.
+CloudinaryService và Models | Đường upload temp, PublicId chưa được lưu, trạng thái bài và ViewCount.
